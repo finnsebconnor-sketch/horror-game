@@ -2226,3 +2226,42 @@ if (DEBUG) {
 
  
 
+<style>
+#extraSprintButton {
+  position: fixed;
+  right: 25px;
+  bottom: 110px;
+  z-index: 999999;
+  width: 120px;
+  height: 70px;
+  border: 2px solid white;
+  border-radius: 15px;
+  background: #d71919;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: none;
+}
+</style>
+
+<button id="extraSprintButton">⚡ SPRINT</button>
+
+<script>
+(() => {
+  const sprintButton = document.getElementById("extraSprintButton");
+
+  sprintButton.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    if (typeof keys !== "undefined") keys.ShiftLeft = true;
+  });
+
+  function stopSprint() {
+    if (typeof keys !== "undefined") keys.ShiftLeft = false;
+  }
+
+  sprintButton.addEventListener("pointerup", stopSprint);
+  sprintButton.addEventListener("pointercancel", stopSprint);
+  window.addEventListener("blur", stopSprint);
+})();
+</script>
