@@ -3,60 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DUAL OPS: BLACKTIDE 09 & CITY CRIME</title>
+<title>DUAL OPS: BLACKTIDE 09 & CITY CRIME — EXPANDED EDITION</title>
 <style>
-:root{color-scheme:dark;--red:#d44335;--gold:#f0b942;--green:#52d681;--ice:#c5d8df;--panel:rgba(4,12,17,.92)}
+:root{color-scheme:dark;--red:#d44335;--gold:#f0b942;--green:#52d681;--blue:#38bdf8;--ice:#c5d8df;--panel:rgba(4,12,17,.94)}
 *{box-sizing:border-box;user-select:none}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02080d;color:var(--ice);font-family:'Segoe UI',Arial,sans-serif}
 #game{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none}
-#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.55) 100%);z-index:2}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.58) 100%);z-index:2}
+#scanlines{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.04;background:repeating-linear-gradient(0deg,#000 0px,#000 1px,transparent 1px,transparent 3px)}
 #hud{position:fixed;inset:0;z-index:5;pointer-events:none;display:none}
-#brand{position:absolute;left:24px;top:20px;font-size:12px;letter-spacing:4px;color:#b8cbd2;text-shadow:0 2px 8px #000}
-#mission{position:absolute;left:24px;top:46px;font-size:14px;font-weight:700;letter-spacing:1.5px;color:#fff;text-shadow:0 2px 8px #000}
-#objective{position:absolute;left:24px;top:70px;font-size:12px;color:#9bb0b8;text-shadow:0 2px 8px #000}
-#status{position:absolute;right:24px;top:20px;text-align:right;font-size:11px;letter-spacing:2px;color:#c4d5db;text-shadow:0 2px 8px #000}
-#timer{font-size:28px;font-weight:800;letter-spacing:3px;color:#f2d4b0;margin-top:4px}
-#cashDisplay{font-size:28px;font-weight:900;letter-spacing:2px;color:var(--green);margin-top:4px;display:none}
+#brand{position:absolute;left:24px;top:18px;font-size:11px;letter-spacing:4px;color:#b8cbd2;text-shadow:0 2px 8px #000}
+#mission{position:absolute;left:24px;top:42px;font-size:15px;font-weight:800;letter-spacing:1.5px;color:#fff;text-shadow:0 2px 8px #000}
+#objective{position:absolute;left:24px;top:66px;font-size:12px;color:#9bb0b8;text-shadow:0 2px 8px #000;max-width:420px;line-height:1.45}
+#status{position:absolute;right:24px;top:18px;text-align:right;font-size:11px;letter-spacing:2px;color:#c4d5db;text-shadow:0 2px 8px #000}
+#timer{font-size:30px;font-weight:900;letter-spacing:3px;color:#f2d4b0;margin-top:4px}
+#cashDisplay{font-size:30px;font-weight:900;letter-spacing:2px;color:var(--green);margin-top:4px;display:none}
+#wantedStars{font-size:20px;letter-spacing:4px;color:#475569;margin-top:4px;display:none;text-shadow:0 0 10px rgba(0,0,0,.9)}
+#wantedStars span.active{color:var(--gold);text-shadow:0 0 12px var(--gold)}
+#radarWrap{position:absolute;left:24px;bottom:102px;width:154px;height:154px;border-radius:50%;border:2px solid rgba(180,215,225,.35);background:rgba(3,10,14,.85);overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.75)}
+#radar{width:100%;height:100%;display:block}
 #crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:22px;color:rgba(235,245,248,.9);text-shadow:0 0 8px #000}
-#prompt{position:absolute;left:50%;top:58%;transform:translateX(-50%);padding:10px 18px;background:rgba(3,10,14,.88);border:1px solid rgba(180,210,220,.45);font-size:12px;font-weight:700;letter-spacing:1.5px;white-space:nowrap;opacity:0;transition:opacity .15s}
+#hitmarker{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:18px;height:18px;opacity:0;transition:opacity .08s}
+#hitmarker:before,#hitmarker:after{content:"";position:absolute;background:var(--red)}
+#hitmarker:before{left:8px;top:0;width:2px;height:18px}
+#hitmarker:after{top:8px;left:0;width:18px;height:2px}
+#prompt{position:absolute;left:50%;top:59%;transform:translateX(-50%);padding:11px 20px;background:rgba(3,10,14,.9);border:1px solid rgba(180,210,220,.5);font-size:12px;font-weight:800;letter-spacing:1.6px;white-space:nowrap;opacity:0;transition:opacity .12s;box-shadow:0 10px 30px #000}
 #bottom{position:absolute;left:24px;bottom:22px;display:flex;gap:10px}
-.stat{min-width:96px;padding:10px 12px;background:rgba(3,10,14,.82);border:1px solid rgba(150,185,195,.25)}
+.stat{min-width:96px;padding:10px 12px;background:rgba(3,10,14,.85);border:1px solid rgba(150,185,195,.25)}
 .stat small{display:block;font-size:9px;letter-spacing:2px;color:#8299a2;margin-bottom:4px}
 .stat strong{font-size:18px;color:#edf5f7}
-#weapon{position:absolute;right:24px;bottom:22px;text-align:right;background:rgba(3,10,14,.82);border:1px solid rgba(150,185,195,.25);padding:10px 14px;min-width:165px}
+#weapon{position:absolute;right:24px;bottom:22px;text-align:right;background:rgba(3,10,14,.85);border:1px solid rgba(150,185,195,.25);padding:10px 16px;min-width:190px}
 #weapon small{display:block;color:#8299a2;font-size:9px;letter-spacing:2px;margin-bottom:4px}
-#weapon strong{font-size:15px;letter-spacing:1.5px}
-#toast{position:absolute;left:50%;top:16%;transform:translateX(-50%);padding:12px 20px;background:rgba(5,12,17,.92);border-left:3px solid var(--gold);font-size:12px;font-weight:700;letter-spacing:1.5px;opacity:0;transition:opacity .2s}
-#damage{position:absolute;inset:0;background:radial-gradient(ellipse,transparent 35%,rgba(180,0,0,.7));opacity:0;transition:opacity .12s;pointer-events:none}
+#weapon strong{font-size:15px;letter-spacing:1.5px;color:#fff}
+#speedo{font-size:11px;color:var(--blue);letter-spacing:2px;margin-top:4px;display:none}
+#toast{position:absolute;left:50%;top:15%;transform:translateX(-50%);padding:12px 22px;background:rgba(5,12,17,.94);border-left:4px solid var(--gold);font-size:12px;font-weight:800;letter-spacing:1.5px;opacity:0;transition:opacity .2s;box-shadow:0 10px 30px #000}
+#damage{position:absolute;inset:0;background:radial-gradient(ellipse,transparent 35%,rgba(190,0,0,.78));opacity:0;transition:opacity .12s;pointer-events:none}
 
 /* OVERLAYS */
 .overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 70% 25%,rgba(34,58,68,.92),rgba(2,7,11,.97));padding:24px}
 #bombPanel,#gunStore,#pause,#ending{display:none}
-.screen{width:min(840px,94vw);padding:clamp(24px,4vw,44px);border:1px solid rgba(170,205,215,.25);background:var(--panel);box-shadow:0 25px 90px #000}
-.kicker{font-size:10px;letter-spacing:5px;color:#9eb5be;margin-bottom:12px}
-h1{font-size:clamp(34px,6vw,64px);line-height:.95;letter-spacing:4px;margin:0;color:#e9f2f4;font-weight:900}
+.screen{width:min(880px,94vw);padding:clamp(22px,4vw,42px);border:1px solid rgba(170,205,215,.25);background:var(--panel);box-shadow:0 25px 90px #000}
+.kicker{font-size:10px;letter-spacing:5px;color:#9eb5be;margin-bottom:10px}
+h1{font-size:clamp(34px,6vw,62px);line-height:.95;letter-spacing:4px;margin:0;color:#e9f2f4;font-weight:900}
 h1 span{color:var(--red)}
-.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
-.card{padding:22px;border:1px solid rgba(170,205,215,.2);background:rgba(10,22,30,.7);display:flex;flex-direction:column;justify-content:space-between}
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+.card{padding:22px;border:1px solid rgba(170,205,215,.2);background:rgba(10,22,30,.75);display:flex;flex-direction:column;justify-content:space-between}
 .card h2{margin:0 0 8px;font-size:20px;letter-spacing:2px;color:#fff}
 .card p{font-size:13px;line-height:1.6;color:#9eb5be;margin:0 0 18px}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-button{font:inherit;cursor:pointer;border:1px solid rgba(190,220,230,.45);background:rgba(25,43,51,.85);color:#eaf4f6;padding:13px 20px;letter-spacing:2px;font-size:11px;font-weight:800}
+button{font:inherit;cursor:pointer;border:1px solid rgba(190,220,230,.45);background:rgba(25,43,51,.88);color:#eaf4f6;padding:13px 20px;letter-spacing:2px;font-size:11px;font-weight:800;transition:filter .15s}
 button.primary{background:#a82f2a;border-color:#d15a50}
 button.gold{background:#9c721c;border-color:var(--gold);color:#fff}
 button:hover{filter:brightness(1.22)}
-.controls{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 24px;margin-top:20px;color:#8fa6ae;font-size:11px;border-top:1px solid rgba(170,205,215,.15);padding-top:16px}
+.controls{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 24px;margin-top:18px;color:#8fa6ae;font-size:11px;border-top:1px solid rgba(170,205,215,.15);padding-top:14px}
 .controls b{color:#dce8eb}
 
 /* WIRE & SHOP GRIDS */
-.wire-row,.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.wire-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
 .wire{height:84px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border:1px solid #56666c;background:#0b171d}
 .wire:before{content:"";width:70%;height:8px;border-radius:4px;background:var(--wire);box-shadow:0 0 14px var(--wire)}
-.shop-item{padding:16px;border:1px solid rgba(170,205,215,.25);background:#081319;text-align:center}
-.shop-item h3{margin:0 0 6px;font-size:14px;letter-spacing:2px}
-.shop-item .price{color:var(--green);font-weight:800;font-size:17px;margin-bottom:8px}
-.shop-item p{font-size:11px;color:#8fa6ae;margin:0 0 14px;line-height:1.5}
-@media(max-width:700px){.game-grid,.wire-row,.shop-grid{grid-template-columns:1fr}}
+.shop-item{padding:14px;border:1px solid rgba(170,205,215,.25);background:#081319;text-align:center;display:flex;flex-direction:column;justify-content:space-between}
+.shop-item h3{margin:0 0 6px;font-size:13px;letter-spacing:1.5px;color:#fff}
+.shop-item .price{color:var(--green);font-weight:800;font-size:16px;margin-bottom:8px}
+.shop-item p{font-size:11px;color:#8fa6ae;margin:0 0 12px;line-height:1.45}
+@media(max-width:780px){.game-grid,.wire-row,.shop-grid{grid-template-columns:1fr}}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://jsdelivr.net"}}
@@ -65,6 +76,7 @@ button:hover{filter:brightness(1.22)}
 <body>
 <canvas id="game"></canvas>
 <div id="vignette"></div>
+<div id="scanlines"></div>
 
 <!-- HUD -->
 <div id="hud">
@@ -74,53 +86,62 @@ button:hover{filter:brightness(1.22)}
  <div id="status">
   <span id="statusLabel">COUNTDOWN</span>
   <div id="timer">05:00</div>
-  <div id="cashDisplay">$600</div>
+  <div id="cashDisplay">$750</div>
+  <div id="wantedStars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
  </div>
+ <div id="radarWrap"><canvas id="radar" width="154" height="154"></canvas></div>
  <div id="crosshair">+</div>
+ <div id="hitmarker"></div>
  <div id="prompt">[ E ] INTERACT</div>
  <div id="toast"></div>
  <div id="damage"></div>
  <div id="bottom">
   <div class="stat"><small>HEALTH</small><strong id="health">100</strong></div>
-  <div class="stat"><small>AMMO</small><strong id="ammo">12 / 48</strong></div>
+  <div class="stat"><small>ARMOR</small><strong id="armor">50</strong></div>
+  <div class="stat"><small>AMMO</small><strong id="ammo">12 / 60</strong></div>
   <div class="stat"><small id="objLabel">INTEL</small><strong id="parts">0 / 3</strong></div>
  </div>
- <div id="weapon"><small>EQUIPPED</small><strong id="weaponName">SERVICE PISTOL</strong></div>
+ <div id="weapon">
+  <small>ACTIVE EQUIPMENT</small>
+  <strong id="weaponName">SERVICE PISTOL</strong>
+  <div id="speedo">0 MPH</div>
+ </div>
 </div>
 
 <!-- MAIN LAUNCHER -->
 <div id="start" class="overlay">
  <div class="screen">
-  <div class="kicker">ENHANCED PBR ENGINE // TWO FULL MODES</div>
+  <div class="kicker">EXPANDED PBR ENGINE // SYNTH AUDIO + RADAR + WANTED AI</div>
   <h1>DUAL <span>OPERATIONS</span></h1>
   <div class="game-grid">
    <div class="card">
     <div>
      <h2>BLACKTIDE 09</h2>
-     <p>Storm-lashed offshore oil rig. Collect 3 wire-code intel tablets, disarm the main bomb, and reach the extraction helipad while evading the rig stalker.</p>
+     <p>Storm-lashed offshore oil rig. Locate 3 intel terminals, cut the bomb wires in the decoded sequence, and reach the extraction helipad while evading the rig stalker.</p>
     </div>
     <button class="primary" id="btnBlacktide">PLAY BLACKTIDE 09</button>
    </div>
    <div class="card">
     <div>
      <h2>CITY CRIME</h2>
-     <p>Open-world neon metropolis. Hijack and drive 14+ traffic & sports cars, collect cash bundles or eliminate gang targets for money, and enter Ammu-Nation stores to buy weapons.</p>
+     <p>Open-world neon metropolis. Hijack and drive 22 traffic, sports, and police cars, collect cash bundles or eliminate gang targets for cash, survive 5-star police pursuits, and enter Ammu-Nation stores to buy heavy weapons.</p>
     </div>
     <button class="gold" id="btnCity">PLAY CITY CRIME</button>
    </div>
   </div>
   <div class="actions">
    <button id="btnQuality">GRAPHICS: ULTRA (SHADOWS + PBR)</button>
+   <button id="btnAudio">AUDIO: ON</button>
   </div>
   <div class="controls">
    <div><b>W A S D</b> — Walk / Drive Car</div>
-   <div><b>MOUSE</b> — Aim / Steer Camera</div>
+   <div><b>MOUSE</b> — Aim / Camera Orbit</div>
    <div><b>SHIFT</b> — Sprint / Nitro Boost</div>
+   <div><b>SPACE</b> — Jump / Handbrake Drift</div>
    <div><b>E</b> — Interact / Enter-Exit Car / Enter Store</div>
-   <div><b>1 - 4</b> — Switch Weapons</div>
-   <div><b>LEFT CLICK</b> — Shoot / Melee</div>
-   <div><b>R / F</b> — Reload / Flashlight</div>
-   <div><b>P or ESC</b> — Pause / Switch Game</div>
+   <div><b>1 - 4</b> — Pistol / Shotgun / Rifle / Heavy SMG</div>
+   <div><b>LEFT CLICK</b> — Fire Weapon</div>
+   <div><b>R / F / ESC</b> — Reload / Flashlight / Pause</div>
   </div>
  </div>
 </div>
@@ -131,48 +152,1280 @@ button:hover{filter:brightness(1.22)}
   <div class="kicker">EXPLOSIVE ORDNANCE // SEQUENCE REQUIRED</div>
   <h2 style="margin:0 0 8px;letter-spacing:3px">CUT WIRES IN INTEL ORDER</h2>
   <p id="wireHint" style="color:#9eb5be;font-size:12px;letter-spacing:1.5px">Intel Collected: 0 / 3</p>
-  <div class="wire-row">
-   <button class="wire" style="--wire:#e34a3d" data-wire="RED">RED WIRE</button>
-   <button class="wire" style="--wire:#3b9ae1" data-wire="BLUE">BLUE WIRE</button>
-   <button class="wire" style="--wire:#f0b942" data-wire="YELLOW">YELLOW WIRE</button>
-  </div>
-  <div id="wireStatus" style="min-height:22px;color:#f0b942;font-size:12px;letter-spacing:1px"></div>
-  <button id="closeBomb" style="margin-top:12px">STEP BACK</button>
- </div>
-</div>
+Use code with caution.
+RED WIRE
+BLUE WIRE
+YELLOW WIRE
 
-<!-- GUN STORE MODAL -->
-<div id="gunStore" class="overlay">
- <div class="screen">
-  <div class="kicker">CITY CRIME // WALK-IN ARMORY</div>
-  <h2 style="margin:0 0 6px;letter-spacing:3px">AMMU-NATION STORE</h2>
-  <div style="color:var(--green);font-weight:800;letter-spacing:2px">YOUR CASH: <span id="storeCash">$600</span></div>
-  <div class="shop-grid">
-   <div class="shop-item">
-    <h3>COMBAT SHOTGUN</h3>
-    <div class="price">$400</div>
-    <p>8-pellet devastating close-range spread. Includes 32 shells.</p>
-    <button class="gold" data-buy="shotgun" data-cost="400">BUY SHOTGUN [2]</button>
-   </div>
-   <div class="shop-item">
-    <h3>ASSAULT RIFLE</h3>
-    <div class="price">$850</div>
-    <p>High-velocity rapid-fire carbine. Includes 150 rounds.</p>
-    <button class="gold" data-buy="rifle" data-cost="850">BUY RIFLE [3]</button>
-   </div>
-   <div class="shop-item">
-    <h3>ARMOR & AMMO PACK</h3>
-    <div class="price">$200</div>
-    <p>Restores 100 Health and maxes out ammo for all owned guns.</p>
-    <button class="gold" data-buy="refill" data-cost="200">BUY REFILL</button>
-   </div>
-  </div>
-  <button id="closeStore">LEAVE STORE</button>
- </div>
-</div>
 
-<!-- PAUSE MODAL -->
-<div id="pause" class="overlay">
- <div class="screen" style="width:min(460px,94vw);text-align:center">
-  <div class="kicker">SYSTEM PAUSED</div>
-  <h2 style="margin:0 0 20px;letter-spacing:3px">OPERATION MENU</h2>
+STEP BACK
+
+CITY CRIME // WALK-IN ARMORY
+AMMU-NATION STORE
+AVAILABLE CASH: $750
+
+
+
+COMBAT SHOTGUN
+$400
+8-pellet devastating close-range spread. Includes 32 shells.
+
+BUY SHOTGUN
+
+
+
+TACTICAL SMG
+$650
+Ultra-high fire rate submachine gun. Includes 180 rounds.
+
+BUY SMG
+
+
+
+ASSAULT RIFLE
+$950
+High-damage automatic carbine. Includes 150 rounds.
+
+BUY RIFLE
+
+
+
+ARMOR + AMMO
+$250
+Restores 100 Health, 100 Armor, and refills all owned guns.
+
+BUY PACK
+
+
+LEAVE STORE [ ESC ]
+
+SYSTEM PAUSED
+OPERATION MENU
+
+RESUME
+SWITCH GAME
+
+
+MISSION COMPLETE
+EXTRACTED
+
+
+PLAY AGAIN
+MAIN MENU
+
+
+import * as THREE from 'three';
+// ==========================================
+// 1. WEB AUDIO SYNTHESIZER (NO EXTERNAL FILES)
+// ==========================================
+class SoundEngine {
+constructor() {
+this.ctx = null;
+this.enabled = true;
+}
+init() {
+if (!this.ctx) {
+this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+}
+if (this.ctx.state === 'suspended') this.ctx.resume();
+}
+playShot(type = 'pistol') {
+if (!this.enabled) return;
+this.init();
+const now = this.ctx.currentTime;
+const osc = this.ctx.createOscillator();
+const gain = this.ctx.createGain();
+osc.type = type === 'shotgun' ? 'sawtooth' : 'triangle';
+const startFreq = type === 'shotgun' ? 140 : type === 'rifle' ? 220 : 280;
+osc.frequency.setValueAtTime(startFreq, now);
+osc.frequency.exponentialRampToValueAtTime(32, now + 0.14);
+gain.gain.setValueAtTime(type === 'shotgun' ? 0.32 : 0.2, now);
+gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+osc.connect(gain);
+gain.connect(this.ctx.destination);
+osc.start(now);
+osc.stop(now + 0.16);
+}
+playCash() {
+if (!this.enabled) return;
+this.init();
+const now = this.ctx.currentTime;
+const osc = this.ctx.createOscillator();
+const gain = this.ctx.createGain();
+osc.type = 'sine';
+osc.frequency.setValueAtTime(880, now);
+osc.frequency.setValueAtTime(1320, now + 0.06);
+gain.gain.setValueAtTime(0.15, now);
+gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+osc.connect(gain);
+gain.connect(this.ctx.destination);
+osc.start(now);
+osc.stop(now + 0.23);
+}
+playReload() {
+if (!this.enabled) return;
+this.init();
+const now = this.ctx.currentTime;
+const osc = this.ctx.createOscillator();
+const gain = this.ctx.createGain();
+osc.type = 'square';
+osc.frequency.setValueAtTime(420, now);
+osc.frequency.setValueAtTime(620, now + 0.12);
+gain.gain.setValueAtTime(0.08, now);
+gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+osc.connect(gain);
+gain.connect(this.ctx.destination);
+osc.start(now);
+osc.stop(now + 0.21);
+}
+playBeep(freq = 600, dur = 0.08) {
+if (!this.enabled) return;
+this.init();
+const now = this.ctx.currentTime;
+const osc = this.ctx.createOscillator();
+const gain = this.ctx.createGain();
+osc.type = 'sine';
+osc.frequency.setValueAtTime(freq, now);
+gain.gain.setValueAtTime(0.08, now);
+gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+osc.connect(gain);
+gain.connect(this.ctx.destination);
+osc.start(now);
+osc.stop(now + dur + 0.01);
+}
+}
+const sfx = new SoundEngine();
+// ==========================================
+// 2. PROCEDURAL PBR TEXTURES & MATERIALS
+// ==========================================
+function makeAsphaltTexture() {
+const c = document.createElement('canvas');
+c.width = c.height = 512;
+const ctx = c.getContext('2d');
+ctx.fillStyle = '#151921';
+ctx.fillRect(0, 0, 512, 512);
+for (let i = 0; i < 6000; i++) {
+ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.06)';
+ctx.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
+}
+// Crosswalks & lane dividers
+ctx.strokeStyle = '#334155';
+ctx.lineWidth = 6;
+ctx.strokeRect(3, 3, 506, 506);
+ctx.fillStyle = '#eab308';
+for (let y = 16; y < 512; y += 48) {
+ctx.fillRect(253, y, 6, 24);
+}
+const tex = new THREE.CanvasTexture(c);
+tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+tex.colorSpace = THREE.SRGBColorSpace;
+return tex;
+}
+function makeDeckTexture() {
+const c = document.createElement('canvas');
+c.width = c.height = 512;
+const ctx = c.getContext('2d');
+ctx.fillStyle = '#16212b';
+ctx.fillRect(0, 0, 512, 512);
+ctx.strokeStyle = '#283847';
+ctx.lineWidth = 4;
+for (let i = 0; i <= 512; i += 64) {
+ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+}
+// Hazard border
+ctx.fillStyle = '#ca8a04';
+ctx.fillRect(0, 0, 512, 12);
+const tex = new THREE.CanvasTexture(c);
+tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+tex.colorSpace = THREE.SRGBColorSpace;
+return tex;
+}
+function makeSkyscraperTexture(tint = '#101824') {
+const c = document.createElement('canvas');
+c.width = 256; c.height = 512;
+const ctx = c.getContext('2d');
+ctx.fillStyle = tint;
+ctx.fillRect(0, 0, 256, 512);
+for (let y = 18; y < 490; y += 28) {
+for (let x = 16; x < 236; x += 28) {
+const lit = Math.random() > 0.32;
+ctx.fillStyle = lit ? (Math.random() > 0.25 ? '#fef08a' : '#7dd3fc') : '#070b10';
+ctx.fillRect(x, y, 16, 18);
+}
+}
+const tex = new THREE.CanvasTexture(c);
+tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+tex.colorSpace = THREE.SRGBColorSpace;
+return tex;
+}
+// ==========================================
+// 3. THREE.JS RENDERER & CAMERA SETUP
+// ==========================================
+const canvas = document.getElementById('game');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.18;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 450);
+camera.rotation.order = 'YXZ';
+// First-person Weapon Viewmodel
+const gunGroup = new THREE.Group();
+const gunBody = new THREE.Mesh(
+new THREE.BoxGeometry(0.075, 0.085, 0.42),
+new THREE.MeshStandardMaterial({ color: 0x222831, metalness: 0.85, roughness: 0.22 })
+);
+gunBody.position.set(0.26, -0.22, -0.44);
+const gunSight = new THREE.Mesh(
+new THREE.BoxGeometry(0.025, 0.025, 0.06),
+new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+);
+gunSight.position.set(0.26, -0.17, -0.35);
+const muzzleFlash = new THREE.PointLight(0xffaa33, 0, 8);
+muzzleFlash.position.set(0.26, -0.18, -0.78);
+gunGroup.add(gunBody, gunSight, muzzleFlash);
+camera.add(gunGroup);
+const flashlight = new THREE.SpotLight(0xdff6ff, 0, 50, Math.PI / 5, 0.45, 1);
+flashlight.target.position.set(0, 0, -10);
+camera.add(flashlight, flashlight.target);
+scene.add(camera);
+// ==========================================
+// 4. GAME STATE & WEAPON DEFINITIONS
+// ==========================================
+let mode = null;
+let paused = false;
+let gameOver = false;
+let ultraGraphics = true;
+const keys = {};
+let yaw = 0, pitch = 0;
+const player = {
+pos: new THREE.Vector3(0, 1.7, 0),
+velY: 0,
+grounded: true,
+hp: 100,
+armor: 50,
+cash: 750,
+wanted: 0,
+wantedDecay: 0,
+inCar: null,
+weaponIdx: 0,
+weapons: [
+{ id: 'pistol', name: 'SERVICE PISTOL', dmg: 36, rate: 0.22, clip: 12, maxClip: 12, reserve: 72, spread: 0.01, pellets: 1, auto: false, color: 0x222831, len: 0.36, owned: true },
+{ id: 'shotgun', name: 'COMBAT SHOTGUN', dmg: 24, rate: 0.72, clip: 8, maxClip: 8, reserve: 32, spread: 0.085, pellets: 8, auto: false, color: 0x5c3a21, len: 0.66, owned: false },
+{ id: 'smg', name: 'TACTICAL SMG', dmg: 21, rate: 0.08, clip: 35, maxClip: 35, reserve: 175, spread: 0.035, pellets: 1, auto: true, color: 0x334155, len: 0.48, owned: false },
+{ id: 'rifle', name: 'ASSAULT RIFLE', dmg: 32, rate: 0.11, clip: 30, maxClip: 30, reserve: 150, spread: 0.02, pellets: 1, auto: true, color: 0x0f172a, len: 0.68, owned: false }
+],
+cooldown: 0,
+reloading: false
+};
+let colliders = [];
+let interactables = [];
+let enemies = [];
+let cars = [];
+let pickups = [];
+let props = [];
+let tracers = [];
+let activePrompt = null;
+// Blacktide 09 state
+let rigTimer = 300;
+let tickAccum = 0;
+let intelCount = 0;
+let wireOrder = [];
+let cutWires = [];
+let bombDisarmed = false;
+let stalker = null;
+const $ = id => document.getElementById(id);
+function toast(msg) {
+const t = $('toast');
+t.textContent = msg;
+t.style.opacity = 1;
+clearTimeout(t._to);
+t._to = setTimeout(() => t.style.opacity = 0, 2600);
+}
+function updateHUD() {
+$('health').textContent = Math.max(0, Math.ceil(player.hp));
+$('armor').textContent = Math.max(0, Math.ceil(player.armor));
+const w = player.weapons[player.weaponIdx];
+$('ammo').textContent = ${w.clip} / ${w.reserve};
+$('weaponName').textContent = player.inCar ? player.inCar.name : w.name;
+$('cashDisplay').textContent = $${player.cash};
+$('storeCash').textContent = $${player.cash};
+if (mode === 'blacktide') {
+$('parts').textContent = ${intelCount} / 3;
+const m = String(Math.floor(rigTimer / 60)).padStart(2, '0');
+const s = String(Math.floor(rigTimer % 60)).padStart(2, '0');
+$('timer').textContent = ${m}:${s};
+} else if (mode === 'city') {
+$('parts').textContent = cars.length;
+const stars = $('wantedStars').querySelectorAll('span');
+stars.forEach((st, i) => st.classList.toggle('active', i < player.wanted));
+}
+}
+function equipWeapon(idx) {
+const w = player.weapons[idx];
+if (!w || !w.owned) return;
+player.weaponIdx = idx;
+gunBody.material.color.setHex(w.color);
+gunBody.scale.z = w.len / 0.42;
+updateHUD();
+}
+function clearWorld() {
+while (scene.children.length > 0) scene.remove(scene.children);
+scene.add(camera);
+colliders = [];
+interactables = [];
+enemies = [];
+cars = [];
+pickups = [];
+props = [];
+tracers = [];
+player.inCar = null;
+player.hp = 100;
+player.armor = 50;
+player.wanted = 0;
+player.velY = 0;
+gunGroup.visible = true;
+$('speedo').style.display = 'none';
+gameOver = false;
+paused = false;
+}
+function addBox(x, y, z, w, h, d, mat, solid = true) {
+const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+mesh.position.set(x, y, z);
+mesh.castShadow = true;
+mesh.receiveShadow = true;
+scene.add(mesh);
+if (solid) {
+colliders.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2, maxY: y + h / 2 });
+}
+return mesh;
+}
+// ==========================================
+// 5. WORLD 1: BLACKTIDE 09 (OIL RIG)
+// ==========================================
+function initBlacktide() {
+clearWorld();
+mode = 'blacktide';
+rigTimer = 300;
+intelCount = 0;
+cutWires = [];
+bombDisarmed = false;
+wireOrder = ['RED', 'BLUE', 'YELLOW'].sort(() => Math.random() - 0.5);
+scene.background = new THREE.Color(0x040d14);
+scene.fog = new THREE.FogExp2(0x051018, 0.02);
+scene.add(new THREE.HemisphereLight(0x3a6073, 0x09131a, 0.75));
+const moon = new THREE.DirectionalLight(0x88b4cc, 1.4);
+moon.position.set(35, 60, 25);
+moon.castShadow = true;
+moon.shadow.mapSize.set(2048, 2048);
+scene.add(moon);
+const deckTex = makeDeckTexture();
+deckTex.repeat.set(16, 16);
+addBox(0, -0.5, 0, 80, 1, 80, new THREE.MeshStandardMaterial({ map: deckTex, roughness: 0.65, metalness: 0.4 }), false);
+const sea = new THREE.Mesh(
+new THREE.PlaneGeometry(450, 450),
+new THREE.MeshStandardMaterial({ color: 0x03131d, roughness: 0.18, metalness: 0.85 })
+);
+sea.rotation.x = -Math.PI / 2;
+sea.position.y = -4.5;
+scene.add(sea);
+const rustMat = new THREE.MeshStandardMaterial({ color: 0x5c2b23, roughness: 0.7, metalness: 0.5 });
+const steelMat = new THREE.MeshStandardMaterial({ color: 0x2b3945, roughness: 0.5, metalness: 0.7 });
+[
+[-18, 2, -18, 10, 4, 8, rustMat], [18, 2, -16, 8, 4, 12, steelMat],
+[-18, 2, 18, 12, 4, 8, steelMat], [16, 2, 18, 10, 4, 10, rustMat],
+[0, 3, -26, 16, 6, 6, steelMat], [-28, 2, 0, 6, 4, 18, rustMat],
+[28, 2, -4, 6, 4, 14, rustMat]
+].forEach(b => addBox(...b));
+// Perimeter Railings
+addBox(0, 1, -40, 80, 2, 0.5, steelMat);
+addBox(0, 1, 40, 80, 2, 0.5, steelMat);
+addBox(-40, 1, 0, 0.5, 2, 80, steelMat);
+addBox(40, 1, 0, 0.5, 2, 80, steelMat);
+// 3 Intel Terminals
+const intelSpots = [[-24, 1.1, -24], [26, 1.1, -22], [-26, 1.1, 24]];
+intelSpots.forEach((p, idx) => {
+addBox(p[0], 0.6, p[2], 1.2, 1.2, 1.2, steelMat);
+const screen = new THREE.Mesh(
+new THREE.BoxGeometry(0.8, 0.5, 0.1),
+new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 2.2 })
+);
+screen.position.set(p[0], 1.35, p[2]);
+scene.add(screen);
+const l = new THREE.PointLight(0x38bdf8, 5, 12);
+l.position.set(p[0], 2.2, p[2]);
+scene.add(l);
+interactables.push({
+pos: new THREE.Vector3(p[0], 1.2, p[2]),
+radius: 3.4,
+label: [ E ] DOWNLOAD WIRE INTEL #${idx + 1},
+collected: false,
+action(item) {
+if (item.collected) return;
+item.collected = true;
+screen.material.emissive.setHex(0x22c55e);
+intelCount++;
+sfx.playBeep(880, 0.15);
+toast(INTEL ${intelCount}/3: STEP ${intelCount} IS ${wireOrder[intelCount - 1]} WIRE);
+updateHUD();
+}
+});
+});
+// Main Bomb Device
+addBox(0, 0.8, -12, 1.8, 1.6, 1.4, new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.25 }));
+const bombLight = new THREE.PointLight(0xef4444, 10, 16);
+bombLight.position.set(0, 2.3, -12);
+scene.add(bombLight);
+interactables.push({
+pos: new THREE.Vector3(0, 1.2, -12),
+radius: 3.6,
+label: '[ E ] ACCESS BOMB CONTROL PANEL',
+action() {
+if (bombDisarmed) return toast('DEVICE ALREADY DISARMED — HEAD TO HELIPAD');
+document.exitPointerLock();
+$('wireHint').textContent = intelCount === 0
+? 'WARNING: No intel downloaded yet! Guessing is lethal.'
+: Decoded Sequence (${intelCount}/3): ${wireOrder.slice(0, intelCount).join(' -> ')};
+$('wireStatus').textContent = '';
+$('bombPanel').style.display = 'flex';
+}
+});
+// Extraction Helipad
+const pad = new THREE.Mesh(
+new THREE.CylinderGeometry(5.8, 5.8, 0.2, 24),
+new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xb45309, emissiveIntensity: 0.7 })
+);
+pad.position.set(28, 0.1, 28);
+scene.add(pad);
+interactables.push({
+pos: new THREE.Vector3(28, 1.2, 28),
+radius: 5.8,
+label: '[ E ] CALL EXTRACTION CHOPPER',
+action() {
+if (!bombDisarmed) return toast('CANNOT EXTRACT WHILE BOMB IS ARMED!');
+endGame('MISSION ACCOMPLISHED', 'EXTRACTED ALIVE', 'You decoded the sequence, disarmed the Blacktide 09 device, and escaped the rig.');
+}
+});
+// Rig Stalker Creature
+const sMesh = new THREE.Mesh(
+new THREE.CapsuleGeometry(0.55, 1.35, 8, 16),
+new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.2, metalness: 0.85 })
+);
+const eye = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.1, 0.2), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
+eye.position.set(0, 0.65, 0.48);
+sMesh.add(eye);
+sMesh.position.set(-15, 1.2, -30);
+scene.add(sMesh);
+stalker = { mesh: sMesh, hp: 240, stun: 0, speed: 5.8 };
+enemies.push(stalker);
+player.pos.set(0, 1.7, 30);
+yaw = 0; pitch = 0;
+flashlight.intensity = 28;
+$('brand').textContent = 'BLACKTIDE 09 // NORTH ATLANTIC';
+$('mission').textContent = 'MISSION: DISARM THE DEVICE';
+$('objective').textContent = 'Download 3 intel terminals, cut the bomb wires in order, then extract at the yellow helipad.';
+$('statusLabel').textContent = 'DETONATION IN';
+$('timer').style.display = 'block';
+$('cashDisplay').style.display = 'none';
+$('wantedStars').style.display = 'none';
+$('objLabel').textContent = 'INTEL';
+equipWeapon(0);
+updateHUD();
+}
+// ==========================================
+// 6. WORLD 2: CITY CRIME (OPEN WORLD)
+// ==========================================
+function buildCarMesh(colorHex, isSports = false, isPolice = false) {
+const g = new THREE.Group();
+const bodyMat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.78, roughness: 0.18 });
+const glassMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.92, roughness: 0.08 });
+const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.15, isSports ? 0.62 : 0.78, 4.5), bodyMat);
+chassis.position.y = 0.65;
+chassis.castShadow = true;
+const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.78, isSports ? 0.48 : 0.64, 2.25), glassMat);
+cabin.position.set(0, isSports ? 1.12 : 1.28, -0.2);
+g.add(chassis, cabin);
+if (isPolice) {
+const barRed = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.22), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
+barRed.position.set(-0.3, 1.66, -0.2);
+const barBlue = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.22), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+barBlue.position.set(0.3, 1.66, -0.2);
+g.add(barRed, barBlue);
+}
+const hl = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.16, 0.1), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+hl.position.set(0, 0.7, 2.26);
+const tl = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.16, 0.1), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
+tl.position.set(0, 0.7, -2.26);
+g.add(hl, tl);
+const wGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.32, 16);
+wGeo.rotateZ(Math.PI / 2);
+const wMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.85 });
+const wheels = [];
+[[-1.08, 0.38, 1.38], [1.08, 0.38, 1.38], [-1.08, 0.38, -1.38], [1.08, 0.38, -1.38]].forEach(wp => {
+const w = new THREE.Mesh(wGeo, wMat);
+w.position.set(...wp);
+g.add(w);
+wheels.push(w);
+});
+g.userData.wheels = wheels;
+return g;
+}
+function spawnCashDrop(x, z, amount = 200) {
+const mesh = new THREE.Mesh(
+new THREE.BoxGeometry(0.75, 0.28, 0.45),
+new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x15803d, emissiveIntensity: 0.9 })
+);
+mesh.position.set(x, 0.55, z);
+scene.add(mesh);
+pickups.push({ mesh, amount });
+}
+function spawnEnemyNPC(x, z, isCop = false) {
+const mesh = new THREE.Mesh(
+new THREE.CapsuleGeometry(0.45, 1.0, 6, 12),
+new THREE.MeshStandardMaterial({ color: isCop ? 0x1d4ed8 : 0x991b1b, roughness: 0.45 })
+);
+mesh.position.set(x, 1.0, z);
+mesh.castShadow = true;
+scene.add(mesh);
+enemies.push({
+mesh,
+hp: isCop ? 110 : 85,
+isGangster: !isCop,
+isCop,
+shootTimer: Math.random() * 1.5
+});
+}
+function addWantedLevel(amount = 1) {
+if (mode !== 'city') return;
+const prev = player.wanted;
+player.wanted = Math.min(5, player.wanted + amount);
+player.wantedDecay = 22;
+if (player.wanted > prev) {
+sfx.playBeep(520, 0.12);
+toast(WANTED LEVEL: ${player.wanted} STAR${player.wanted > 1 ? 'S' : ''}!);
+// Spawn pursuing police squad near player
+for (let i = 0; i < player.wanted; i++) {
+const angle = Math.random() * Math.PI * 2;
+const sx = Math.max(-135, Math.min(135, player.pos.x + Math.cos(angle) * 32));
+const sz = Math.max(-135, Math.min(135, player.pos.z + Math.sin(angle) * 32));
+spawnEnemyNPC(sx, sz, true);
+}
+}
+updateHUD();
+}
+function initCityCrime() {
+clearWorld();
+mode = 'city';
+flashlight.intensity = 0;
+scene.background = new THREE.Color(0x091124);
+scene.fog = new THREE.FogExp2(0x091124, 0.0075);
+scene.add(new THREE.HemisphereLight(0x60a5fa, 0x1e293b, 1.0));
+const sun = new THREE.DirectionalLight(0xffedd5, 1.9);
+sun.position.set(70, 120, 60);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -140; sun.shadow.camera.right = 140;
+sun.shadow.camera.top = 140; sun.shadow.camera.bottom = -140;
+scene.add(sun);
+const roadTex = makeAsphaltTexture();
+roadTex.repeat.set(26, 26);
+const ground = new THREE.Mesh(
+new THREE.PlaneGeometry(340, 340),
+new THREE.MeshStandardMaterial({ map: roadTex, roughness: 0.78 })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+// City Blocks & Skyscrapers
+const bldgMat1 = new THREE.MeshStandardMaterial({ map: makeSkyscraperTexture('#101824'), roughness: 0.3, metalness: 0.55 });
+const bldgMat2 = new THREE.MeshStandardMaterial({ map: makeSkyscraperTexture('#1b1929'), roughness: 0.35, metalness: 0.5 });
+const blockCoords = [-100, -60, -20, 20, 60, 100];
+blockCoords.forEach((bx, ix) => {
+blockCoords.forEach((bz, iz) => {
+if (bx === -20 && bz === -20) return; // Downtown Store
+if (bx === 60 && bz === 60) return;   // Eastside Store
+if (bx === -60 && bz === 60) return;  // Westside Store
+const h = 20 + Math.abs((bx * 7 + bz * 13) % 42);
+addBox(bx, h / 2, bz, 22, h, 22, (ix + iz) % 2 === 0 ? bldgMat1 : bldgMat2, true);
+});
+});
+// Streetlights & Destructible Hydrants along avenues
+const poleMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 });
+const hydrantMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.4 });
+[-80, -40, 0, 40, 80].forEach(lane => {
+[-90, -30, 30, 90].forEach(pos => {
+addBox(lane + 11.5, 3, pos, 0.25, 6, 0.25, poleMat, false);
+const hyd = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.25, 0.8, 8), hydrantMat);
+hyd.position.set(lane - 11.5, 0.4, pos + 4);
+scene.add(hyd);
+props.push({ mesh: hyd, broken: false });
+});
+});
+// Three Walk-In Ammu-Nation Gun Stores
+const storeLocations = [
+{ x: -20, z: -20, name: 'DOWNTOWN AMMU-NATION' },
+{ x: 60, z: 60, name: 'EASTSIDE AMMU-NATION' },
+{ x: -60, z: 60, name: 'WESTSIDE AMMU-NATION' }
+];
+storeLocations.forEach(st => {
+addBox(st.x, 3.2, st.z - 4, 15, 6.4, 9, new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4 }));
+const neon = new THREE.Mesh(
+new THREE.BoxGeometry(11, 1.3, 0.4),
+new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 2.5 })
+);
+neon.position.set(st.x, 5.5, st.z + 0.6);
+scene.add(neon);
+const doorLight = new THREE.PointLight(0xf59e0b, 14, 20);
+doorLight.position.set(st.x, 3, st.z + 3.5);
+scene.add(doorLight);
+interactables.push({
+pos: new THREE.Vector3(st.x, 1.5, st.z + 2.8),
+radius: 4.8,
+label: [ E ] ENTER ${st.name},
+action() {
+if (player.inCar) return toast('EXIT VEHICLE TO ENTER GUN STORE');
+document.exitPointerLock();
+updateHUD();
+$('gunStore').style.display = 'flex';
+}
+});
+});
+// Spawn 22 Traffic, Sports & Police Cars
+const carPalette = [
+{ name: 'APEX GT SUPERCAR', color: 0xef4444, accel: 34, sports: true, police: false },
+{ name: 'COBALT INTERCEPTOR', color: 0x3b82f6, accel: 31, sports: true, police: false },
+{ name: 'METRO POLICE CRUISER', color: 0x0f172a, accel: 30, sports: false, police: true },
+{ name: 'MIDNIGHT COUPE', color: 0x1e293b, accel: 27, sports: false, police: false },
+{ name: 'SOLAR CITY TAXI', color: 0xeab308, accel: 24, sports: false, police: false },
+{ name: 'EMERALD SEDAN', color: 0x10b981, accel: 25, sports: false, police: false },
+{ name: 'SILVER CRUISER', color: 0x94a3b8, accel: 26, sports: false, police: false }
+];
+const roadLanes = [-120, -80, -40, 0, 40, 80, 120];
+for (let i = 0; i < 22; i++) {
+const spec = carPalette[i % carPalette.length];
+const mesh = buildCarMesh(spec.color, spec.sports, spec.police);
+const alongX = i % 2 === 0;
+const lane = roadLanes[i % roadLanes.length];
+const offset = -110 + (i * 23) % 220;
+mesh.position.set(alongX ? offset : lane, 0, alongX ? lane : offset);
+mesh.rotation.y = alongX ? (i % 4 === 0 ? Math.PI / 2 : -Math.PI / 2) : (i % 4 === 1 ? 0 : Math.PI);
+scene.add(mesh);
+cars.push({
+mesh,
+name: spec.name,
+accelPower: spec.accel,
+speed: 0,
+aiActive: true,
+isPolice: spec.police
+});
+}
+// Spawn Cash Drops & Street Gangsters
+for (let i = 0; i < 24; i++) {
+const cx = -115 + ((i * 43) % 230);
+const cz = -115 + ((i * 61) % 230);
+spawnCashDrop(cx, cz, 200);
+if (i % 2 === 0) spawnEnemyNPC(cx + 3, cz + 3, false);
+}
+player.pos.set(0, 1.7, 12);
+yaw = Math.PI; pitch = 0;
+$('brand').textContent = 'CITY CRIME // OPEN WORLD';
+$('mission').textContent = 'FREE ROAM: EARN CASH & BUY GUNS';
+$('objective').textContent = 'Grab cash drops, defeat gangsters for money, hijack cars [E], and visit glowing Ammu-Nation stores.';
+$('statusLabel').textContent = 'SYNDICATE FUNDS';
+$('timer').style.display = 'none';
+$('cashDisplay').style.display = 'block';
+$('wantedStars').style.display = 'block';
+$('objLabel').textContent = 'CARS';
+equipWeapon(0);
+updateHUD();
+}
+// ==========================================
+// 7. WEAPON FIRING, TRACERS & RELOADING
+// ==========================================
+function spawnTracer(start, end, color = 0xfef08a) {
+const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
+const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.85 });
+const line = new THREE.Line(geo, mat);
+scene.add(line);
+tracers.push({ line, life: 0.08 });
+}
+function fireWeapon() {
+if (player.inCar || player.reloading || player.cooldown > 0) return;
+const w = player.weapons[player.weaponIdx];
+if (w.clip <= 0) {
+reloadWeapon();
+return;
+}
+w.clip--;
+player.cooldown = w.rate;
+sfx.playShot(w.id);
+muzzleFlash.intensity = 22;
+setTimeout(() => muzzleFlash.intensity = 0, 50);
+gunGroup.position.z = 0.09;
+gunGroup.rotation.x = 0.08;
+updateHUD();
+if (mode === 'city' && player.wanted === 0 && Math.random() < 0.35) {
+addWantedLevel(1);
+}
+const raycaster = new THREE.Raycaster();
+const muzzleWorld = new THREE.Vector3();
+gunBody.getWorldPosition(muzzleWorld);
+for (let p = 0; p < w.pellets; p++) {
+const dir = new THREE.Vector3(
+(Math.random() - 0.5) * w.spread,
+(Math.random() - 0.5) * w.spread,
+-1
+).normalize().applyQuaternion(camera.quaternion);
+raycaster.set(camera.position, dir);
+const endPoint = camera.position.clone().addScaledVector(dir, 90);
+const enemyMeshes = enemies.map(e => e.mesh);
+const hits = raycaster.intersectObjects(enemyMeshes, true);
+if (hits.length > 0 && hits[0].distance < 95) {
+endPoint.copy(hits[0].point);
+$('hitmarker').style.opacity = 1;
+setTimeout(() => $('hitmarker').style.opacity = 0, 90);
+let hitObj = hits[0].object;
+while (hitObj.parent && !enemyMeshes.includes(hitObj)) hitObj = hitObj.parent;
+const enemy = enemies.find(e => e.mesh === hitObj);
+if (enemy) {
+enemy.hp -= w.dmg;
+if (enemy === stalker) {
+enemy.stun = 1.8;
+if (enemy.hp <= 0) {
+enemy.hp = 240;
+enemy.mesh.position.set(-32, 1.2, -32);
+toast('STALKER REPELLED TEMPORARILY!');
+}
+} else if (enemy.hp <= 0) {
+const reward = enemy.isCop ? 150 : 300;
+spawnCashDrop(enemy.mesh.position.x, enemy.mesh.position.z, reward);
+scene.remove(enemy.mesh);
+enemies = enemies.filter(e => e !== enemy);
+addWantedLevel(1);
+toast(${enemy.isCop ? 'OFFICER' : 'GANGSTER'} DOWN — +$${reward} DROPPED);
+setTimeout(() => spawnEnemyNPC((Math.random() - 0.5) * 220, (Math.random() - 0.5) * 220, false), 6000);
+}
+}
+}
+spawnTracer(muzzleWorld, endPoint);
+}
+}
+function reloadWeapon() {
+const w = player.weapons[player.weaponIdx];
+if (player.reloading || w.clip === w.maxClip || w.reserve <= 0) return;
+player.reloading = true;
+sfx.playReload();
+toast('RELOADING...');
+setTimeout(() => {
+const need = w.maxClip - w.clip;
+const take = Math.min(need, w.reserve);
+w.clip += take;
+w.reserve -= take;
+player.reloading = false;
+updateHUD();
+}, 850);
+}
+function applyPlayerDamage(dmg) {
+if (player.armor > 0) {
+const absorbed = Math.min(player.armor, dmg * 0.7);
+player.armor -= absorbed;
+player.hp -= (dmg - absorbed);
+} else {
+player.hp -= dmg;
+}
+$('damage').style.opacity = 0.72;
+setTimeout(() => $('damage').style.opacity = 0, 130);
+updateHUD();
+}
+function endGame(kicker, title, desc) {
+gameOver = true;
+document.exitPointerLock();
+$('endKicker').textContent = kicker;
+$('endTitle').textContent = title;
+$('endDesc').textContent = desc;
+$('ending').style.display = 'flex';
+}
+// ==========================================
+// 8. LIVE RADAR MINIMAP RENDERER
+// ==========================================
+const radarCanvas = $('radar');
+const rCtx = radarCanvas.getContext('2d');
+function drawRadar() {
+const w = radarCanvas.width, h = radarCanvas.height;
+const cx = w / 2, cy = h / 2;
+rCtx.clearRect(0, 0, w, h);
+// Radar rings
+rCtx.strokeStyle = 'rgba(150, 195, 210, 0.16)';
+rCtx.lineWidth = 1;
+rCtx.beginPath(); rCtx.arc(cx, cy, 36, 0, Math.PI * 2); rCtx.stroke();
+rCtx.beginPath(); rCtx.arc(cx, cy, 68, 0, Math.PI * 2); rCtx.stroke();
+const scale = mode === 'blacktide' ? 1.5 : 0.65;
+const heading = player.inCar ? player.inCar.mesh.rotation.y + Math.PI : yaw;
+function toRadar(worldPos) {
+const dx = (worldPos.x - player.pos.x) * scale;
+const dz = (worldPos.z - player.pos.z) * scale;
+const cos = Math.cos(heading);
+const sin = Math.sin(heading);
+return {
+x: cx + (dx * cos - dz * sin),
+y: cy + (dx * sin + dz * cos)
+};
+}
+// Interactables (Stores / Bomb / Intel)
+for (const item of interactables) {
+if (item.collected) continue;
+const p = toRadar(item.pos);
+rCtx.fillStyle = mode === 'city' ? '#f59e0b' : '#38bdf8';
+rCtx.fillRect(p.x - 3.5, p.y - 3.5, 7, 7);
+}
+// Cash pickups
+rCtx.fillStyle = '#52d681';
+for (const c of pickups) {
+const p = toRadar(c.mesh.position);
+rCtx.fillRect(p.x - 2, p.y - 2, 4, 4);
+}
+// Cars
+if (mode === 'city') {
+for (const car of cars) {
+if (car === player.inCar) continue;
+const p = toRadar(car.mesh.position);
+rCtx.fillStyle = car.isPolice ? '#60a5fa' : '#94a3b8';
+rCtx.fillRect(p.x - 2.5, p.y - 2.5, 5, 5);
+}
+}
+// Enemies
+for (const e of enemies) {
+const p = toRadar(e.mesh.position);
+rCtx.fillStyle = e.isCop ? '#3b82f6' : '#ef4444';
+rCtx.beginPath(); rCtx.arc(p.x, p.y, 3.5, 0, Math.PI * 2); rCtx.fill();
+}
+// Player Center Triangle
+rCtx.fillStyle = '#ffffff';
+rCtx.beginPath();
+rCtx.moveTo(cx, cy - 6);
+rCtx.lineTo(cx - 4.5, cy + 5);
+rCtx.lineTo(cx + 4.5, cy + 5);
+rCtx.closePath();
+rCtx.fill();
+}
+// ==========================================
+// 9. INPUT & UI EVENT HANDLERS
+// ==========================================
+window.addEventListener('keydown', e => {
+keys[e.code] = true;
+if (e.code === 'Digit1') equipWeapon(0);
+if (e.code === 'Digit2') equipWeapon(1);
+if (e.code === 'Digit3') equipWeapon(2);
+if (e.code === 'Digit4') equipWeapon(3);
+if (e.code === 'KeyR') reloadWeapon();
+if (e.code === 'Space' && !player.inCar && player.grounded) {
+player.velY = 6.8;
+player.grounded = false;
+}
+if (e.code === 'KeyF' && mode === 'blacktide') {
+flashlight.intensity = flashlight.intensity > 0 ? 0 : 28;
+sfx.playBeep(700, 0.05);
+}
+if (e.code === 'KeyE' && !paused && !gameOver) {
+if (player.inCar) {
+const c = player.inCar;
+player.pos.copy(c.mesh.position).add(new THREE.Vector3(2.5, 1.7, 0));
+player.inCar = null;
+gunGroup.visible = true;
+$('speedo').style.display = 'none';
+updateHUD();
+return;
+}
+if (activePrompt) {
+activePrompt.action(activePrompt);
+}
+}
+if ((e.code === 'KeyP' || e.code === 'Escape') && mode && !gameOver) {
+if (('bombPanel').style.display === 'flex' || ('gunStore').style.display === 'flex') {
+\(('bombPanel').style.display = 'none';\)('gunStore').style.display = 'none';
+canvas.requestPointerLock();
+return;
+}
+paused = !paused;
+$('pause').style.display = paused ? 'flex' : 'none';
+if (paused) document.exitPointerLock();
+else canvas.requestPointerLock();
+}
+});
+window.addEventListener('keyup', e => keys[e.code] = false);
+let mouseDown = false;
+window.addEventListener('mousedown', e => {
+if (e.button === 0 && mode && !paused && !gameOver &&
+\(('bombPanel').style.display !== 'flex' &&\)('gunStore').style.display !== 'flex') {
+sfx.init();
+if (document.pointerLockElement !== canvas) canvas.requestPointerLock();
+mouseDown = true;
+fireWeapon();
+}
+});
+window.addEventListener('mouseup', () => mouseDown = false);
+window.addEventListener('mousemove', e => {
+if (document.pointerLockElement === canvas && !paused && !gameOver) {
+yaw -= e.movementX * 0.0022;
+pitch = Math.max(-1.4, Math.min(1.4, pitch - e.movementY * 0.0022));
+}
+});
+$('btnQuality').onclick = (e) => {
+ultraGraphics = !ultraGraphics;
+renderer.shadowMap.enabled = ultraGraphics;
+renderer.setPixelRatio(ultraGraphics ? Math.min(window.devicePixelRatio, 2) : 1);
+scene.traverse(o => { if (o.material) o.material.needsUpdate = true; });
+e.target.textContent = ultraGraphics ? 'GRAPHICS: ULTRA (SHADOWS + PBR)' : 'GRAPHICS: PERFORMANCE';
+};
+$('btnAudio').onclick = (e) => {
+sfx.enabled = !sfx.enabled;
+e.target.textContent = sfx.enabled ? 'AUDIO: ON' : 'AUDIO: MUTED';
+};
+$('btnBlacktide').onclick = () => {
+sfx.init();
+\(('start').style.display = 'none';\)('hud').style.display = 'block';
+initBlacktide();
+canvas.requestPointerLock();
+};
+$('btnCity').onclick = () => {
+sfx.init();
+\(('start').style.display = 'none';\)('hud').style.display = 'block';
+initCityCrime();
+canvas.requestPointerLock();
+};
+$('btnResume').onclick = () => {
+paused = false;
+$('pause').style.display = 'none';
+canvas.requestPointerLock();
+};
+('btnMenu').onclick = ('btnEndMenu').onclick = () => {
+\(('pause').style.display = 'none';\)('ending').style.display = 'none';
+\(('hud').style.display = 'none';\)('start').style.display = 'flex';
+mode = null;
+};
+('btnRestart').onclick = () => {('ending').style.display = 'none';
+if (mode === 'blacktide') initBlacktide();
+else initCityCrime();
+canvas.requestPointerLock();
+};
+// Bomb Wire Cutting
+document.querySelectorAll('[data-wire]').forEach(btn => {
+btn.onclick = () => {
+const color = btn.dataset.wire;
+const expected = wireOrder[cutWires.length];
+if (color === expected) {
+cutWires.push(color);
+sfx.playBeep(950, 0.12);
+$('wireStatus').textContent = CUT ${color} — VERIFIED (${cutWires.length}/3);
+if (cutWires.length === 3) {
+bombDisarmed = true;
+$('bombPanel').style.display = 'none';
+toast('BOMB DISARMED! RUN TO THE EXTRACTION HELIPAD!');
+canvas.requestPointerLock();
+}
+} else {
+$('bombPanel').style.display = 'none';
+endGame('SIGNAL LOST', 'DEVICE DETONATED', Wrong wire cut (${color}). Expected ${expected}.);
+}
+};
+});
+('closeBomb').onclick = () => {('bombPanel').style.display = 'none';
+canvas.requestPointerLock();
+};
+// Gun Store Purchases
+document.querySelectorAll('[data-buy]').forEach(btn => {
+btn.onclick = () => {
+const item = btn.dataset.buy;
+const cost = Number(btn.dataset.cost);
+if (player.cash < cost) {
+sfx.playBeep(240, 0.15);
+return toast('NOT ENOUGH CASH!');
+}
+player.cash -= cost;
+sfx.playCash();
+if (item === 'shotgun') {
+player.weapons[1].owned = true;
+player.weapons[1].clip = 8;
+player.weapons[1].reserve = 32;
+equipWeapon(1);
+toast('COMBAT SHOTGUN PURCHASED! [KEY 2]');
+} else if (item === 'smg') {
+player.weapons[2].owned = true;
+player.weapons[2].clip = 35;
+player.weapons[2].reserve = 175;
+equipWeapon(2);
+toast('TACTICAL SMG PURCHASED! [KEY 3]');
+} else if (item === 'rifle') {
+player.weapons[3].owned = true;
+player.weapons[3].clip = 30;
+player.weapons[3].reserve = 150;
+equipWeapon(3);
+toast('ASSAULT RIFLE PURCHASED! [KEY 4]');
+} else if (item === 'refill') {
+player.hp = 100;
+player.armor = 100;
+player.weapons.forEach(w => { if (w.owned) { w.clip = w.maxClip; w.reserve = w.maxClip * 5; } });
+toast('HEALTH, ARMOR & ALL AMMO MAXED!');
+}
+updateHUD();
+};
+});
+('closeStore').onclick = () => {('gunStore').style.display = 'none';
+canvas.requestPointerLock();
+ };
+window.addEventListener('resize', () => {
+camera.aspect = window.innerWidth / window.innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(window.innerWidth, window.innerHeight);
+});
+// ==========================================
+// 10. MAIN SIMULATION & RENDER LOOP
+// ==========================================
+let lastTime = performance.now();
+function animate(now) {
+requestAnimationFrame(animate);
+const dt = Math.min((now - lastTime) / 1000, 0.05);
+lastTime = now;
+if (!mode || paused || gameOver ||
+('bombPanel').style.display === 'flex' || ('gunStore').style.display === 'flex') {
+renderer.render(scene, camera);
+return;
+}
+// Weapon recoil & auto-fire
+player.cooldown = Math.max(0, player.cooldown - dt);
+gunGroup.position.z += (0 - gunGroup.position.z) * 14 * dt;
+gunGroup.rotation.x += (0 - gunGroup.rotation.x) * 14 * dt;
+if (mouseDown && player.weapons[player.weaponIdx].auto) fireWeapon();
+// Bullet tracers fade
+for (let i = tracers.length - 1; i >= 0; i--) {
+tracers[i].life -= dt;
+if (tracers[i].life <= 0) {
+scene.remove(tracers[i].line);
+tracers.splice(i, 1);
+}
+}
+// Player Movement vs Car Physics
+if (player.inCar) {
+const car = player.inCar;
+const accel = (keys['KeyW'] ? 1 : 0) - (keys['KeyS'] ? 1 : 0);
+const steer = (keys['KeyA'] ? 1 : 0) - (keys['KeyD'] ? 1 : 0);
+const boost = keys['ShiftLeft'] ? 1.4 : 1.0;
+const brake = keys['Space'] ? 0.88 : 1.0;
+car.speed += accel * car.accelPower * boost * dt;
+car.speed *= Math.pow(0.28, dt) * brake;
+if (Math.abs(car.speed) > 0.5) {
+const turnRate = keys['Space'] ? 3.1 : 2.3;
+car.mesh.rotation.y += steer * turnRate * Math.sign(car.speed) * dt;
+}
+const forward = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
+const nextPos = car.mesh.position.clone().addScaledVector(forward, car.speed * dt);
+// Building collision for car
+let blocked = Math.abs(nextPos.x) > 155 || Math.abs(nextPos.z) > 155;
+for (const c of colliders) {
+if (nextPos.x + 1.4 > c.minX && nextPos.x - 1.4 < c.maxX && nextPos.z + 1.4 > c.minZ && nextPos.z - 1.4 < c.maxZ) {
+blocked = true;
+break;
+}
+}
+if (!blocked) {
+car.mesh.position.copy(nextPos);
+} else {
+car.speed *= -0.35;
+}
+// Spin wheels
+if (car.mesh.userData.wheels) {
+car.mesh.userData.wheels.forEach(w => w.rotation.x += car.speed * dt * 2.5);
+}
+// Smash street hydrants & run over enemies
+for (const pr of props) {
+if (!pr.broken && car.mesh.position.distanceTo(pr.mesh.position) < 2.2) {
+pr.broken = true;
+pr.mesh.rotation.z = Math.PI / 2;
+pr.mesh.position.y = 0.2;
+sfx.playBeep(300, 0.08);
+}
+}
+if (Math.abs(car.speed) > 9) {
+for (let i = enemies.length - 1; i >= 0; i--) {
+const e = enemies[i];
+if (car.mesh.position.distanceTo(e.mesh.position) < 2.6) {
+const reward = e.isCop ? 150 : 300;
+spawnCashDrop(e.mesh.position.x, e.mesh.position.z, reward);
+scene.remove(e.mesh);
+enemies.splice(i, 1);
+addWantedLevel(1);
+toast(ROADKILL — +$${reward} DROPPED);
+}
+}
+}
+// Speedometer & Chase Camera
+\(('speedo').style.display = 'block';\)('speedo').textContent = ${Math.round(Math.abs(car.speed) * 3.2)} MPH;
+const camOffset = forward.clone().multiplyScalar(-7.2).add(new THREE.Vector3(0, 3.2, 0));
+camera.position.lerp(car.mesh.position.clone().add(camOffset), 10 * dt);
+camera.lookAt(car.mesh.position.clone().add(new THREE.Vector3(0, 1.35, 0)));
+player.pos.copy(car.mesh.position);
+} else {
+camera.rotation.y = yaw;
+camera.rotation.x = pitch;
+const speed = keys['ShiftLeft'] ? 10.8 : 6.4;
+const fwd = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
+const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
+const move = new THREE.Vector3();
+if (keys['KeyW']) move.add(fwd);
+if (keys['KeyS']) move.sub(fwd);
+if (keys['KeyD']) move.add(right);
+if (keys['KeyA']) move.sub(right);
+if (move.lengthSq() > 0) move.normalize().multiplyScalar(speed * dt);
+const nextX = player.pos.x + move.x;
+const nextZ = player.pos.z + move.z;
+const limit = mode === 'blacktide' ? 38.5 : 156;
+let hitX = Math.abs(nextX) > limit;
+let hitZ = Math.abs(nextZ) > limit;
+for (const c of colliders) {
+if (nextX + 0.45 > c.minX && nextX - 0.45 < c.maxX && player.pos.z + 0.45 > c.minZ && player.pos.z - 0.45 < c.maxZ) hitX = true;
+if (player.pos.x + 0.45 > c.minX && player.pos.x - 0.45 < c.maxX && nextZ + 0.45 > c.minZ && nextZ - 0.45 < c.maxZ) hitZ = true;
+}
+if (!hitX) player.pos.x = nextX;
+if (!hitZ) player.pos.z = nextZ;
+// Jump & Gravity
+player.velY -= 18 * dt;
+player.pos.y += player.velY * dt;
+if (player.pos.y <= 1.7) {
+player.pos.y = 1.7;
+player.velY = 0;
+player.grounded = true;
+}
+camera.position.copy(player.pos);
+}
+// Interactables & Car Hijack Detection
+activePrompt = null;
+let nearestDist = Infinity;
+for (const item of interactables) {
+const d = player.pos.distanceTo(item.pos);
+if (d < item.radius && d < nearestDist && !item.collected) {
+nearestDist = d;
+activePrompt = item;
+}
+}
+if (mode === 'city') {
+for (const car of cars) {
+if (car !== player.inCar && car.aiActive) {
+const dir = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
+const aiSpeed = (car.isPolice && player.wanted > 0) ? 16 : 11;
+if (car.isPolice && player.wanted > 0) {
+// Police car steers toward player
+const targetAngle = Math.atan2(player.pos.x - car.mesh.position.x, player.pos.z - car.mesh.position.z);
+car.mesh.rotation.y = targetAngle;
+}
+car.mesh.position.addScaledVector(dir, aiSpeed * dt);
+if (Math.abs(car.mesh.position.x) > 142 || Math.abs(car.mesh.position.z) > 142) {
+car.mesh.rotation.y += Math.PI;
+car.mesh.position.clampScalar(-140, 140);
+}
+}
+if (!player.inCar) {
+const d = player.pos.distanceTo(car.mesh.position);
+if (d < 4.4 && d < nearestDist) {
+nearestDist = d;
+activePrompt = {
+label: [ E ] DRIVE ${car.name},
+action() {
+player.inCar = car;
+car.aiActive = false;
+gunGroup.visible = false;
+if (car.isPolice) addWantedLevel(1);
+updateHUD();
+}
+};
+}
+}
+}
+// Cash Pickups
+for (let i = pickups.length - 1; i >= 0; i--) {
+const p = pickups[i];
+p.mesh.rotation.y += 2.6 * dt;
+if (player.pos.distanceTo(p.mesh.position) < 2.8) {
+player.cash += p.amount;
+sfx.playCash();
+toast(+$${p.amount} COLLECTED);
+scene.remove(p.mesh);
+pickups.splice(i, 1);
+updateHUD();
+}
+}
+// Wanted Star Cooldown
+if (player.wanted > 0) {
+player.wantedDecay -= dt;
+if (player.wantedDecay <= 0) {
+player.wanted--;
+player.wantedDecay = 18;
+updateHUD();
+}
+}
+}
+// Prompt UI
+const promptEl = $('prompt');
+if (player.inCar) {
+promptEl.textContent = '[ E ] EXIT VEHICLE';
+promptEl.style.opacity = 1;
+} else if (activePrompt) {
+promptEl.textContent = activePrompt.label;
+promptEl.style.opacity = 1;
+} else {
+promptEl.style.opacity = 0;
+}
+// Enemy AI Updates
+for (const e of enemies) {
+const toPlayer = player.pos.clone().sub(e.mesh.position);
+toPlayer.y = 0;
+const dist = toPlayer.length();
+if (e === stalker) {
+if (e.stun > 0) {
+e.stun -= dt;
+} else if (dist > 1.35) {
+toPlayer.normalize();
+e.mesh.position.addScaledVector(toPlayer, e.speed * dt);
+e.mesh.lookAt(player.pos.x, e.mesh.position.y, player.pos.z);
+} else {
+applyPlayerDamage(40 * dt);
+}
+} else if ((e.isGangster || (e.isCop && player.wanted > 0)) && dist < 44) {
+e.mesh.lookAt(player.pos.x, e.mesh.position.y, player.pos.z);
+if (dist > 11) {
+toPlayer.normalize();
+e.mesh.position.addScaledVector(toPlayer, (e.isCop ? 4.8 : 3.6) * dt);
+}
+e.shootTimer -= dt;
+if (e.shootTimer <= 0) {
+e.shootTimer = e.isCop ? 1.2 : 1.7;
+if (!player.inCar && Math.random() < 0.45) {
+spawnTracer(e.mesh.position.clone().add(new THREE.Vector3(0, 0.5, 0)), player.pos, 0xef4444);
+applyPlayerDamage(e.isCop ? 11 : 8);
+}
+}
+}
+}
+// Timers & Death Check
+if (mode === 'blacktide' && !bombDisarmed) {
+rigTimer -= dt;
+tickAccum += dt;
+if (tickAccum >= 1) {
+tickAccum = 0;
+sfx.playBeep(rigTimer < 30 ? 950 : 620, 0.04);
+}
+updateHUD();
+if (rigTimer <= 0) {
+endGame('TIME EXPIRED', 'PLATFORM DESTROYED', 'The countdown hit 00:00 before the device could be disarmed.');
+}
+}
+if (player.hp <= 0) {
+endGame('KILLED IN ACTION', 'OPERATIVE DOWN', mode === 'blacktide' ? 'The creature overwhelmed you on the rig.' : 'You were gunned down on the streets.');
+}
+drawRadar();
+renderer.render(scene, camera);
+}
+requestAnimationFrame(animate);
