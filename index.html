@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLACKTIDE 09</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#05090c;color:#e9f0f2;font-family:Arial,sans-serif;overflow:hidden}
+canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated}
+#hud{position:fixed;inset:0;pointer-events:none}
+#top{position:absolute;top:18px;left:20px;font-size:13px;letter-spacing:3px;color:#b7c9ce}
+#mission{position:absolute;top:48px;left:20px;font-size:14px;color:#fff}
+#stats{position:absolute;bottom:20px;left:20px;background:#071116cc;padding:14px;border:1px solid #47616b;line-height:1.8}
+#hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:#071116dd;padding:12px 20px;border:1px solid #526b75}
+#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:22px;color:#dce8e9}
+#start{position:fixed;inset:0;background:radial-gradient(#18282d,#020506 75%);display:flex;align-items:center;justify-content:center;text-align:center;z-index:5}
+.panel{max-width:560px;padding:35px}
+h1{font-size:clamp(42px,9vw,80px);letter-spacing:8px;margin:0;color:#d9e5e8}
+.sub{letter-spacing:5px;color:#78939c;margin:12px 0 35px}
+button{background:#9b2424;color:white;border:0;padding:15px 30px;font-weight:bold;letter-spacing:3px;cursor:pointer}
+small{color:#8da0a5;line-height:2}
+#mobile{position:fixed;bottom:15px;right:15px;display:none;gap:8px;pointer-events:auto}
+#mobile button{padding:15px;font-size:12px}
+@media(pointer:coarse){#mobile{display:flex}}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="hud">
+ <div id="top">BLACKTIDE 09 // NORTH ATLANTIC</div>
+ <div id="mission">OBJECTIVE: FIND THE RADIO ROOM</div>
+ <div id="cross">+</div>
+ <div id="stats">HEALTH: <span id="health">100</span><br>AMMO: <span id="ammo">12</span><br>FUSES: <span id="fuses">0</span>/3<br>WEAPON: <span id="weapon">PISTOL</span></div>
+ <div id="hint">WASD MOVE · MOUSE LOOK · E INTERACT · CLICK TO FIRE</div>
+</div>
+<div id="mobile">
+ <button onclick="moveMobile('forward')">▲</button>
+ <button onclick="moveMobile('left')">◀</button>
+ <button onclick="moveMobile('back')">▼</button>
+ <button onclick="moveMobile('right')">▶</button>
+ <button onclick="interact()">USE</button>
+ <button onclick="fire()">FIRE</button>
+</div>
+<div id="start">
+ <div class="panel">
+  <h1>BLACKTIDE 09</h1>
+  <div class="sub">THE RIG IS NOT EMPTY</div>
+  <p>You are stranded on an abandoned offshore oil rig.<br>The emergency radio is dead. Something is hunting you.</p>
+  <p>Find three fuses. Restore the radio. Escape.</p>
+  <button onclick="startGame()">ENTER THE RIG</button>
+  <p><small>WASD to move · Mouse to look · Shift to run<br>E to interact · 1 pistol · 2 knife · R reload · F flashlight</small></p>
+ </div>
+</div>
+<script>
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
+canvas.width=960;canvas.height=540;
+const W=canvas.width,H=canvas.height;
+const map=[
+"111111111111111111",
+"100000000000000001",
+"101111011111011101",
+"100001000001000001",
+"111101111101111101",
+"100100000100000001",
+"100101110111010101",
+"100100010000010001",
+"101111010111110101",
+"100000010000000001",
+"101110111011110101",
+"100010000010000001",
+"111011110111011101",
+"100000000000000001",
+"111111111111111111"
+];
+let player={x:1.5,y:1.5,a:0,hp:100,ammo:12,fuses:0,weapon:1,flash:true};
+let enemy={x:14.5,y:12.5,hp:100,active:false,attack:0};
+let keys={},running=false,won=false,dead=false,shotFlash=0;
+let items=[
+{x:5.5,y:3.5,type:"FUSE",taken:false},
+{x:12.5,y:5.5,type:"FUSE",taken:false},
+{x:3.5,y:11.5,type:"FUSE",taken:false},
+{x:15.5,y:2.5,type:"RADIO",taken:false},
+{x:8.5,y:13.5,type:"KEYCARD",taken:false}
+];
+const cell=(x,y)=>map[Math.floor(y)]?.[Math.floor(x)]||"1";
+function wall(x,y){return cell(x,y)!=="0"}
+function startGame(){document.getElementById("start").style.display="none";running=true;canvas.requestPointerLock?.()}
+document.addEventListener("pointerlockchange",()=>{});
+document.addEventListener("mousemove",e=>{if(running&&document.pointerLockElement===canvas)player.a+=e.movementX*.0025});
+document.addEventListener("keydown",e=>{
+ keys[e.key.toLowerCase()]=true;
+ if(e.key==="Escape"&&running){document.exitPointerLock?.()}
+ if(e.key.toLowerCase()==="e")interact();
+ if(e.key.toLowerCase()==="r")player.ammo=12;
+ if(e.key.toLowerCase()==="f")player.flash=!player.flash;
+ if(e.key==="1")player.weapon=1;
+ if(e.key==="2")player.weapon=2;
+});
+document.addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
+canvas.addEventListener("click",()=>{if(running){canvas.requestPointerLock?.();fire()}});
+function moveMobile(dir){let d={forward:1,back:-1,left:-1,right:1}[dir];let a=player.a+(dir==="left"||dir==="right"?Math.PI/2:0);move(Math.cos(a)*d*.35,Math.sin(a)*d*.35)}
+function move(dx,dy){
+ let speed=player.weapon===2?.055:.045;
+ if(keys.shift)speed*=1.65;
+ if(!wall(player.x+dx*speed,player.y))player.x+=dx*speed;
+ if(!wall(player.x,player.y+dy*speed))player.y+=dy*speed;
+}
+function interact(){
+ if(!running)return;
+ for(let it of items){
+  if(!it.taken&&Math.hypot(player.x-it.x,player.y-it.y)<1.2){
+   if(it.type==="FUSE"){it.taken=true;player.fuses++;document.getElementById("fuses").textContent=player.fuses;message("FUSE COLLECTED")}
+   else if(it.type==="RADIO"){
+    if(player.fuses===3){won=true;message("DISTRESS SIGNAL SENT. YOU ESCAPED.");running=false}
+    else message("RADIO NEEDS THREE FUSES")
+   }else if(it.type==="KEYCARD"){it.taken=true;message("KEYCARD FOUND")}
+  }
+ }
+}
+let messageText="",messageTimer=0;
+function message(t){messageText=t;messageTimer=150;document.getElementById("hint").textContent=t}
+function fire(){
+ if(!running)return;
+ if(player.weapon===1){
+  if(player.ammo<=0){message("OUT OF AMMO — PRESS R");return}
+  player.ammo--;shotFlash=5;
+  let angle=Math.atan2(enemy.y-player.y,enemy.x-player.x);
+  let diff=Math.atan2(Math.sin(angle-player.a),Math.cos(angle-player.a));
+  let dist=Math.hypot(enemy.x-player.x,enemy.y-player.y);
+  if(Math.abs(diff)<.18&&dist<8&&!lineBlocked(player.x,player.y,enemy.x,enemy.y)){
+   enemy.hp-=35;enemy.active=true;message("TARGET HIT");
+  }else message("SHOT FIRED");
+ }else{
+  let angle=Math.atan2(enemy.y-player.y,enemy.x-player.x);
+  let diff=Math.atan2(Math.sin(angle-player.a),Math.cos(angle-player.a));
+  if(Math.abs(diff)<.35&&Math.hypot(enemy.x-player.x,enemy.y-player.y)<1.8){enemy.hp-=50;enemy.active=true;message("KNIFE HIT")}
+ }
+ document.getElementById("ammo").textContent=player.ammo;
+}
+function lineBlocked(x,y,ex,ey){
+ let d=Math.hypot(ex-x,ey-y),steps=Math.ceil(d*10);
+ for(let i=1;i<steps;i++){let t=i/steps;if(wall(x+(ex-x)*t,y+(ey-y)*t))return true}
+ return false;
+}
+function update(){
+ if(!running)return;
+ let dx=0,dy=0;
+ if(keys.w||keys.arrowup){dx+=Math.cos(player.a);dy+=Math.sin(player.a)}
+ if(keys.s||keys.arrowdown){dx-=Math.cos(player.a);dy-=Math.sin(player.a)}
+ if(keys.a){dx+=Math.cos(player.a-Math.PI/2);dy+=Math.sin(player.a-Math.PI/2)}
+ if(keys.d){dx+=Math.cos(player.a+Math.PI/2);dy+=Math.sin(player.a+Math.PI/2)}
+ let l=Math.hypot(dx,dy)||1;move(dx/l,dy/l);
+ if(enemy.hp>0&&enemy.active){
+  let d=Math.hypot(player.x-enemy.x,player.y-enemy.y);
+  if(d>0.8){
+   let vx=(player.x-enemy.x)/d*.012,vy=(player.y-enemy.y)/d*.012;
+   if(!wall(enemy.x+vx,enemy.y))enemy.x+=vx;
+   if(!wall(enemy.x,enemy.y+vy))enemy.y+=vy;
+  }else if(++enemy.attack>50){player.hp-=8;enemy.attack=0;document.getElementById("health").textContent=player.hp;if(player.hp<=0){dead=true;running=false;message("YOU DID NOT SURVIVE")}}
+ }
+ if(messageTimer>0&&--messageTimer===0)document.getElementById("hint").textContent="WASD MOVE · MOUSE LOOK · E INTERACT · CLICK TO FIRE";
+ document.getElementById("weapon").textContent=player.weapon===1?"PISTOL":"KNIFE";
+}
+function render(){
+ ctx.fillStyle="#111b20";ctx.fillRect(0,0,W,H/2);
+ ctx.fillStyle="#24201b";ctx.fillRect(0,H/2,W,H/2);
+ for(let x=0;x<W;x++){
+  let angle=player.a+(x/W-.5)*1.05;
+  let dist=0,hit=false;
+  while(dist<20&&!hit){dist+=.025;if(wall(player.x+Math.cos(angle)*dist,player.y+Math.sin(angle)*dist))hit=true}
+  let corrected=dist*Math.cos(angle-player.a);
+  let height=Math.min(H,H/(corrected+.08));
+  let shade=Math.max(15,140-corrected*13);
+  ctx.fillStyle=`rgb(${shade*.65},${shade*.82},${shade})`;
+  ctx.fillRect(x,(H-height)/2,1,height);
+  if(Math.floor(x/40)%2===0){ctx.fillStyle="rgba(0,0,0,.08)";ctx.fillRect(x,(H-height)/2,1,height)}
+ }
+ // Enemy sprite
+ if(enemy.hp>0){
+  let dx=enemy.x-player.x,dy=enemy.y-player.y;
+  let dist=Math.hypot(dx,dy),angle=Math.atan2(dy,dx);
+  let diff=Math.atan2(Math.sin(angle-player.a),Math.cos(angle-player.a));
+  if(Math.abs(diff)<.8){
+   let sx=W/2+diff*W/1.05,sz=Math.min(260,220/(dist+.2));
+   ctx.fillStyle="#111";ctx.fillRect(sx-sz*.25,H/2-sz*.35,sz*.5,sz*.8);
+   ctx.fillStyle="#8b1717";ctx.fillRect(sx-sz*.2,H/2-sz*.3,sz*.12,sz*.06);ctx.fillRect(sx+sz*.08,H/2-sz*.3,sz*.12,sz*.06);
+  }
+ }
+ // flashlight darkness
+ if(!player.flash){ctx.fillStyle="rgba(0,0,0,.78)";ctx.fillRect(0,0,W,H)}
+ else{
+  let g=ctx.createRadialGradient(W/2,H/2,30,W/2,H/2,420);
+  g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,.65)");
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ }
+ if(shotFlash>0){ctx.fillStyle="rgba(255,220,160,.3)";ctx.fillRect(0,0,W,H);shotFlash--}
+ // grain
+ for(let i=0;i<80;i++){ctx.fillStyle="rgba(255,255,255,.025)";ctx.fillRect(Math.random()*W,Math.random()*H,2,2)}
+}
+function loop(){update();render();requestAnimationFrame(loop)}
+loop();
+</script>
+</body>
+</html>
