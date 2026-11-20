@@ -1,205 +1,2228 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLACKTIDE 09</title>
+<title>BLACKTIDE 09: BOMB THREAT</title>
 <style>
+:root{color-scheme:dark;--red:#d44335;--ice:#c5d8df;--muted:#78909a;--panel:rgba(4,12,17,.88)}
 *{box-sizing:border-box}
-body{margin:0;background:#05090c;color:#e9f0f2;font-family:Arial,sans-serif;overflow:hidden}
-canvas{display:block;width:100vw;height:100vh;image-rendering:pixelated}
-#hud{position:fixed;inset:0;pointer-events:none}
-#top{position:absolute;top:18px;left:20px;font-size:13px;letter-spacing:3px;color:#b7c9ce}
-#mission{position:absolute;top:48px;left:20px;font-size:14px;color:#fff}
-#stats{position:absolute;bottom:20px;left:20px;background:#071116cc;padding:14px;border:1px solid #47616b;line-height:1.8}
-#hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:#071116dd;padding:12px 20px;border:1px solid #526b75}
-#cross{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:22px;color:#dce8e9}
-#start{position:fixed;inset:0;background:radial-gradient(#18282d,#020506 75%);display:flex;align-items:center;justify-content:center;text-align:center;z-index:5}
-.panel{max-width:560px;padding:35px}
-h1{font-size:clamp(42px,9vw,80px);letter-spacing:8px;margin:0;color:#d9e5e8}
-.sub{letter-spacing:5px;color:#78939c;margin:12px 0 35px}
-button{background:#9b2424;color:white;border:0;padding:15px 30px;font-weight:bold;letter-spacing:3px;cursor:pointer}
-small{color:#8da0a5;line-height:2}
-#mobile{position:fixed;bottom:15px;right:15px;display:none;gap:8px;pointer-events:auto}
-#mobile button{padding:15px;font-size:12px}
-@media(pointer:coarse){#mobile{display:flex}}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02080d;color:var(--ice);font-family:Arial,Helvetica,sans-serif}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.48) 100%);z-index:2}
+#grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+#hud{position:fixed;inset:0;z-index:5;pointer-events:none;display:none}
+#brand{position:absolute;left:25px;top:20px;font-size:12px;letter-spacing:4px;color:#b8cbd2;text-shadow:0 2px 8px #000}
+#mission{position:absolute;left:25px;top:49px;font-size:13px;letter-spacing:1.5px;color:#fff;text-shadow:0 2px 8px #000;max-width:330px}
+#objective{position:absolute;left:25px;top:76px;font-size:11px;color:#9bb0b8;line-height:1.65;text-shadow:0 2px 8px #000}
+#status{position:absolute;right:24px;top:20px;text-align:right;font-size:11px;letter-spacing:2px;color:#c4d5db;text-shadow:0 2px 8px #000}
+#timer{font-size:28px;font-weight:800;letter-spacing:3px;color:#f2d4b0;margin-top:6px}
+#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:22px;color:rgba(235,245,248,.9);text-shadow:0 0 8px #000}
+#prompt{position:absolute;left:50%;top:59%;transform:translateX(-50%);padding:10px 16px;background:rgba(3,10,14,.75);border:1px solid rgba(180,210,220,.3);font-size:12px;letter-spacing:1.4px;white-space:nowrap;opacity:0;transition:opacity .15s}
+#bottom{position:absolute;left:24px;bottom:22px;display:flex;gap:10px;align-items:end}
+.stat{min-width:92px;padding:9px 11px;background:rgba(3,10,14,.72);border:1px solid rgba(150,185,195,.22)}
+.stat small{display:block;font-size:9px;letter-spacing:2px;color:#8299a2;margin-bottom:5px}
+.stat strong{font-size:18px;letter-spacing:1px;color:#edf5f7}
+#weapon{position:absolute;right:24px;bottom:23px;text-align:right;background:rgba(3,10,14,.72);border:1px solid rgba(150,185,195,.22);padding:10px 14px;min-width:145px}
+#weapon small{display:block;color:#8299a2;font-size:9px;letter-spacing:2px;margin-bottom:5px}
+#weapon strong{font-size:15px;letter-spacing:2px}
+#toast{position:absolute;left:50%;top:18%;transform:translateX(-50%);padding:12px 18px;background:rgba(5,12,17,.88);border-left:3px solid var(--red);font-size:12px;letter-spacing:1.5px;opacity:0;transition:opacity .25s;max-width:90vw;text-align:center}
+#damage{position:absolute;inset:0;background:radial-gradient(ellipse,transparent 35%,rgba(160,0,0,.75));opacity:0;transition:opacity .15s}
+#start,#ending,#bombPanel,#pause{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:linear-gradient(115deg,rgba(1,7,11,.97),rgba(5,17,23,.9)),radial-gradient(circle at 70% 30%,#29414a,#02070a);padding:24px}
+#ending,#bombPanel,#pause{display:none}
+.screen{width:min(760px,94vw);padding:clamp(24px,5vw,54px);border:1px solid rgba(170,205,215,.25);background:rgba(2,8,12,.78);box-shadow:0 25px 90px #000;position:relative}
+.kicker{font-size:10px;letter-spacing:5px;color:#9eb5be;margin-bottom:16px}
+h1{font-size:clamp(42px,9vw,88px);line-height:.9;letter-spacing:5px;margin:0;color:#e9f2f4;font-weight:900;text-shadow:0 8px 35px #000}
+h1 span{color:#bd3b32}
+.subtitle{font-size:13px;letter-spacing:4px;color:#a9bdc4;margin:20px 0 26px}
+.copy{max-width:58ch;color:#b1c2c8;font-size:14px;line-height:1.75}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+button{font:inherit;cursor:pointer;border:1px solid rgba(190,220,230,.45);background:rgba(25,43,51,.7);color:#eaf4f6;padding:13px 20px;letter-spacing:2px;font-size:11px;font-weight:800}
+button.primary{background:#a82f2a;border-color:#d15a50}
+button:hover{filter:brightness(1.25)}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 24px;margin-top:26px;color:#8fa6ae;font-size:11px;line-height:1.6}
+.controls b{color:#dce8eb;letter-spacing:1px}
+#quality{margin-top:18px;background:#09151b;border:1px solid #304650;color:#dce8eb;padding:10px}
+#bombPanel .screen{width:min(650px,94vw)}
+.bomb-title{font-size:clamp(25px,5vw,42px);letter-spacing:3px;color:#f0e8dc;margin:0 0 8px}
+.bomb-sub{color:#9aadb3;font-size:12px;letter-spacing:2px;margin-bottom:22px}
+.bomb-timer{font-size:34px;color:#e34a3d;font-weight:900;letter-spacing:4px;margin-bottom:18px}
+.wire-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.wire{height:86px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border:1px solid #56666c;background:#0b171d;color:white;font-size:11px;letter-spacing:2px}
+.wire:before{content:"";width:70%;height:8px;border-radius:5px;background:var(--wire);box-shadow:0 0 14px var(--wire)}
+.wire small{color:#9aadb3}
+#wireMessage{min-height:24px;color:#d9b8a2;font-size:12px;letter-spacing:1px}
+#pause .screen{width:min(480px,94vw)}
+#ending h2{font-size:clamp(35px,7vw,65px);margin:0 0 14px;letter-spacing:4px}
+#ending p{line-height:1.7;color:#aabdc4}
+@media(max-width:650px){#brand,#mission,#objective{left:12px}#status{right:12px}#bottom{left:10px;bottom:10px;gap:5px}.stat{min-width:70px;padding:7px}.stat strong{font-size:14px}#weapon{right:10px;bottom:10px;padding:8px;min-width:110px}.controls{grid-template-columns:1fr 1fr}.wire{height:70px}}
 </style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"}}
+</script>
 </head>
 <body>
 <canvas id="game"></canvas>
+<div id="vignette"></div><div id="grain"></div>
 <div id="hud">
- <div id="top">BLACKTIDE 09 // NORTH ATLANTIC</div>
- <div id="mission">OBJECTIVE: FIND THE RADIO ROOM</div>
- <div id="cross">+</div>
- <div id="stats">HEALTH: <span id="health">100</span><br>AMMO: <span id="ammo">12</span><br>FUSES: <span id="fuses">0</span>/3<br>WEAPON: <span id="weapon">PISTOL</span></div>
- <div id="hint">WASD MOVE · MOUSE LOOK · E INTERACT · CLICK TO FIRE</div>
-</div>
-<div id="mobile">
- <button onclick="moveMobile('forward')">▲</button>
- <button onclick="moveMobile('left')">◀</button>
- <button onclick="moveMobile('back')">▼</button>
- <button onclick="moveMobile('right')">▶</button>
- <button onclick="interact()">USE</button>
- <button onclick="fire()">FIRE</button>
+ <div id="brand">BLACKTIDE 09 // NORTH ATLANTIC</div>
+ <div id="mission">MISSION: DISARM THE DEVICE</div>
+ <div id="objective">Locate the bomb. Stop the countdown. Reach the rescue point.</div>
+ <div id="status">RIG POWER <span id="powerState">UNSTABLE</span><div id="timer">08:00</div></div>
+ <div id="crosshair">+</div><div id="prompt">[ E ] INTERACT</div><div id="toast"></div><div id="damage"></div>
+ <div id="bottom">
+  <div class="stat"><small>HEALTH</small><strong id="health">100</strong></div>
+  <div class="stat"><small>AMMO</small><strong id="ammo">12 / 48</strong></div>
+  <div class="stat"><small>OBJECTIVE</small><strong id="parts">0 / 3</strong></div>
+ </div>
+ <div id="weapon"><small>ACTIVE EQUIPMENT</small><strong id="weaponName">SERVICE PISTOL</strong></div>
 </div>
 <div id="start">
- <div class="panel">
-  <h1>BLACKTIDE 09</h1>
-  <div class="sub">THE RIG IS NOT EMPTY</div>
-  <p>You are stranded on an abandoned offshore oil rig.<br>The emergency radio is dead. Something is hunting you.</p>
-  <p>Find three fuses. Restore the radio. Escape.</p>
-  <button onclick="startGame()">ENTER THE RIG</button>
-  <p><small>WASD to move · Mouse to look · Shift to run<br>E to interact · 1 pistol · 2 knife · R reload · F flashlight</small></p>
+ <div class="screen">
+  <div class="kicker">SINGLE PLAYER // OFFSHORE SURVIVAL</div>
+  <h1>BLACKTIDE <span>09</span></h1>
+  <div class="subtitle">BOMB THREAT — THE LAST SHIFT</div>
+  <p class="copy">A distress call brought you to Platform 09. The crew are gone. The emergency lights are failing. Somewhere out on the exposed rig, a bomb is counting down. Find the device, identify the correct wire sequence, disarm it, then reach the rescue beacon before the thing stalking the platform reaches you.</p>
+  <div class="actions"><button class="primary" id="startButton">START OPERATION</button><button id="qualityButton">GRAPHICS: HIGH</button></div>
+  <div class="controls"><div><b>W A S D</b> — Move</div><div><b>MOUSE</b> — Look around</div><div><b>SHIFT</b> — Sprint</div><div><b>E</b> — Interact / use</div><div><b>1</b> — Pistol</div><div><b>2</b> — Knife</div><div><b>LEFT CLICK</b> — Attack / fire</div><div><b>R</b> — Reload</div><div><b>F</b> — Flashlight</div><div><b>ESC</b> — Pause</div></div>
+  <p class="copy" style="font-size:11px;margin-top:18px;color:#738992">Best experienced on a computer with a mouse. 4K mode is hardware-dependent. This single HTML file loads the Three.js engine from a CDN, so an internet connection is required on first load.</p>
  </div>
 </div>
-<script>
-const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
-canvas.width=960;canvas.height=540;
-const W=canvas.width,H=canvas.height;
-const map=[
-"111111111111111111",
-"100000000000000001",
-"101111011111011101",
-"100001000001000001",
-"111101111101111101",
-"100100000100000001",
-"100101110111010101",
-"100100010000010001",
-"101111010111110101",
-"100000010000000001",
-"101110111011110101",
-"100010000010000001",
-"111011110111011101",
-"100000000000000001",
-"111111111111111111"
-];
-let player={x:1.5,y:1.5,a:0,hp:100,ammo:12,fuses:0,weapon:1,flash:true};
-let enemy={x:14.5,y:12.5,hp:100,active:false,attack:0};
-let keys={},running=false,won=false,dead=false,shotFlash=0;
-let items=[
-{x:5.5,y:3.5,type:"FUSE",taken:false},
-{x:12.5,y:5.5,type:"FUSE",taken:false},
-{x:3.5,y:11.5,type:"FUSE",taken:false},
-{x:15.5,y:2.5,type:"RADIO",taken:false},
-{x:8.5,y:13.5,type:"KEYCARD",taken:false}
-];
-const cell=(x,y)=>map[Math.floor(y)]?.[Math.floor(x)]||"1";
-function wall(x,y){return cell(x,y)!=="0"}
-function startGame(){document.getElementById("start").style.display="none";running=true;canvas.requestPointerLock?.()}
-document.addEventListener("pointerlockchange",()=>{});
-document.addEventListener("mousemove",e=>{if(running&&document.pointerLockElement===canvas)player.a+=e.movementX*.0025});
-document.addEventListener("keydown",e=>{
- keys[e.key.toLowerCase()]=true;
- if(e.key==="Escape"&&running){document.exitPointerLock?.()}
- if(e.key.toLowerCase()==="e")interact();
- if(e.key.toLowerCase()==="r")player.ammo=12;
- if(e.key.toLowerCase()==="f")player.flash=!player.flash;
- if(e.key==="1")player.weapon=1;
- if(e.key==="2")player.weapon=2;
+<div id="bombPanel">
+ <div class="screen">
+  <div class="kicker">EXPLOSIVE ORDNANCE // DEVICE 09-B</div>
+  <h2 class="bomb-title">DISARM THE BOMB</h2>
+  <div class="bomb-sub">READ THE COLOUR SEQUENCE. CUT THE WIRES IN THE CORRECT ORDER.</div>
+  <div class="bomb-timer" id="bombTimer">01:30</div>
+  <p class="copy">The control board is damaged. A diagnostic pulse has revealed a three-colour sequence. Cut the wires in the order shown. One wrong cut will trigger an alarm and cost precious time.</p>
+  <div id="sequence" class="copy" style="font-size:16px;letter-spacing:4px;color:#f1d8b4">SEQUENCE: RED → BLUE → WHITE</div>
+  <div class="wire-row">
+   <button class="wire" data-wire="RED" style="--wire:#d62f2b">CUT RED<small>WIRE 01</small></button>
+   <button class="wire" data-wire="BLUE" style="--wire:#368bd0">CUT BLUE<small>WIRE 02</small></button>
+   <button class="wire" data-wire="WHITE" style="--wire:#dce4e4">CUT WHITE<small>WIRE 03</small></button>
+  </div>
+  <div id="wireMessage">WAIT FOR THE DIAGNOSTIC LIGHT.</div>
+  <div class="actions"><button id="closeBomb">STEP BACK</button></div>
+ </div>
+</div>
+<div id="pause"><div class="screen"><div class="kicker">OPERATION PAUSED</div><h2 class="bomb-title">HOLD POSITION</h2><p class="copy">The timer is paused while the game is paused.</p><div class="actions"><button class="primary" id="resumeButton">RESUME</button><button id="restartButton">RESTART OPERATION</button></div></div></div>
+<div id="ending"><div class="screen"><div class="kicker">BLACKTIDE 09 // MISSION REPORT</div><h2 id="endingTitle">MISSION COMPLETE</h2><p id="endingText">The device is safe. Rescue is inbound.</p><div class="actions"><button class="primary" id="againButton">PLAY AGAIN</button></div></div></div>
+<script type="module">
+import * as THREE from 'three';
+
+// ================================================================
+// BLACKTIDE 09 — core configuration and runtime state
+// ================================================================
+const CONFIG = {
+  worldWidth: 190,
+  worldDepth: 170,
+  deckY: 0,
+  playerHeight: 1.72,
+  playerRadius: 0.42,
+  walkSpeed: 6.2,
+  sprintSpeed: 9.5,
+  bombDuration: 480,
+  deviceDuration: 90,
+  interactionRange: 3.1,
+  enemyWakeRange: 32,
+  enemyAttackRange: 1.8,
+  renderScale: 1,
+  quality: 'HIGH'
+};
+
+const STATE = {
+  running: false,
+  paused: false,
+  ended: false,
+  bombOpen: false,
+  bombFound: false,
+  bombDefused: false,
+  beaconActivated: false,
+  fuses: 0,
+  health: 100,
+  ammo: 12,
+  reserveAmmo: 48,
+  weapon: 'PISTOL',
+  flashlight: true,
+  elapsed: 0,
+  bombRemaining: CONFIG.bombDuration,
+  deviceRemaining: CONFIG.deviceDuration,
+  stamina: 100,
+  hitCooldown: 0,
+  attackCooldown: 0,
+  reloadTime: 0,
+  wireIndex: 0,
+  wireSequence: [],
+  selectedQuality: 1,
+  toastTime: 0,
+  lastFrame: 0
+};
+
+const $ = (id) => document.getElementById(id);
+const ui = {
+  hud: $('hud'),
+  start: $('start'),
+  pause: $('pause'),
+  bomb: $('bombPanel'),
+  ending: $('ending'),
+  prompt: $('prompt'),
+  toast: $('toast'),
+  timer: $('timer'),
+  bombTimer: $('bombTimer'),
+  health: $('health'),
+  ammo: $('ammo'),
+  parts: $('parts'),
+  weapon: $('weaponName'),
+  damage: $('damage'),
+  objective: $('objective'),
+  mission: $('mission'),
+  power: $('powerState'),
+  wireMessage: $('wireMessage')
+};
+
+const clock = new THREE.Clock();
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x71828a);
+scene.fog = new THREE.FogExp2(0x71828a, 0.0085);
+
+const camera = new THREE.PerspectiveCamera(76, window.innerWidth / window.innerHeight, 0.08, 650);
+camera.position.set(-58, CONFIG.playerHeight, 48);
+camera.rotation.order = 'YXZ';
+scene.add(camera);
+
+const renderer = new THREE.WebGLRenderer({
+  canvas: $('game'),
+  antialias: true,
+  alpha: false,
+  powerPreference: 'high-performance',
+  logarithmicDepthBuffer: false
 });
-document.addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
-canvas.addEventListener("click",()=>{if(running){canvas.requestPointerLock?.();fire()}});
-function moveMobile(dir){let d={forward:1,back:-1,left:-1,right:1}[dir];let a=player.a+(dir==="left"||dir==="right"?Math.PI/2:0);move(Math.cos(a)*d*.35,Math.sin(a)*d*.35)}
-function move(dx,dy){
- let speed=player.weapon===2?.055:.045;
- if(keys.shift)speed*=1.65;
- if(!wall(player.x+dx*speed,player.y))player.x+=dx*speed;
- if(!wall(player.x,player.y+dy*speed))player.y+=dy*speed;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.12;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const hemi = new THREE.HemisphereLight(0x9cb6c4, 0x202b30, 1.45);
+scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xb9cbd0, 2.25);
+sun.position.set(-55, 95, 35);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -110;
+sun.shadow.camera.right = 110;
+sun.shadow.camera.top = 110;
+sun.shadow.camera.bottom = -110;
+sun.shadow.bias = -0.0002;
+scene.add(sun);
+
+const ambientFill = new THREE.PointLight(0x4b7280, 65, 95, 2);
+ambientFill.position.set(0, 24, -4);
+scene.add(ambientFill);
+
+const player = {
+  position: new THREE.Vector3(-58, CONFIG.playerHeight, 48),
+  velocity: new THREE.Vector3(),
+  yaw: Math.PI * 0.15,
+  pitch: 0,
+  onGround: true,
+  bob: 0,
+  moving: false,
+  sprinting: false
+};
+
+const keys = Object.create(null);
+const colliders = [];
+const interactables = [];
+const particles = [];
+const floodlights = [];
+const enemy = {
+  group: null,
+  position: new THREE.Vector3(55, 0, -45),
+  velocity: new THREE.Vector3(),
+  active: false,
+  health: 180,
+  attackTimer: 0,
+  phase: 0,
+  lastSeen: new THREE.Vector3(),
+  retreatTimer: 0
+};
+
+let pointerLocked = false;
+let activeInteractable = null;
+let weaponGroup = null;
+let muzzleFlash = null;
+let bombMesh = null;
+let beaconMesh = null;
+let oceanMesh = null;
+let waveTime = 0;
+let lastToast = '';
+
+// ================================================================
+// Materials and procedural surface detail
+// ================================================================
+function standard(color, roughness = 0.78, metalness = 0.18) {
+  return new THREE.MeshStandardMaterial({ color, roughness, metalness });
 }
-function interact(){
- if(!running)return;
- for(let it of items){
-  if(!it.taken&&Math.hypot(player.x-it.x,player.y-it.y)<1.2){
-   if(it.type==="FUSE"){it.taken=true;player.fuses++;document.getElementById("fuses").textContent=player.fuses;message("FUSE COLLECTED")}
-   else if(it.type==="RADIO"){
-    if(player.fuses===3){won=true;message("DISTRESS SIGNAL SENT. YOU ESCAPED.");running=false}
-    else message("RADIO NEEDS THREE FUSES")
-   }else if(it.type==="KEYCARD"){it.taken=true;message("KEYCARD FOUND")}
+
+const MAT = {
+  steel: standard(0x4c5b61, 0.62, 0.72),
+  darkSteel: standard(0x202d33, 0.7, 0.75),
+  rust: standard(0x754033, 0.9, 0.22),
+  yellow: standard(0xc5a23c, 0.72, 0.28),
+  black: standard(0x101619, 0.8, 0.2),
+  concrete: standard(0x586166, 0.95, 0.05),
+  white: standard(0xc7d0ce, 0.7, 0.15),
+  red: standard(0x9c2b25, 0.72, 0.25),
+  blue: standard(0x2d5265, 0.75, 0.3),
+  glass: new THREE.MeshPhysicalMaterial({ color: 0x78949c, roughness: 0.18, metalness: 0.2, transparent: true, opacity: 0.38, transmission: 0.2 }),
+  rubber: standard(0x090d0f, 0.96, 0.02),
+  deck: standard(0x3a454a, 0.92, 0.22),
+  skin: standard(0x8d9695, 0.8, 0.05)
+};
+
+function makeNoiseTexture(base = '#505b60', fleck = '#20292d', size = 256) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const c = canvas.getContext('2d');
+  c.fillStyle = base;
+  c.fillRect(0, 0, size, size);
+  for (let i = 0; i < size * 7; i++) {
+    const alpha = Math.random() * 0.22;
+    c.fillStyle = `rgba(0,0,0,${alpha})`;
+    c.fillRect(Math.random() * size, Math.random() * size, 1 + Math.random() * 4, 1 + Math.random() * 2);
   }
- }
-}
-let messageText="",messageTimer=0;
-function message(t){messageText=t;messageTimer=150;document.getElementById("hint").textContent=t}
-function fire(){
- if(!running)return;
- if(player.weapon===1){
-  if(player.ammo<=0){message("OUT OF AMMO — PRESS R");return}
-  player.ammo--;shotFlash=5;
-  let angle=Math.atan2(enemy.y-player.y,enemy.x-player.x);
-  let diff=Math.atan2(Math.sin(angle-player.a),Math.cos(angle-player.a));
-  let dist=Math.hypot(enemy.x-player.x,enemy.y-player.y);
-  if(Math.abs(diff)<.18&&dist<8&&!lineBlocked(player.x,player.y,enemy.x,enemy.y)){
-   enemy.hp-=35;enemy.active=true;message("TARGET HIT");
-  }else message("SHOT FIRED");
- }else{
-  let angle=Math.atan2(enemy.y-player.y,enemy.x-player.x);
-  let diff=Math.atan2(Math.sin(angle-player.a),Math.cos(angle-player.a));
-  if(Math.abs(diff)<.35&&Math.hypot(enemy.x-player.x,enemy.y-player.y)<1.8){enemy.hp-=50;enemy.active=true;message("KNIFE HIT")}
- }
- document.getElementById("ammo").textContent=player.ammo;
-}
-function lineBlocked(x,y,ex,ey){
- let d=Math.hypot(ex-x,ey-y),steps=Math.ceil(d*10);
- for(let i=1;i<steps;i++){let t=i/steps;if(wall(x+(ex-x)*t,y+(ey-y)*t))return true}
- return false;
-}
-function update(){
- if(!running)return;
- let dx=0,dy=0;
- if(keys.w||keys.arrowup){dx+=Math.cos(player.a);dy+=Math.sin(player.a)}
- if(keys.s||keys.arrowdown){dx-=Math.cos(player.a);dy-=Math.sin(player.a)}
- if(keys.a){dx+=Math.cos(player.a-Math.PI/2);dy+=Math.sin(player.a-Math.PI/2)}
- if(keys.d){dx+=Math.cos(player.a+Math.PI/2);dy+=Math.sin(player.a+Math.PI/2)}
- let l=Math.hypot(dx,dy)||1;move(dx/l,dy/l);
- if(enemy.hp>0&&enemy.active){
-  let d=Math.hypot(player.x-enemy.x,player.y-enemy.y);
-  if(d>0.8){
-   let vx=(player.x-enemy.x)/d*.012,vy=(player.y-enemy.y)/d*.012;
-   if(!wall(enemy.x+vx,enemy.y))enemy.x+=vx;
-   if(!wall(enemy.x,enemy.y+vy))enemy.y+=vy;
-  }else if(++enemy.attack>50){player.hp-=8;enemy.attack=0;document.getElementById("health").textContent=player.hp;if(player.hp<=0){dead=true;running=false;message("YOU DID NOT SURVIVE")}}
- }
- if(messageTimer>0&&--messageTimer===0)document.getElementById("hint").textContent="WASD MOVE · MOUSE LOOK · E INTERACT · CLICK TO FIRE";
- document.getElementById("weapon").textContent=player.weapon===1?"PISTOL":"KNIFE";
-}
-function render(){
- ctx.fillStyle="#111b20";ctx.fillRect(0,0,W,H/2);
- ctx.fillStyle="#24201b";ctx.fillRect(0,H/2,W,H/2);
- for(let x=0;x<W;x++){
-  let angle=player.a+(x/W-.5)*1.05;
-  let dist=0,hit=false;
-  while(dist<20&&!hit){dist+=.025;if(wall(player.x+Math.cos(angle)*dist,player.y+Math.sin(angle)*dist))hit=true}
-  let corrected=dist*Math.cos(angle-player.a);
-  let height=Math.min(H,H/(corrected+.08));
-  let shade=Math.max(15,140-corrected*13);
-  ctx.fillStyle=`rgb(${shade*.65},${shade*.82},${shade})`;
-  ctx.fillRect(x,(H-height)/2,1,height);
-  if(Math.floor(x/40)%2===0){ctx.fillStyle="rgba(0,0,0,.08)";ctx.fillRect(x,(H-height)/2,1,height)}
- }
- // Enemy sprite
- if(enemy.hp>0){
-  let dx=enemy.x-player.x,dy=enemy.y-player.y;
-  let dist=Math.hypot(dx,dy),angle=Math.atan2(dy,dx);
-  let diff=Math.atan2(Math.sin(angle-player.a),Math.cos(angle-player.a));
-  if(Math.abs(diff)<.8){
-   let sx=W/2+diff*W/1.05,sz=Math.min(260,220/(dist+.2));
-   ctx.fillStyle="#111";ctx.fillRect(sx-sz*.25,H/2-sz*.35,sz*.5,sz*.8);
-   ctx.fillStyle="#8b1717";ctx.fillRect(sx-sz*.2,H/2-sz*.3,sz*.12,sz*.06);ctx.fillRect(sx+sz*.08,H/2-sz*.3,sz*.12,sz*.06);
+  for (let i = 0; i < size * 0.35; i++) {
+    c.fillStyle = fleck;
+    c.globalAlpha = Math.random() * 0.28;
+    c.fillRect(Math.random() * size, Math.random() * size, 2 + Math.random() * 12, 1 + Math.random() * 2);
   }
- }
- // flashlight darkness
- if(!player.flash){ctx.fillStyle="rgba(0,0,0,.78)";ctx.fillRect(0,0,W,H)}
- else{
-  let g=ctx.createRadialGradient(W/2,H/2,30,W/2,H/2,420);
-  g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,.65)");
-  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
- }
- if(shotFlash>0){ctx.fillStyle="rgba(255,220,160,.3)";ctx.fillRect(0,0,W,H);shotFlash--}
- // grain
- for(let i=0;i<80;i++){ctx.fillStyle="rgba(255,255,255,.025)";ctx.fillRect(Math.random()*W,Math.random()*H,2,2)}
+  c.globalAlpha = 1;
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(5, 5);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
 }
-function loop(){update();render();requestAnimationFrame(loop)}
-loop();
+
+const deckTexture = makeNoiseTexture('#485256', '#182329');
+MAT.deck.map = deckTexture;
+MAT.deck.needsUpdate = true;
+
+function box(parent, name, x, y, z, sx, sy, sz, material, cast = true, receive = true) {
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), material);
+  mesh.name = name;
+  mesh.position.set(x, y, z);
+  mesh.castShadow = cast;
+  mesh.receiveShadow = receive;
+  parent.add(mesh);
+  return mesh;
+}
+
+function cylinder(parent, name, x, y, z, radiusTop, radiusBottom, height, material, segments = 16) {
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radiusTop, radiusBottom, height, segments), material);
+  mesh.name = name;
+  mesh.position.set(x, y, z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+function beam(parent, a, b, radius, material, segments = 8) {
+  const start = new THREE.Vector3(...a);
+  const end = new THREE.Vector3(...b);
+  const direction = new THREE.Vector3().subVectors(end, start);
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, direction.length(), segments), material);
+  mesh.position.copy(start).add(end).multiplyScalar(0.5);
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+function addCollider(x, z, width, depth, height = 4, y = height / 2) {
+  colliders.push({ minX: x - width / 2, maxX: x + width / 2, minZ: z - depth / 2, maxZ: z + depth / 2, minY: 0, maxY: height, centerY: y });
+}
+
+function addInteractable(object, title, action, range = CONFIG.interactionRange) {
+  interactables.push({ object, title, action, range, position: object.position.clone() });
+}
+
+// ================================================================
+// Sky, sea and offshore platform base
+// ================================================================
+function createSky() {
+  const skyGeo = new THREE.SphereGeometry(520, 48, 24);
+  const skyMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    uniforms: { time: { value: 0 } },
+    vertexShader: `varying vec3 vPos; void main(){vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader: `varying vec3 vPos; uniform float time; void main(){float h=normalize(vPos).y;vec3 low=vec3(.12,.19,.23);vec3 high=vec3(.22,.31,.36);float f=smoothstep(-.35,.65,h);vec3 col=mix(low,high,f);float cloud=sin(vPos.x*.018+time*.015)*sin(vPos.z*.014+time*.009);col+=vec3(.045,.055,.06)*smoothstep(.15,.8,cloud);gl_FragColor=vec4(col,1.0);}`
+  });
+  const sky = new THREE.Mesh(skyGeo, skyMat);
+  sky.name = 'Storm sky dome';
+  scene.add(sky);
+  return skyMat;
+}
+const skyMaterial = createSky();
+
+function createOcean() {
+  const geometry = new THREE.PlaneGeometry(1200, 1200, 180, 180);
+  const material = new THREE.MeshStandardMaterial({
+    color: 0x183541,
+    roughness: 0.22,
+    metalness: 0.52,
+    transparent: true,
+    opacity: 0.96,
+    envMapIntensity: 0.8
+  });
+  oceanMesh = new THREE.Mesh(geometry, material);
+  oceanMesh.rotation.x = -Math.PI / 2;
+  oceanMesh.position.y = -17;
+  oceanMesh.receiveShadow = true;
+  scene.add(oceanMesh);
+  const positions = geometry.attributes.position;
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i);
+    const y = positions.getY(i);
+    positions.setZ(i, Math.sin(x * 0.045) * 0.7 + Math.cos(y * 0.035) * 0.6);
+  }
+  geometry.computeVertexNormals();
+}
+
+function createPlatformLegs() {
+  const legPositions = [
+    [-72, -60], [-72, 60], [72, -60], [72, 60],
+    [-24, -60], [24, -60], [-24, 60], [24, 60]
+  ];
+  for (const [x, z] of legPositions) {
+    cylinder(scene, 'Oil rig support column', x, -9, z, 2.3, 3.3, 18, MAT.darkSteel, 18);
+    cylinder(scene, 'Support collar', x, -1.4, z, 3.4, 3.4, 0.65, MAT.rust, 18);
+    beam(scene, [x, -13, z], [x + Math.sign(x || 1) * 8, -2, z + Math.sign(z || 1) * 8], 0.65, MAT.darkSteel);
+    beam(scene, [x, -13, z], [x - Math.sign(x || 1) * 8, -2, z - Math.sign(z || 1) * 8], 0.65, MAT.darkSteel);
+  }
+  box(scene, 'Under deck cross brace', 0, -2.3, 0, 152, 1.4, 126, MAT.darkSteel);
+}
+
+function createDeck() {
+  box(scene, 'Main oil rig deck', 0, -0.55, 0, 164, 1.1, 142, MAT.deck);
+  box(scene, 'Deck lower steel layer', 0, -1.4, 0, 168, 0.65, 146, MAT.darkSteel);
+  const stripeMat = new THREE.MeshStandardMaterial({ color: 0xb18d36, roughness: 0.8, metalness: 0.2 });
+  for (let x = -78; x <= 78; x += 12) {
+    box(scene, 'Deck seam', x, 0.015, 0, 0.045, 0.018, 138, MAT.black, false, true);
+  }
+  for (let z = -66; z <= 66; z += 12) {
+    box(scene, 'Deck seam', 0, 0.016, z, 160, 0.018, 0.045, MAT.black, false, true);
+  }
+  const edgeLines = [
+    [0, 0.035, -69, 164, 0.04, 0.28],
+    [0, 0.035, 69, 164, 0.04, 0.28],
+    [-80, 0.035, 0, 0.28, 0.04, 138],
+    [80, 0.035, 0, 0.28, 0.04, 138]
+  ];
+  for (const p of edgeLines) box(scene, 'Yellow deck warning stripe', ...p, stripeMat, false, true);
+}
+
+function createRailings() {
+  const rail = MAT.yellow;
+  const dark = MAT.darkSteel;
+  for (let x = -78; x <= 78; x += 6) {
+    for (const z of [-68, 68]) {
+      cylinder(scene, 'Safety rail stanchion', x, 1.1, z, 0.09, 0.09, 2.2, dark, 8);
+      cylinder(scene, 'Rail base', x, 0.12, z, 0.2, 0.2, 0.18, rail, 8);
+    }
+  }
+  for (let z = -62; z <= 62; z += 6) {
+    for (const x of [-80, 80]) cylinder(scene, 'Safety rail stanchion', x, 1.1, z, 0.09, 0.09, 2.2, dark, 8);
+  }
+  beam(scene, [-80, 2.1, -68], [80, 2.1, -68], 0.08, rail);
+  beam(scene, [-80, 2.1, 68], [80, 2.1, 68], 0.08, rail);
+  beam(scene, [-80, 2.1, -68], [-80, 2.1, 68], 0.08, rail);
+  beam(scene, [80, 2.1, -68], [80, 2.1, 68], 0.08, rail);
+  beam(scene, [-80, 1.05, -68], [80, 1.05, -68], 0.045, dark);
+  beam(scene, [-80, 1.05, 68], [80, 1.05, 68], 0.045, dark);
+  beam(scene, [-80, 1.05, -68], [-80, 1.05, 68], 0.045, dark);
+  beam(scene, [80, 1.05, -68], [80, 1.05, 68], 0.045, dark);
+}
+
+// ================================================================
+// Industrial set dressing: containers, tanks, pipework and cranes
+// ================================================================
+function createContainer(x, z, color = 0x344c56, label = 'CARGO') {
+  const group = new THREE.Group();
+  group.position.set(x, 0, z);
+  scene.add(group);
+  const bodyMat = standard(color, 0.78, 0.5);
+  box(group, 'Shipping container body', 0, 3.1, 0, 13, 6.2, 5.8, bodyMat);
+  for (let i = -6; i <= 6; i += 1) {
+    box(group, 'Container corrugation', i, 3.1, 2.93, 0.08, 5.8, 0.08, MAT.darkSteel, false, true);
+    box(group, 'Container corrugation', i, 3.1, -2.93, 0.08, 5.8, 0.08, MAT.darkSteel, false, true);
+  }
+  for (const sx of [-6.4, 6.4]) {
+    for (const sz of [-2.8, 2.8]) box(group, 'Container corner casting', sx, 3.1, sz, 0.22, 6.2, 0.22, MAT.rust);
+  }
+  const sign = box(group, 'Container warning panel', 0, 4.7, 2.99, 3.8, 0.8, 0.05, MAT.black, false, false);
+  sign.material = new THREE.MeshStandardMaterial({ color: 0x172329, roughness: 0.85 });
+  addCollider(x, z, 13.4, 6.3, 6.2);
+  return group;
+}
+
+function createStorageTanks() {
+  const tanks = [
+    [-45, -40, 8, 12], [-28, -42, 6, 10], [42, 39, 9, 15], [57, 40, 6, 11]
+  ];
+  for (const [x, z, r, h] of tanks) {
+    cylinder(scene, 'Fuel storage tank', x, h / 2, z, r, r, h, MAT.concrete, 32);
+    cylinder(scene, 'Tank roof', x, h + 0.1, z, r * 0.99, r * 0.99, 0.3, MAT.darkSteel, 32);
+    cylinder(scene, 'Tank roof hatch', x + r * 0.35, h + 0.5, z, 1.2, 1.2, 0.5, MAT.rust, 16);
+    beam(scene, [x - r * 0.8, h * 0.55, z + r * 0.65], [x + r * 0.8, h * 0.55, z + r * 0.65], 0.12, MAT.yellow);
+    addCollider(x, z, r * 2.05, r * 2.05, h);
+  }
+}
+
+function createPipeRun(points, radius = 0.32, material = MAT.rust) {
+  for (let i = 0; i < points.length - 1; i++) {
+    beam(scene, points[i], points[i + 1], radius, material, 12);
+  }
+  for (const p of points) {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(radius * 1.2, 0.08, 8, 18), MAT.darkSteel);
+    ring.position.set(p[0], p[1], p[2]);
+    ring.rotation.x = Math.PI / 2;
+    scene.add(ring);
+  }
+}
+
+function createPipework() {
+  createPipeRun([[-68, 2.1, -15], [-40, 2.1, -15], [-40, 5.5, -15], [-5, 5.5, -15], [15, 2.1, -15], [65, 2.1, -15]], 0.36, MAT.rust);
+  createPipeRun([[-66, 3.4, 15], [-30, 3.4, 15], [-30, 3.4, 30], [5, 3.4, 30], [5, 8, 30], [45, 8, 30]], 0.26, MAT.yellow);
+  createPipeRun([[30, 2.6, -55], [30, 7, -55], [45, 7, -55], [45, 7, -30]], 0.42, MAT.blue);
+  createPipeRun([[-60, 1.8, 45], [-20, 1.8, 45], [-20, 4.5, 45], [10, 4.5, 45]], 0.22, MAT.darkSteel);
+  for (let i = -60; i <= 60; i += 20) {
+    box(scene, 'Pipe support foot', i, 0.55, -15, 1.1, 1.1, 1.1, MAT.darkSteel);
+    box(scene, 'Pipe support foot', i, 0.55, 15, 1.1, 1.1, 1.1, MAT.darkSteel);
+  }
+}
+
+function createCrane() {
+  const group = new THREE.Group();
+  group.position.set(54, 0, -48);
+  scene.add(group);
+  const craneYellow = MAT.yellow;
+  box(group, 'Crane operator base', 0, 1.3, 0, 8, 2.6, 8, MAT.darkSteel);
+  beam(group, [-2.5, 2, -2.5], [-2.5, 25, -2.5], 0.65, craneYellow);
+  beam(group, [2.5, 2, -2.5], [2.5, 25, -2.5], 0.65, craneYellow);
+  beam(group, [-2.5, 25, -2.5], [2.5, 25, -2.5], 0.65, craneYellow);
+  beam(group, [-2.5, 2, 2.5], [-2.5, 25, 2.5], 0.65, craneYellow);
+  beam(group, [2.5, 2, 2.5], [2.5, 25, 2.5], 0.65, craneYellow);
+  beam(group, [-2.5, 25, 2.5], [2.5, 25, 2.5], 0.65, craneYellow);
+  beam(group, [0, 25, 0], [0, 31, 0], 0.6, MAT.darkSteel);
+  beam(group, [0, 30, 0], [-24, 30, 0], 0.55, craneYellow);
+  beam(group, [0, 30, 0], [24, 30, 0], 0.55, craneYellow);
+  beam(group, [-24, 30, 0], [-18, 30, 0], 0.28, MAT.darkSteel);
+  beam(group, [24, 30, 0], [18, 30, 0], 0.28, MAT.darkSteel);
+  beam(group, [-18, 30, 0], [-18, 8, 0], 0.08, MAT.black);
+  beam(group, [18, 30, 0], [18, 8, 0], 0.08, MAT.black);
+  box(group, 'Crane cab', -4, 21, 0, 6, 5, 5, MAT.glass);
+  addCollider(54, -48, 8, 8, 26);
+}
+
+function createDrillingDerrick() {
+  const group = new THREE.Group();
+  group.position.set(-44, 0, 5);
+  scene.add(group);
+  const points = [
+    [[-9, 0, -8], [-5, 37, -4]],
+    [[9, 0, -8], [5, 37, -4]],
+    [[-9, 0, 8], [-5, 37, 4]],
+    [[9, 0, 8], [5, 37, 4]]
+  ];
+  for (const [a, b] of points) beam(group, a, b, 0.42, MAT.rust);
+  for (let y = 5; y <= 35; y += 5) {
+    beam(group, [-9 + y * .1, y, -8 + y * .1], [9 - y * .1, y, -8 + y * .1], 0.2, MAT.yellow);
+    beam(group, [-9 + y * .1, y, 8 - y * .1], [9 - y * .1, y, 8 - y * .1], 0.2, MAT.yellow);
+    beam(group, [-9 + y * .1, y, -8 + y * .1], [9 - y * .1, y, 8 - y * .1], 0.12, MAT.darkSteel);
+    beam(group, [9 - y * .1, y, -8 + y * .1], [-9 + y * .1, y, 8 - y * .1], 0.12, MAT.darkSteel);
+  }
+  box(group, 'Derrick top platform', 0, 37, 0, 15, 1.2, 14, MAT.darkSteel);
+  cylinder(group, 'Drill pipe', 0, 18, 0, 1.1, 1.1, 36, MAT.black, 18);
+  addCollider(-44, 5, 18, 18, 37);
+}
+
+function createHelipad() {
+  const pad = cylinder(scene, 'Helipad base', 48, 0.3, 47, 15, 15, 0.6, MAT.darkSteel, 48);
+  pad.rotation.y = Math.PI / 8;
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(12.5, 0.22, 8, 64), MAT.yellow);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.set(48, 0.65, 47);
+  scene.add(ring);
+  const h = new THREE.Mesh(new THREE.BoxGeometry(4, 0.08, 12), MAT.white);
+  h.position.set(48, 0.68, 47);
+  scene.add(h);
+  const cross = new THREE.Mesh(new THREE.BoxGeometry(12, 0.08, 4), MAT.white);
+  cross.position.set(48, 0.69, 47);
+  scene.add(cross);
+  const letter = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.1, 6), MAT.yellow);
+  letter.position.set(48, 0.72, 47);
+  scene.add(letter);
+}
+
+// ================================================================
+// Crew cabins, control room and emergency lighting
+// ================================================================
+function createCabin(x, z, width, depth, height, title) {
+  const group = new THREE.Group();
+  group.position.set(x, 0, z);
+  scene.add(group);
+  box(group, `${title} lower hull`, 0, height / 2, 0, width, height, depth, MAT.blue);
+  box(group, `${title} roof`, 0, height + 0.25, 0, width + 0.7, 0.5, depth + 0.7, MAT.darkSteel);
+  for (let sx = -1; sx <= 1; sx += 2) {
+    box(group, `${title} window`, sx * (width / 2 + 0.02), height * 0.62, 0, 0.06, 2.3, depth * 0.42, MAT.glass);
+    box(group, `${title} window frame`, sx * (width / 2 + 0.1), height * 0.62, 0, 0.12, 2.6, depth * 0.46, MAT.darkSteel);
+  }
+  box(group, `${title} door`, 0, 2.1, depth / 2 + 0.05, 1.5, 4.2, 0.12, MAT.rust);
+  box(group, `${title} door handle`, 0.5, 2.1, depth / 2 + 0.14, 0.08, 0.4, 0.08, MAT.yellow);
+  addCollider(x, z, width + 0.8, depth + 0.8, height + 0.6);
+  return group;
+}
+
+function createControlRoom() {
+  const room = createCabin(0, -43, 28, 20, 8, 'Main control room');
+  room.position.y = 0;
+  for (let x = -10; x <= 10; x += 5) {
+    const pane = box(room, 'Control room front window', x, 5.1, 10.12, 4.3, 2.7, 0.08, MAT.glass, false, false);
+    pane.material = MAT.glass;
+  }
+  for (let x = -8; x <= 8; x += 4) {
+    box(room, 'Console desk', x, 1.5, 4, 3.3, 1.1, 1.4, MAT.black);
+    box(room, 'Console monitor', x, 2.6, 3.5, 1.7, 1.4, 0.18, standard(0x152a30, 0.4, 0.1));
+  }
+  return room;
+}
+
+function createFloodlight(x, y, z, color = 0xffe4bd, intensity = 170) {
+  const pole = cylinder(scene, 'Floodlight pole', x, y / 2, z, 0.18, 0.22, y, MAT.darkSteel, 10);
+  const lamp = box(scene, 'Floodlight fixture', x, y, z, 1.3, 0.45, 0.8, MAT.black);
+  const glow = new THREE.PointLight(color, intensity, 34, 2);
+  glow.position.set(x, y - 0.3, z);
+  scene.add(glow);
+  floodlights.push({ light: glow, base: intensity, phase: Math.random() * 20, fixture: lamp });
+  return pole;
+}
+
+function createEmergencyLights() {
+  for (const [x, z] of [[-68, -50], [-20, -60], [20, -60], [70, -20], [-70, 30], [0, 56], [68, 58]]) {
+    createFloodlight(x, 9, z, 0xffd7a2, 95);
+  }
+  const alarm = new THREE.PointLight(0xff1f16, 0, 28, 2);
+  alarm.position.set(0, 6, -35);
+  scene.add(alarm);
+  floodlights.push({ light: alarm, base: 90, phase: 0, alarm: true });
+}
+
+// ================================================================
+// Smaller environmental details to make the platform feel lived in
+// ================================================================
+function createBarrels(x, z, count = 4) {
+  for (let i = 0; i < count; i++) {
+    const bx = x + (i % 2) * 2.2;
+    const bz = z + Math.floor(i / 2) * 2.2;
+    cylinder(scene, 'Oil drum', bx, 1.05, bz, 0.72, 0.72, 2.1, i % 2 ? MAT.rust : MAT.blue, 18);
+    cylinder(scene, 'Oil drum lid', bx, 2.12, bz, 0.72, 0.72, 0.1, MAT.darkSteel, 18);
+    addCollider(bx, bz, 1.5, 1.5, 2.2);
+  }
+}
+
+function createCableSpools(x, z) {
+  for (let i = 0; i < 3; i++) {
+    const gx = x + i * 3;
+    cylinder(scene, 'Cable spool axle', gx, 1.2, z, 0.18, 0.18, 2.4, MAT.darkSteel, 12);
+    cylinder(scene, 'Cable spool drum', gx, 1.2, z, 1.15, 1.15, 1.4, MAT.rust, 24);
+    cylinder(scene, 'Cable spool side', gx, 1.2, z + 0.78, 1.35, 1.35, 0.18, MAT.yellow, 24);
+    cylinder(scene, 'Cable spool side', gx, 1.2, z - 0.78, 1.35, 1.35, 0.18, MAT.yellow, 24);
+    addCollider(gx, z, 2.8, 2.8, 2.6);
+  }
+}
+
+function createVentilationFans() {
+  const fanPositions = [[-58, -4], [63, 5], [-8, 57], [22, -28]];
+  for (const [x, z] of fanPositions) {
+    const group = new THREE.Group();
+    group.position.set(x, 3, z);
+    scene.add(group);
+    cylinder(group, 'Vent fan housing', 0, 0, 0, 1.7, 1.7, 0.55, MAT.darkSteel, 24);
+    cylinder(group, 'Vent fan hub', 0, 0, 0.35, 0.38, 0.38, 0.25, MAT.yellow, 16);
+    for (let i = 0; i < 6; i++) {
+      const blade = box(group, 'Vent fan blade', 0, 0, 0.4, 0.25, 1.35, 0.12, MAT.steel);
+      blade.rotation.z = i * Math.PI / 3;
+    }
+    addCollider(x, z, 3.8, 3.8, 4);
+  }
+}
+
+function createWarningSigns() {
+  const signs = [
+    [-72, 3, 10, 'DANGER'], [-12, 3, -58, 'AUTHORIZED ONLY'], [70, 3, 10, 'HIGH VOLTAGE'], [12, 3, 60, 'LIFE JACKETS']
+  ];
+  for (const [x, y, z, label] of signs) {
+    const board = box(scene, `Warning sign ${label}`, x, y, z, 3.8, 1.5, 0.16, MAT.yellow, false, false);
+    board.rotation.y = Math.atan2(-x, -z);
+    const face = box(scene, 'Sign dark face', x, y, z + 0.1, 3.5, 1.2, 0.04, MAT.black, false, false);
+    face.rotation.y = board.rotation.y;
+  }
+}
+
+function createScatteredDebris() {
+  const debris = [
+    [-60, 22, 3, 0.5, 1.2], [-56, 24, 2, 0.4, 2.2], [12, 18, 2.5, 0.6, 1.4],
+    [34, -8, 4, 0.4, 0.8], [-18, -24, 3, 0.5, 1.1], [62, -31, 2.4, 0.5, 1.6],
+    [-3, 63, 3.2, 0.4, 1.2], [28, 63, 2.1, 0.6, 1.8], [-72, -30, 2.5, 0.5, 1.4]
+  ];
+  for (const [x, z, w, h, d] of debris) {
+    const item = box(scene, 'Loose steel debris', x, h / 2, z, w, h, d, MAT.rust);
+    item.rotation.y = Math.random() * Math.PI;
+  }
+}
+
+// ================================================================
+// Mission objects: fuse stations, bomb case, escape beacon
+// ================================================================
+function createFuseStation(x, z, index) {
+  const group = new THREE.Group();
+  group.position.set(x, 0, z);
+  scene.add(group);
+  box(group, 'Fuse station cabinet', 0, 1.5, 0, 2.2, 3, 1.4, MAT.darkSteel);
+  box(group, 'Fuse station display', 0, 2.1, 0.74, 1.3, 0.7, 0.08, standard(0x174a48, 0.25, 0.1), false, false);
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 8), new THREE.MeshBasicMaterial({ color: 0xffb52e }));
+  lamp.position.set(0, 2.8, 0.78);
+  group.add(lamp);
+  const handle = box(group, 'Fuse cabinet handle', 0.7, 1.4, 0.76, 0.12, 0.5, 0.1, MAT.yellow);
+  addCollider(x, z, 2.5, 2, 3.2);
+  const fuse = box(group, 'Spare fuse pickup', 0, 3.1, 1.1, 0.3, 0.7, 0.3, MAT.yellow);
+  addInteractable(fuse, `COLLECT SPARE FUSE ${index}`, () => {
+    if (fuse.userData.taken) return;
+    fuse.userData.taken = true;
+    fuse.visible = false;
+    STATE.fuses++;
+    ui.parts.textContent = `${STATE.fuses} / 3`;
+    toast(`SPARE FUSE ${index} SECURED`);
+    if (STATE.fuses === 3) setObjective('All spare fuses secured. Find the bomb case on the exposed east deck.');
+  }, 2.7);
+  return group;
+}
+
+function createBombCase(x, z) {
+  const group = new THREE.Group();
+  group.position.set(x, 0, z);
+  scene.add(group);
+  box(group, 'Bomb case body', 0, 0.8, 0, 2.4, 1.5, 1.6, MAT.black);
+  box(group, 'Bomb case lid', 0, 1.6, 0, 2.5, 0.18, 1.7, MAT.rust);
+  box(group, 'Bomb control panel', 0, 1.25, 0.83, 1.25, 0.7, 0.08, standard(0x271817, 0.3, 0.3), false, false);
+  const displayMat = new THREE.MeshBasicMaterial({ color: 0xff2a1d });
+  const display = box(group, 'Bomb countdown display', 0, 1.34, 0.89, 0.85, 0.2, 0.04, displayMat, false, false);
+  const led = new THREE.PointLight(0xff2118, 2, 6);
+  led.position.set(0, 1.8, 1.2);
+  group.add(led);
+  for (let i = -1; i <= 1; i++) {
+    cylinder(group, 'Bomb wire port', i * 0.42, 0.8, 0.88, 0.09, 0.09, 0.12, MAT.yellow, 10).rotation.x = Math.PI / 2;
+  }
+  bombMesh = group;
+  addCollider(x, z, 2.7, 2.2, 1.9);
+  addInteractable(group, 'INSPECT BOMB DEVICE', () => openBombPanel(), 3.4);
+  return group;
+}
+
+function createRescueBeacon(x, z) {
+  const group = new THREE.Group();
+  group.position.set(x, 0, z);
+  scene.add(group);
+  cylinder(group, 'Beacon base', 0, 0.7, 0, 1.1, 1.4, 1.4, MAT.darkSteel, 16);
+  cylinder(group, 'Beacon mast', 0, 3.2, 0, 0.16, 0.16, 5, MAT.yellow, 12);
+  const beacon = new THREE.PointLight(0x42d6ff, 0, 45, 2);
+  beacon.position.set(0, 5.8, 0);
+  group.add(beacon);
+  const globe = new THREE.Mesh(new THREE.SphereGeometry(0.48, 20, 14), new THREE.MeshBasicMaterial({ color: 0x2b9bbf }));
+  globe.position.set(0, 5.8, 0);
+  group.add(globe);
+  beaconMesh = group;
+  group.userData.light = beacon;
+  addCollider(x, z, 2.5, 2.5, 6);
+  addInteractable(group, 'ACTIVATE RESCUE BEACON', () => {
+    if (!STATE.bombDefused) {
+      toast('THE RADIO IS STILL JAMMED. DISARM THE BOMB FIRST.');
+      return;
+    }
+    if (!STATE.beaconActivated) {
+      STATE.beaconActivated = true;
+      beacon.intensity = 220;
+      globe.material.color.setHex(0x70eaff);
+      setObjective('Rescue beacon active. Reach the helipad and hold position.');
+      toast('RESCUE BEACON TRANSMITTING');
+    } else {
+      finishMission(true);
+    }
+  }, 3.2);
+  return group;
+}
+
+// ================================================================
+// First-person equipment and weapon models
+// ================================================================
+function createWeaponModel() {
+  weaponGroup = new THREE.Group();
+  weaponGroup.position.set(0.42, -0.36, -0.72);
+  camera.add(weaponGroup);
+  const armMat = standard(0x343b3e, 0.82, 0.05);
+  const gloveMat = standard(0x171d20, 0.94, 0.02);
+  const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.15, 0.68, 12), armMat);
+  arm.rotation.z = -0.6;
+  arm.position.set(-0.05, -0.19, 0.15);
+  weaponGroup.add(arm);
+  const hand = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.16, 0.27), gloveMat);
+  hand.position.set(-0.02, -0.02, -0.05);
+  weaponGroup.add(hand);
+  const slide = box(weaponGroup, 'Pistol slide', 0, 0.09, -0.22, 0.18, 0.16, 0.58, MAT.steel);
+  const grip = box(weaponGroup, 'Pistol grip', 0, -0.1, -0.01, 0.15, 0.3, 0.2, MAT.black);
+  grip.rotation.x = -0.22;
+  const barrel = cylinder(weaponGroup, 'Pistol barrel', 0, 0.09, -0.54, 0.045, 0.045, 0.32, MAT.black, 12);
+  barrel.rotation.x = Math.PI / 2;
+  muzzleFlash = new THREE.PointLight(0xffa45c, 0, 4, 2);
+  muzzleFlash.position.set(0, 0.09, -0.76);
+  weaponGroup.add(muzzleFlash);
+  weaponGroup.userData.pistolParts = [slide, grip, barrel];
+  weaponGroup.userData.arm = arm;
+  weaponGroup.userData.hand = hand;
+  const flashlight = new THREE.SpotLight(0xd6e9ff, 0, 52, Math.PI / 7, 0.45, 1.2);
+  flashlight.position.set(0, 0.03, -0.1);
+  flashlight.target.position.set(0, 0, -1);
+  camera.add(flashlight);
+  camera.add(flashlight.target);
+  weaponGroup.userData.flashlight = flashlight;
+  const knife = new THREE.Group();
+  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.07, 0.58), standard(0x9daeb2, 0.24, 0.88));
+  blade.position.set(0, 0.08, -0.35);
+  knife.add(blade);
+  const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.075, 0.3, 10), MAT.rubber);
+  handle.rotation.x = Math.PI / 2;
+  handle.position.set(0, 0, -0.02);
+  knife.add(handle);
+  knife.visible = false;
+  weaponGroup.add(knife);
+  weaponGroup.userData.knife = knife;
+}
+
+function setWeapon(name) {
+  STATE.weapon = name;
+  if (!weaponGroup) return;
+  weaponGroup.userData.knife.visible = name === 'KNIFE';
+  for (const part of weaponGroup.userData.pistolParts) part.visible = name === 'PISTOL';
+  ui.weapon.textContent = name === 'PISTOL' ? 'SERVICE PISTOL' : 'UTILITY KNIFE';
+  toast(name === 'PISTOL' ? 'PISTOL EQUIPPED' : 'KNIFE EQUIPPED');
+}
+
+// ================================================================
+// Creature model, stalking AI and hit reactions
+// ================================================================
+function createCreature() {
+  const group = new THREE.Group();
+  group.position.copy(enemy.position);
+  scene.add(group);
+  const bone = standard(0x8b918c, 0.88, 0.02);
+  const dark = standard(0x151a1b, 0.9, 0.02);
+  const wound = new THREE.MeshStandardMaterial({ color: 0x4e1617, roughness: 0.96 });
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.62, 1.8, 5, 10), bone);
+  torso.position.y = 2.25;
+  torso.scale.set(0.72, 1.12, 0.55);
+  group.add(torso);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 0.65, 10), bone);
+  neck.position.set(0, 3.55, 0.03);
+  group.add(neck);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.48, 18, 14), bone);
+  head.scale.set(0.78, 1.2, 0.8);
+  head.position.set(0, 4.05, 0.08);
+  group.add(head);
+  const hood = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.6), dark);
+  hood.scale.set(1.15, 0.8, 1.05);
+  hood.position.set(0, 4.25, -0.02);
+  group.add(hood);
+  for (const side of [-1, 1]) {
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 8), new THREE.MeshBasicMaterial({ color: 0xff3328 }));
+    eye.position.set(side * 0.19, 4.08, 0.43);
+    group.add(eye);
+    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.16, 1.65, 4, 8), bone);
+    arm.position.set(side * 0.78, 2.55, 0.05);
+    arm.rotation.z = side * -0.2;
+    group.add(arm);
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), wound);
+    hand.position.set(side * 0.92, 1.6, 0.12);
+    group.add(hand);
+    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 1.45, 4, 8), bone);
+    leg.position.set(side * 0.28, 0.85, 0);
+    group.add(leg);
+  }
+  for (let i = 0; i < 6; i++) {
+    const tendril = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.035, 1.2 + Math.random(), 5), dark);
+    tendril.position.set((Math.random() - 0.5) * 0.8, 4.4 + Math.random() * 0.3, -0.3);
+    tendril.rotation.z = (Math.random() - 0.5) * 0.8;
+    group.add(tendril);
+  }
+  enemy.group = group;
+  group.visible = false;
+  return group;
+}
+
+function updateEnemy(dt) {
+  if (!enemy.group || STATE.ended || !STATE.running || STATE.bombOpen) return;
+  const distance = enemy.position.distanceTo(player.position);
+  if (distance < CONFIG.enemyWakeRange || STATE.bombFound) enemy.active = true;
+  if (!enemy.active) return;
+  enemy.group.visible = true;
+  enemy.phase += dt * 5.5;
+  const direction = new THREE.Vector3().subVectors(player.position, enemy.position);
+  direction.y = 0;
+  const d = direction.length();
+  if (d > 0.001) direction.normalize();
+  const speed = d > 18 ? 3.5 : d > 5 ? 4.7 : 2.3;
+  const step = direction.multiplyScalar(speed * dt);
+  const next = enemy.position.clone().add(step);
+  if (!collides(next.x, next.z, 0.6)) enemy.position.copy(next);
+  enemy.group.position.copy(enemy.position);
+  enemy.group.rotation.y = Math.atan2(player.position.x - enemy.position.x, player.position.z - enemy.position.z);
+  enemy.group.position.y = Math.sin(enemy.phase) * 0.07;
+  enemy.group.children.forEach((child, index) => {
+    if (index > 5) child.rotation.z = Math.sin(enemy.phase + index) * 0.12;
+  });
+  if (d < CONFIG.enemyAttackRange && STATE.hitCooldown <= 0) {
+    damagePlayer(13);
+    STATE.hitCooldown = 1.1;
+    enemy.retreatTimer = 0.8;
+    toast('THE CREATURE HAS YOU');
+  }
+  if (enemy.retreatTimer > 0) enemy.retreatTimer -= dt;
+}
+
+// ================================================================
+// Collision and movement
+// ================================================================
+function collides(x, z, radius = CONFIG.playerRadius) {
+  if (x < -80 || x > 80 || z < -69 || z > 69) return true;
+  for (const c of colliders) {
+    const closestX = Math.max(c.minX, Math.min(x, c.maxX));
+    const closestZ = Math.max(c.minZ, Math.min(z, c.maxZ));
+    const dx = x - closestX;
+    const dz = z - closestZ;
+    if (dx * dx + dz * dz < radius * radius) return true;
+  }
+  return false;
+}
+
+function movePlayer(dt) {
+  if (!STATE.running || STATE.paused || STATE.bombOpen) return;
+  const forward = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
+  const right = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+  const direction = new THREE.Vector3();
+  if (keys.KeyW || keys.ArrowUp) direction.add(forward);
+  if (keys.KeyS || keys.ArrowDown) direction.sub(forward);
+  if (keys.KeyD || keys.ArrowRight) direction.add(right);
+  if (keys.KeyA || keys.ArrowLeft) direction.sub(right);
+  player.moving = direction.lengthSq() > 0;
+  player.sprinting = !!(keys.ShiftLeft || keys.ShiftRight) && player.moving && STATE.stamina > 2;
+  if (player.moving) direction.normalize();
+  const speed = player.sprinting ? CONFIG.sprintSpeed : CONFIG.walkSpeed;
+  if (player.sprinting) STATE.stamina = Math.max(0, STATE.stamina - 24 * dt);
+  else STATE.stamina = Math.min(100, STATE.stamina + 15 * dt);
+  const dx = direction.x * speed * dt;
+  const dz = direction.z * speed * dt;
+  if (!collides(player.position.x + dx, player.position.z, 0.38)) player.position.x += dx;
+  if (!collides(player.position.x, player.position.z + dz, 0.38)) player.position.z += dz;
+  player.bob += dt * (player.sprinting ? 13 : 8) * (player.moving ? 1 : 0.15);
+  camera.position.copy(player.position);
+  camera.position.y = CONFIG.playerHeight + (player.moving ? Math.sin(player.bob) * (player.sprinting ? 0.065 : 0.035) : 0);
+  camera.rotation.set(player.pitch, player.yaw, 0, 'YXZ');
+  if (weaponGroup) {
+    weaponGroup.position.y = -0.36 + (player.moving ? Math.abs(Math.sin(player.bob)) * 0.025 : 0);
+    weaponGroup.rotation.z = player.moving ? Math.sin(player.bob * 0.5) * 0.025 : 0;
+  }
+}
+
+// ================================================================
+// Ray-based interaction selection
+// ================================================================
+const raycaster = new THREE.Raycaster();
+function updateInteraction() {
+  if (!STATE.running || STATE.paused || STATE.bombOpen) {
+    ui.prompt.style.opacity = '0';
+    activeInteractable = null;
+    return;
+  }
+  let nearest = null;
+  let nearestDistance = Infinity;
+  for (const item of interactables) {
+    if (!item.object.visible) continue;
+    if (item.object.userData.taken) continue;
+    const p = new THREE.Vector3();
+    item.object.getWorldPosition(p);
+    const d = p.distanceTo(camera.position);
+    if (d > item.range || d > nearestDistance) continue;
+    const direction = p.clone().sub(camera.position).normalize();
+    const dot = direction.dot(new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion));
+    if (dot < 0.72) continue;
+    raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+    const hits = raycaster.intersectObject(item.object, true);
+    if (hits.length || d < 1.8) {
+      nearest = item;
+      nearestDistance = d;
+    }
+  }
+  activeInteractable = nearest;
+  if (nearest) {
+    ui.prompt.textContent = `[ E ] ${nearest.title}`;
+    ui.prompt.style.opacity = '1';
+  } else {
+    ui.prompt.style.opacity = '0';
+  }
+}
+
+function interact() {
+  if (!STATE.running || STATE.paused) return;
+  if (STATE.bombOpen) return;
+  if (activeInteractable) activeInteractable.action();
+}
+
+// ================================================================
+// Bomb disarm puzzle and mission logic
+// ================================================================
+const WIRE_COLOURS = ['RED', 'BLUE', 'WHITE'];
+function shuffleSequence() {
+  const sequence = [...WIRE_COLOURS];
+  for (let i = sequence.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [sequence[i], sequence[j]] = [sequence[j], sequence[i]];
+  }
+  return sequence;
+}
+
+function openBombPanel() {
+  if (STATE.bombDefused || STATE.bombOpen) return;
+  if (STATE.fuses < 3) { toast(`YOU NEED ALL THREE FUSES (${STATE.fuses}/3)`); return; }
+  STATE.bombFound = true;
+  STATE.bombOpen = true;
+  STATE.deviceRemaining = CONFIG.deviceDuration;
+  STATE.wireIndex = 0;
+  STATE.wireSequence = shuffleSequence();
+  $('sequence').textContent = `SEQUENCE: ${STATE.wireSequence.join('  →  ')}`;
+  ui.wireMessage.textContent = 'DIAGNOSTIC COMPLETE. CUT THE FIRST WIRE.';
+  ui.bomb.style.display = 'flex';
+  document.exitPointerLock?.();
+  toast('BOMB DEVICE LOCATED');
+  setObjective('Disarm the bomb. Follow the displayed colour sequence.');
+}
+
+function closeBombPanel() {
+  if (!STATE.bombOpen) return;
+  STATE.bombOpen = false;
+  ui.bomb.style.display = 'none';
+  if (STATE.running && !STATE.paused) $('game').requestPointerLock?.();
+}
+
+function cutWire(colour) {
+  if (!STATE.bombOpen || STATE.bombDefused) return;
+  const expected = STATE.wireSequence[STATE.wireIndex];
+  if (colour !== expected) {
+    STATE.deviceRemaining = Math.max(0, STATE.deviceRemaining - 18);
+    ui.wireMessage.textContent = `WRONG WIRE. ${colour} WAS NOT NEXT. SYSTEM LOCKOUT.`;
+    toast('WRONG WIRE — TIME PENALTY');
+    if (STATE.deviceRemaining <= 0) explodeBomb();
+    updateBombTimer();
+    return;
+  }
+  STATE.wireIndex++;
+  ui.wireMessage.textContent = STATE.wireIndex < 3 ? `WIRE ACCEPTED. ${3 - STATE.wireIndex} REMAINING.` : 'SEQUENCE ACCEPTED. DEVICE SAFE.';
+  if (STATE.wireIndex >= 3) {
+    STATE.bombDefused = true;
+    STATE.bombOpen = false;
+    ui.bomb.style.display = 'none';
+    ui.power.textContent = 'STABILISING';
+    toast('BOMB DISARMED — RADIO SIGNAL RESTORED');
+    setObjective('Bomb safe. Activate the rescue beacon near the helipad.');
+    if (enemy.group) enemy.active = true;
+    if (STATE.running) $('game').requestPointerLock?.();
+  }
+}
+
+function updateBombTimer() {
+  const seconds = Math.max(0, Math.ceil(STATE.deviceRemaining));
+  ui.bombTimer.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
+function explodeBomb() {
+  STATE.bombOpen = false;
+  ui.bomb.style.display = 'none';
+  finishMission(false, 'THE DEVICE DETONATED. PLATFORM 09 IS LOST.');
+}
+
+function setObjective(text) {
+  ui.objective.textContent = text;
+}
+
+function toast(text) {
+  lastToast = text;
+  ui.toast.textContent = text;
+  ui.toast.style.opacity = '1';
+  STATE.toastTime = 2.6;
+}
+
+function damagePlayer(amount) {
+  if (STATE.ended || STATE.hitCooldown > 0) return;
+  STATE.health = Math.max(0, STATE.health - amount);
+  ui.health.textContent = STATE.health;
+  ui.damage.style.opacity = '0.85';
+  setTimeout(() => { ui.damage.style.opacity = '0'; }, 180);
+  if (STATE.health <= 0) finishMission(false, 'YOU WERE LOST ON THE RIG.');
+}
+
+function finishMission(success, message = '') {
+  STATE.ended = true;
+  STATE.running = false;
+  document.exitPointerLock?.();
+  ui.ending.style.display = 'flex';
+  $('endingTitle').textContent = success ? 'MISSION COMPLETE' : 'MISSION FAILED';
+  $('endingText').textContent = message || (success ? 'The bomb is safe. The rescue beacon is transmitting. A helicopter is inbound.' : 'The operation has failed. Platform 09 has gone silent.');
+}
+
+// ================================================================
+// Weapons, firing and reload behaviour
+// ================================================================
+function fireWeapon() {
+  if (!STATE.running || STATE.paused || STATE.bombOpen || STATE.attackCooldown > 0) return;
+  if (STATE.weapon === 'KNIFE') {
+    STATE.attackCooldown = 0.62;
+    weaponGroup.rotation.x = -0.45;
+    setTimeout(() => { if (weaponGroup) weaponGroup.rotation.x = 0; }, 150);
+    const distance = enemy.position.distanceTo(player.position);
+    if (enemy.active && distance < 2.7 && enemy.health > 0) {
+      enemy.health -= 55;
+      toast('KNIFE STRIKE');
+      if (enemy.health <= 0) {
+        enemy.group.visible = false;
+        enemy.active = false;
+        toast('THREAT TEMPORARILY STOPPED');
+      }
+    } else {
+      toast('KNIFE SWING');
+    }
+    return;
+  }
+  if (STATE.ammo <= 0) {
+    toast('EMPTY — PRESS R TO RELOAD');
+    return;
+  }
+  STATE.ammo--;
+  STATE.attackCooldown = 0.24;
+  ui.ammo.textContent = `${STATE.ammo} / ${STATE.reserveAmmo}`;
+  if (muzzleFlash) muzzleFlash.intensity = 4.5;
+  setTimeout(() => { if (muzzleFlash) muzzleFlash.intensity = 0; }, 65);
+  weaponGroup.position.z += 0.07;
+  setTimeout(() => { if (weaponGroup) weaponGroup.position.z = -0.72; }, 80);
+  const toEnemy = enemy.position.clone().add(new THREE.Vector3(0, 2.3, 0)).sub(camera.position).normalize();
+  const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+  const dot = toEnemy.dot(forward);
+  if (enemy.active && dot > 0.982 && enemy.position.distanceTo(player.position) < 42) {
+    const target = new THREE.Vector3().copy(enemy.position).add(new THREE.Vector3(0, 2.3, 0));
+    const shotRay = new THREE.Raycaster(camera.position, forward, 0, 45);
+    const hits = shotRay.intersectObject(enemy.group, true);
+    if (hits.length || dot > 0.993) {
+      enemy.health -= 38;
+      toast('HIT CONFIRMED');
+      if (enemy.health <= 0) {
+        enemy.group.visible = false;
+        enemy.active = false;
+        toast('CREATURE DOWN — KEEP MOVING');
+      }
+    }
+  }
+}
+
+function reloadWeapon() {
+  if (STATE.weapon !== 'PISTOL' || STATE.ammo >= 12 || STATE.reserveAmmo <= 0 || STATE.reloadTime > 0) return;
+  STATE.reloadTime = 1.45;
+  toast('RELOADING');
+  setTimeout(() => {
+    const needed = 12 - STATE.ammo;
+    const amount = Math.min(needed, STATE.reserveAmmo);
+    STATE.ammo += amount;
+    STATE.reserveAmmo -= amount;
+    ui.ammo.textContent = `${STATE.ammo} / ${STATE.reserveAmmo}`;
+    STATE.reloadTime = 0;
+  }, 1450);
+}
+
+// ================================================================
+// Weather, particles, sea spray and atmosphere
+// ================================================================
+function createRain() {
+  const count = CONFIG.quality === 'ULTRA' ? 9000 : CONFIG.quality === 'HIGH' ? 4500 : 1800;
+  const positions = new Float32Array(count * 3);
+  const velocities = new Float32Array(count);
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 220;
+    positions[i * 3 + 1] = Math.random() * 75;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 190;
+    velocities[i] = 18 + Math.random() * 25;
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const material = new THREE.PointsMaterial({ color: 0xaac7d2, size: 0.075, transparent: true, opacity: 0.45, depthWrite: false });
+  const rain = new THREE.Points(geometry, material);
+  rain.name = 'Heavy offshore rain';
+  scene.add(rain);
+  rain.userData.velocities = velocities;
+  return rain;
+}
+const rain = createRain();
+
+function updateRain(dt) {
+  const pos = rain.geometry.attributes.position;
+  const velocity = rain.userData.velocities;
+  for (let i = 0; i < pos.count; i++) {
+    let y = pos.getY(i) - velocity[i] * dt;
+    let x = pos.getX(i) + 4.5 * dt;
+    if (y < 0) {
+      y = 70 + Math.random() * 15;
+      x = (Math.random() - 0.5) * 220;
+      pos.setZ(i, (Math.random() - 0.5) * 190);
+    }
+    pos.setY(i, y);
+    pos.setX(i, x);
+  }
+  pos.needsUpdate = true;
+  rain.position.x = camera.position.x * 0.35;
+  rain.position.z = camera.position.z * 0.35;
+}
+
+function createSteamVent(x, z) {
+  const group = new THREE.Group();
+  group.position.set(x, 1.5, z);
+  scene.add(group);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.12, 8, 18), MAT.darkSteel);
+  ring.rotation.x = Math.PI / 2;
+  group.add(ring);
+  const count = 34;
+  const points = new Float32Array(count * 3);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(points, 3));
+  const cloud = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xc1cbd0, size: 0.65, transparent: true, opacity: 0.18, depthWrite: false }));
+  group.add(cloud);
+  particles.push({ group, cloud, count, seed: Math.random() * 100 });
+}
+
+function updateSteam(dt) {
+  for (const emitter of particles) {
+    const attr = emitter.cloud.geometry.attributes.position;
+    for (let i = 0; i < emitter.count; i++) {
+      const phase = (waveTime * 0.8 + i / emitter.count + emitter.seed) % 1;
+      const radius = phase * 1.2;
+      attr.setXYZ(i, Math.sin(i * 9.2 + waveTime) * radius, phase * 5.5, Math.cos(i * 7.4 + waveTime) * radius);
+    }
+    attr.needsUpdate = true;
+  }
+}
+
+// ================================================================
+// Level assembly and mission placement
+// ================================================================
+function buildWorld() {
+  createOcean();
+  createPlatformLegs();
+  createDeck();
+  createRailings();
+  createStorageTanks();
+  createContainer(-24, -57, 0x40545c, 'SUPPLY');
+  createContainer(14, 58, 0x5b4140, 'HAZMAT');
+  createContainer(70, -5, 0x384b51, 'CARGO');
+  createPipework();
+  createCrane();
+  createDrillingDerrick();
+  createHelipad();
+  createControlRoom();
+  createCabin(-65, -45, 16, 13, 7, 'Workshop');
+  createCabin(65, 20, 14, 13, 7, 'Generator room');
+  createCabin(-5, 48, 18, 12, 6, 'Crew quarters');
+  createEmergencyLights();
+  createBarrels(-65, 42, 6);
+  createBarrels(27, 15, 4);
+  createCableSpools(-25, 57);
+  createVentilationFans();
+  createWarningSigns();
+  createScatteredDebris();
+  createSteamVent(-18, -15);
+  createSteamVent(61, -6);
+  createSteamVent(-58, 5);
+  createFuseStation(-62, -15, 1);
+  createFuseStation(5, 59, 2);
+  createFuseStation(66, -32, 3);
+  createBombCase(31, -5);
+  createRescueBeacon(48, 47);
+  createCreature();
+  createWeaponModel();
+}
+
+// ================================================================
+// Mission clock, ambient sound and audio cues
+// ================================================================
+let audioContext = null;
+let masterGain = null;
+function initAudio() {
+  if (audioContext) return;
+  const AudioCtor = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtor) return;
+  audioContext = new AudioCtor();
+  masterGain = audioContext.createGain();
+  masterGain.gain.value = 0.18;
+  masterGain.connect(audioContext.destination);
+}
+
+function tone(frequency, duration, type = 'sine', volume = 0.12) {
+  if (!audioContext || !masterGain) return;
+  const osc = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(frequency, audioContext.currentTime);
+  gain.gain.setValueAtTime(volume, audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(masterGain);
+  osc.start();
+  osc.stop(audioContext.currentTime + duration);
+}
+
+function updateMissionClock(dt) {
+  if (!STATE.running || STATE.paused || STATE.ended) return;
+  if (!STATE.bombDefused) {
+    STATE.bombRemaining -= dt;
+    if (STATE.bombRemaining <= 0) {
+      STATE.bombRemaining = 0;
+      finishMission(false, 'THE MAIN COUNTDOWN REACHED ZERO. THE RIG EXPLODED.');
+    }
+  }
+  if (STATE.bombOpen && !STATE.bombDefused) {
+    STATE.deviceRemaining -= dt;
+    updateBombTimer();
+    if (STATE.deviceRemaining <= 0) explodeBomb();
+  }
+  const seconds = Math.max(0, Math.ceil(STATE.bombRemaining));
+  ui.timer.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+  if (seconds < 60) ui.timer.style.color = '#f05b4d';
+  else ui.timer.style.color = '#f2d4b0';
+}
+
+function updateAtmosphere(dt) {
+  waveTime += dt;
+  skyMaterial.uniforms.time.value = waveTime;
+  updateRain(dt);
+  updateSteam(dt);
+  for (const item of floodlights) {
+    const pulse = item.alarm ? (Math.sin(waveTime * 5) > 0 ? 1 : 0.08) : 0.78 + Math.sin(waveTime * 1.4 + item.phase) * 0.12;
+    const failure = Math.sin(waveTime * 0.7 + item.phase * 2) > 0.997 ? 0.12 : 1;
+    item.light.intensity = item.base * pulse * failure;
+  }
+  if (oceanMesh) oceanMesh.position.x = Math.sin(waveTime * 0.08) * 1.4;
+}
+
+// ================================================================
+// Quality presets and responsive rendering
+// ================================================================
+const QUALITY = [
+  { name: 'PERFORMANCE', pixelRatio: 1, shadows: false, shadowSize: 512, rain: 1800, scale: 0.75 },
+  { name: 'HIGH', pixelRatio: 1.5, shadows: true, shadowSize: 1536, rain: 4500, scale: 1 },
+  { name: '4K ULTRA', pixelRatio: 2, shadows: true, shadowSize: 3072, rain: 9000, scale: 1 }
+];
+
+function setQuality(index) {
+  STATE.selectedQuality = (index + QUALITY.length) % QUALITY.length;
+  const preset = QUALITY[STATE.selectedQuality];
+  CONFIG.quality = preset.name;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, preset.pixelRatio));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = preset.shadows;
+  sun.shadow.mapSize.set(preset.shadowSize, preset.shadowSize);
+  renderer.shadowMap.needsUpdate = true;
+  if (rain) {
+    const desired = preset.rain;
+    if (rain.geometry.attributes.position.count !== desired) {
+      const positions = new Float32Array(desired * 3);
+      const speeds = new Float32Array(desired);
+      for (let i = 0; i < desired; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 220;
+        positions[i * 3 + 1] = Math.random() * 75;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 190;
+        speeds[i] = 18 + Math.random() * 25;
+      }
+      rain.geometry.dispose();
+      rain.geometry = new THREE.BufferGeometry();
+      rain.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      rain.userData.velocities = speeds;
+    }
+  }
+  $('qualityButton').textContent = `GRAPHICS: ${preset.name}`;
+}
+
+function resize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+window.addEventListener('resize', resize);
+
+// ================================================================
+// Input wiring and pointer lock lifecycle
+// ================================================================
+window.addEventListener('keydown', (event) => {
+  keys[event.code] = true;
+  if (event.code === 'KeyE') interact();
+  if (event.code === 'Digit1') setWeapon('PISTOL');
+  if (event.code === 'Digit2') setWeapon('KNIFE');
+  if (event.code === 'KeyR') reloadWeapon();
+  if (event.code === 'KeyF') {
+    STATE.flashlight = !STATE.flashlight;
+    if (weaponGroup) weaponGroup.userData.flashlight.intensity = STATE.flashlight ? 110 : 0;
+    toast(STATE.flashlight ? 'FLASHLIGHT ON' : 'FLASHLIGHT OFF');
+  }
+  if (event.code === 'Escape' && STATE.running && !STATE.bombOpen) togglePause();
+});
+window.addEventListener('keyup', (event) => { keys[event.code] = false; });
+window.addEventListener('blur', () => { for (const key of Object.keys(keys)) keys[key] = false; });
+
+$('game').addEventListener('click', () => {
+  if (STATE.running && !STATE.paused && !STATE.bombOpen && !pointerLocked) {
+    $('game').requestPointerLock?.();
+  }
+});
+
+document.addEventListener('pointerlockchange', () => {
+  pointerLocked = document.pointerLockElement === $('game');
+  if (!pointerLocked && STATE.running && !STATE.paused && !STATE.bombOpen && !STATE.ended) {
+    // Browser pointer-lock exits are treated as a pause to avoid hidden movement.
+    togglePause(true);
+  }
+});
+
+document.addEventListener('mousemove', (event) => {
+  if (!pointerLocked || !STATE.running || STATE.paused || STATE.bombOpen) return;
+  player.yaw -= event.movementX * 0.0022;
+  player.pitch -= event.movementY * 0.0018;
+  player.pitch = THREE.MathUtils.clamp(player.pitch, -1.35, 1.35);
+});
+
+window.addEventListener('mousedown', (event) => {
+  if (event.button === 0 && pointerLocked) fireWeapon();
+});
+
+function togglePause(force = false) {
+  if (!STATE.running || STATE.ended || STATE.bombOpen) return;
+  STATE.paused = force ? true : !STATE.paused;
+  ui.pause.style.display = STATE.paused ? 'flex' : 'none';
+  if (STATE.paused) document.exitPointerLock?.();
+  else $('game').requestPointerLock?.();
+}
+
+$('startButton').addEventListener('click', () => {
+  initAudio();
+  STATE.running = true;
+  ui.start.style.display = 'none';
+  ui.hud.style.display = 'block';
+  setQuality(STATE.selectedQuality);
+  $('game').requestPointerLock?.();
+  toast('OPERATION STARTED — LOCATE THE THREE SPARE FUSES');
+  setObjective('Search the rig for three spare fuses. The bomb is somewhere on the east deck.');
+  tone(180, 0.4, 'sawtooth', 0.06);
+});
+
+$('qualityButton').addEventListener('click', () => {
+  setQuality(STATE.selectedQuality + 1);
+});
+$('resumeButton').addEventListener('click', () => togglePause());
+$('restartButton').addEventListener('click', () => window.location.reload());
+$('againButton').addEventListener('click', () => window.location.reload());
+$('closeBomb').addEventListener('click', closeBombPanel);
+for (const button of document.querySelectorAll('[data-wire]')) {
+  button.addEventListener('click', () => cutWire(button.dataset.wire));
+}
+
+// ================================================================
+// Main simulation update and render loop
+// ================================================================
+function update(dt) {
+  if (!STATE.running || STATE.paused || STATE.ended) return;
+  STATE.elapsed += dt;
+  STATE.attackCooldown = Math.max(0, STATE.attackCooldown - dt);
+  STATE.hitCooldown = Math.max(0, STATE.hitCooldown - dt);
+  if (STATE.toastTime > 0) {
+    STATE.toastTime -= dt;
+    if (STATE.toastTime <= 0) ui.toast.style.opacity = '0';
+  }
+  movePlayer(dt);
+  updateInteraction();
+  updateEnemy(dt);
+  updateMissionClock(dt);
+  updateAtmosphere(dt);
+  if (weaponGroup && weaponGroup.userData.flashlight) {
+    weaponGroup.userData.flashlight.intensity = STATE.flashlight ? 110 : 0;
+  }
+  if (STATE.beaconActivated && beaconMesh) {
+    beaconMesh.rotation.y += dt * 0.6;
+    const distanceToPad = player.position.distanceTo(new THREE.Vector3(48, 1.7, 47));
+    if (distanceToPad < 5) finishMission(true);
+  }
+  if (STATE.bombDefused) ui.power.textContent = 'RESTORED';
+}
+
+function render() {
+  renderer.render(scene, camera);
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  const dt = Math.min(clock.getDelta(), 0.04);
+  update(dt);
+  render();
+}
+
+// ================================================================
+// Startup sequence
+// ================================================================
+buildWorld();
+setQuality(1);
+renderer.setAnimationLoop(null);
+requestAnimationFrame(loop);
+
+// ================================================================
+// In-game accessibility and safety fallbacks
+// ================================================================
+window.addEventListener('contextmenu', (event) => event.preventDefault());
+window.addEventListener('visibilitychange', () => {
+  if (document.hidden && STATE.running && !STATE.paused && !STATE.bombOpen) togglePause(true);
+});
+
+// The game is designed to be playable with keyboard and mouse.
+// It intentionally avoids relying on a remote model or downloaded asset pack.
+// Every structure, prop, weapon, enemy mesh and lighting fixture is generated here.
+// The Three.js runtime itself is loaded from its public CDN import above.
+
+// ================================================================
+// Debug hooks (kept local to the page; no external telemetry)
+// ================================================================
+const DEBUG = false;
+if (DEBUG) {
+  window.blacktideDebug = {
+    state: STATE,
+    player,
+    enemy,
+    scene,
+    camera,
+    colliders,
+    interactables,
+    complete: () => finishMission(true),
+    revealEnemy: () => { enemy.active = true; enemy.group.visible = true; },
+    openBomb: () => openBombPanel()
+  };
+}
 </script>
+
+
+/* ------------------------------------------------------------
+   PLATFORM ART DIRECTION
+   ------------------------------------------------------------
+   001. Use cold blue-grey steel as the dominant material family.
+   002. Reserve hazard yellow for railings, edges and interactable hardware.
+   003. Use dark red rust on older exposed equipment and structural joints.
+   004. Keep the sky brighter near the horizon and darker overhead.
+   005. Use fog to soften the silhouette of distant rig structures.
+   006. Keep the ocean dark and desaturated so deck lighting remains readable.
+   007. The vignette is a screen-space overlay and does not affect world lighting.
+   008. The grain layer is a subtle texture overlay to add film-like atmosphere.
+   009. The rain is intentionally visible against the sky and floodlights.
+   010. The deck seams help establish scale and player orientation.
+   011. Repeating pipes create long leading lines across the platform.
+   012. The crane and derrick provide tall silhouettes visible from far away.
+   013. The helipad is a visual landmark and the final extraction destination.
+   014. The control room is a large block silhouette on the north side.
+   015. The containers create a believable cargo storage zone.
+   016. The fuel tanks create an industrial storage zone.
+   017. The cabins give the platform a sense of crew occupancy.
+   018. The warning signs suggest that the site was operating before the incident.
+   019. Loose debris suggests the evacuation was rushed.
+   020. The creature silhouette should remain readable against dark backgrounds.
+   021. Its glowing eyes are a small high-contrast focal point.
+   022. The weapon model is intentionally visible at the lower-right of the screen.
+   023. The first-person view keeps the player immersed in the platform space.
+   024. The HUD avoids large opaque panels over the 3D world.
+   025. The start screen uses restrained typography and a strong red accent.
+*/
+
+/* ------------------------------------------------------------
+   MISSION FLOW
+   ------------------------------------------------------------
+   001. The operation begins with the player at the western entry point.
+   002. The first objective is to locate three spare fuses.
+   003. The fuse locations are intentionally spread across the platform.
+   004. The player can collect fuses in any order.
+   005. The bomb case is available before all fuses are collected.
+   006. The player may inspect the bomb as soon as they find it.
+   007. The bomb interaction launches a separate full-screen puzzle panel.
+   008. The displayed sequence is shuffled on each attempt.
+   009. The player must read the sequence before cutting a wire.
+   010. Correct cuts advance the puzzle state.
+   011. Wrong cuts remove eighteen seconds from the device timer.
+   012. The device timer is separate from the main operation timer.
+   013. The main timer creates urgency while exploring.
+   014. The device timer creates urgency during the final puzzle.
+   015. A successful disarm stops the main operation timer.
+   016. A successful disarm updates the objective to the rescue beacon.
+   017. The rescue beacon is locked until the device is safe.
+   018. The beacon must be activated by interaction.
+   019. After activation, the player must physically reach the helipad.
+   020. The extraction trigger checks distance to the helipad centre.
+   021. A failed timer ends the operation immediately.
+   022. A player health value of zero ends the operation.
+   023. The ending panel offers a full restart.
+   024. Restarting reloads the page and resets the random wire order.
+   025. The intended run is a short, replayable survival mission.
+*/
+
+/* ------------------------------------------------------------
+   PLAYER FEEL
+   ------------------------------------------------------------
+   001. Movement direction is relative to the camera yaw.
+   002. The player can move diagonally without receiving extra speed.
+   003. The sprint speed is faster than the walk speed.
+   004. Stamina drains only while sprinting and moving.
+   005. Stamina recovers while walking or standing still.
+   006. Camera bob is tied to movement speed.
+   007. Weapon bob is tied to the camera bob phase.
+   008. The mouse look pitch is clamped to avoid flipping the camera.
+   009. The yaw angle can rotate continuously around the full circle.
+   010. Pointer lock is required for continuous mouse look.
+   011. Pressing Escape opens the pause panel.
+   012. Losing pointer lock unexpectedly also pauses the operation.
+   013. The page pauses when the browser tab becomes hidden.
+   014. Collision uses a circular player radius against rectangular obstacles.
+   015. Separate X and Z movement checks allow sliding along walls.
+   016. The player cannot walk beyond the outer platform bounds.
+   017. The player remains at a fixed first-person eye height.
+   018. The current prototype does not include jumping or crouching.
+   019. The current prototype does not include a full animation rig.
+   020. The current prototype uses a simplified weapon sway effect.
+   021. The current prototype uses a compact HUD for desktop screens.
+   022. The controls panel remains visible on the title screen.
+   023. The game should be tested with a mouse and keyboard first.
+   024. Touch controls are not implemented in this build.
+*/
+
+/* ------------------------------------------------------------
+   ENEMY BEHAVIOUR
+   ------------------------------------------------------------
+   001. The creature begins hidden from view.
+   002. The creature wakes when the player enters its detection radius.
+   003. The creature also wakes when the bomb is discovered.
+   004. The creature moves toward the player's current position.
+   005. The creature uses a higher movement speed at medium distance.
+   006. The creature slows slightly at close range before attacking.
+   007. The creature attacks when it enters the attack radius.
+   008. A short cooldown prevents damage from being applied every frame.
+   009. The creature can be hit with the pistol.
+   010. The creature can be hit with the knife at close range.
+   011. The creature disappears when its health reaches zero.
+   012. The creature is not permanently removed from the game world.
+   013. The creature can be reactivated by mission scripting if desired.
+   014. The enemy model uses a capsule torso and simple limb geometry.
+   015. The red eye spheres make the head visible in low light.
+   016. The dark hood gives the creature a distinct silhouette.
+   017. The hanging tendrils add irregular motion to the silhouette.
+   018. The current enemy navigation does not pathfind around every prop.
+   019. The enemy checks the same collider collection as the player.
+   020. A more advanced version could use a navmesh for complex routes.
+   021. A more advanced version could add patrol and search states.
+   022. A more advanced version could add audio-based detection.
+   023. A more advanced version could add hiding places and stealth.
+   024. A more advanced version could add multiple creature variants.
+*/
+
+/* ------------------------------------------------------------
+   BOMB PUZZLE DESIGN
+   ------------------------------------------------------------
+   001. The bomb case has a visible red display and three wire ports.
+   002. The device timer starts when the bomb panel opens.
+   003. The diagnostic sequence contains each wire colour once.
+   004. The sequence is generated by a Fisher-Yates shuffle.
+   005. The sequence is displayed as a clear arrow-separated instruction.
+   006. Each wire button shows its colour and a wire number.
+   007. The player selects wires using the buttons on screen.
+   008. The first correct cut moves the puzzle to step two.
+   009. The second correct cut moves the puzzle to step three.
+   010. The third correct cut completes the puzzle.
+   011. An incorrect cut applies a fixed time penalty.
+   012. The player can step away from the bomb panel.
+   013. The device timer continues while the panel is open.
+   014. The device timer pauses when the game itself is paused.
+   015. The bomb cannot be disarmed by shooting it.
+   016. The bomb cannot be disarmed before the wire sequence is completed.
+   017. The puzzle is intentionally simple to understand under pressure.
+   018. The displayed sequence is the authoritative order for the attempt.
+   019. The sequence is not hidden behind an extra random clue.
+   020. The interface uses large buttons suitable for quick mouse clicks.
+   021. A wrong wire should feel consequential but not arbitrary.
+   022. A future version could add a voltage meter and circuit routing.
+   023. A future version could add a multi-stage keypad challenge.
+   024. A future version could add a rotating connector puzzle.
+   025. A future version could add a defuse toolkit inventory requirement.
+*/
+
+/* ------------------------------------------------------------
+   GRAPHICS AND PERFORMANCE
+   ------------------------------------------------------------
+   001. The renderer uses WebGL through the Three.js engine.
+   002. The canvas fills the browser viewport at all supported aspect ratios.
+   003. The camera field of view is set to seventy-six degrees.
+   004. The near clipping plane is close to the camera for first-person detail.
+   005. The far clipping plane covers the entire rig and nearby ocean.
+   006. The renderer uses ACES filmic tone mapping.
+   007. The renderer outputs in the sRGB colour space.
+   008. Antialiasing is requested during WebGL renderer creation.
+   009. The high preset requests a pixel ratio of one point five.
+   010. The 4K preset requests a pixel ratio of two where supported.
+   011. The browser device pixel ratio can limit actual output resolution.
+   012. The monitor's native resolution also affects final sharpness.
+   013. The 4K preset increases shadow-map resolution.
+   014. The performance preset disables dynamic shadows.
+   015. The rain particle count is reduced in performance mode.
+   016. The rain particle geometry is rebuilt when changing presets.
+   017. A large particle count can reduce performance on integrated graphics.
+   018. The game uses point lights sparingly across the deck.
+   019. The sun light uses a directional shadow camera.
+   020. The shadow camera covers the main platform bounds.
+   021. Soft shadows are requested through PCF soft shadow maps.
+   022. The fog density hides the edge of the large world plane.
+   023. The ocean uses a subdivided plane for surface detail.
+   024. The sky uses a custom shader material.
+   025. The rain uses a Points object rather than individual meshes.
+   026. The steam uses point particles rather than sprite images.
+   027. The scene is assembled from repeated primitive geometry.
+   028. The material library reuses standard materials to reduce allocations.
+   029. The game has no imported 4K textures in this prototype.
+   030. The 4K setting increases render resolution, not texture detail.
+   031. Photorealistic asset quality would require authored high-resolution models.
+   032. Photorealistic material quality would require detailed PBR texture maps.
+   033. A later production version could replace primitive props with GLB models.
+   034. A later production version could use baked ambient occlusion textures.
+   035. A later production version could use environment probes and reflection maps.
+   036. A later production version could use a post-processing bloom pass.
+   037. A later production version could use temporal anti-aliasing.
+   038. A later production version could add volumetric fog and volumetric light shafts.
+   039. A later production version could add a full physically based ocean shader.
+   040. A later production version could add a high-resolution sky panorama.
+   041. The current single-file version prioritizes ease of copying and hosting.
+   042. The game is expected to run best on a desktop-class GPU.
+   043. A Chromebook may need the performance preset.
+   044. If frame rate is low, reduce browser window size before lowering resolution.
+   045. If frame rate remains low, disable shadows with the performance preset.
+   046. The render loop caps delta time to avoid simulation jumps after stalls.
+   047. The renderer animation loop is driven by requestAnimationFrame.
+   048. The scene is built once at startup and updated every frame.
+*/
+
+/* ------------------------------------------------------------
+   EXTENSION CHECKLIST
+   ------------------------------------------------------------
+   001. Add a real 3D character rig if third-person gameplay is required.
+   002. Add an animation mixer to drive walking and attack animations.
+   003. Add a weapon recoil animation with a spring-damper model.
+   004. Add a muzzle flash sprite or small emissive mesh.
+   005. Add shell casing particles when the pistol is fired.
+   006. Add impact decals to steel surfaces.
+   007. Add bullet hit sparks on metallic props.
+   008. Add a knife hit animation with a short forward lunge.
+   009. Add a flashlight battery if resource management is desired.
+   010. Add a stamina bar to the HUD if sprinting needs clearer feedback.
+   011. Add a map screen to show the player and mission locations.
+   012. Add compass markers to help players navigate the open deck.
+   013. Add an audio cue when the player approaches the bomb.
+   014. Add an audio cue when the creature detects the player.
+   015. Add an audio cue when the bomb timer enters its final minute.
+   016. Add wind ambience using filtered noise in the Web Audio API.
+   017. Add distant thunder using synthesized low-frequency noise.
+   018. Add a radio voice line when the rescue beacon activates.
+   019. Add a helicopter mesh that arrives at the helipad after activation.
+   020. Add a mission score based on remaining time and health.
+   021. Add a results panel showing time, damage and ammo used.
+   022. Add difficulty presets for relaxed, standard and nightmare modes.
+   023. Add an optional reduced-flashing accessibility setting.
+   024. Add a mouse sensitivity slider to the start menu.
+   025. Add key remapping if the game grows beyond a prototype.
+   026. Add touch movement only if mobile play is a target platform.
+   027. Add controller support through the Gamepad API if requested.
+   028. Add a local save slot for unlocked difficulty and best time.
+   029. Add a tutorial sequence for the wire-cutting challenge.
+   030. Add a second mission area after the main bomb mission is complete.
+   031. Add multiple bomb locations for replay variety.
+   032. Add optional side objectives such as recovering crew logs.
+   033. Add environmental storytelling through notes and damaged equipment.
+   034. Add a hidden maintenance tunnel for an alternate escape route.
+   035. Add a final creature encounter near the rescue beacon.
+   036. Add a clear fail state for falling off the deck if jump mechanics are added.
+   037. Add water splash effects if the player can enter the ocean.
+   038. Add ladder interaction if multi-level platform access is added.
+   039. Add a generator restart sequence as an optional objective.
+   040. Add a radio callout that updates the objective after each fuse pickup.
+   041. Add a stronger creature attack tell before damage is applied.
+   042. Add a stagger animation when the creature takes a hit.
+   043. Add a patrol state so the creature does not always know the player position.
+   044. Add a line-of-sight test so containers can hide the player.
+   045. Add collision volumes to all newly created large props.
+   046. Add performance tests on the target Chromebook before enabling 4K by default.
+   047. Add a loading screen if the project is split into multiple assets.
+   048. Add an offline bundle if network-free play becomes a requirement.
+   049. Add a version number to the title screen when publishing updates.
+*/
+<!-- SOURCE NOTE 001: BLACKTIDE 09 FIELD GUIDE — SOURCE NOTES -->
+<!-- SOURCE NOTE 002: This source is intentionally self-contained except for the Three.js engine import. -->
+<!-- SOURCE NOTE 003: The environment is assembled from procedural meshes rather than downloaded models. -->
+<!-- SOURCE NOTE 004: The open deck is the primary playable space and is surrounded by safety railings. -->
+<!-- SOURCE NOTE 005: The player begins on the western side of the main deck. -->
+<!-- SOURCE NOTE 006: The bomb case is positioned on the eastern side of the main deck. -->
+<!-- SOURCE NOTE 007: The rescue beacon is positioned beside the helipad. -->
+<!-- SOURCE NOTE 008: The three fuse pickups are distributed around separate work areas. -->
+<!-- SOURCE NOTE 009: The first fuse cabinet is close to the western storage area. -->
+<!-- SOURCE NOTE 010: The second fuse cabinet is on the southern crew-quarter side. -->
+<!-- SOURCE NOTE 011: The third fuse cabinet is near the eastern generator area. -->
+<!-- SOURCE NOTE 012: The main bomb countdown runs while the player is exploring the platform. -->
+<!-- SOURCE NOTE 013: The shorter device timer begins when the player opens the bomb panel. -->
+<!-- SOURCE NOTE 014: The wire puzzle creates a fresh shuffled sequence for each attempt. -->
+<!-- SOURCE NOTE 015: A correct wire advances the sequence by one position. -->
+<!-- SOURCE NOTE 016: A wrong wire applies a time penalty to the device timer. -->
+<!-- SOURCE NOTE 017: The player can close the bomb panel and return to the world. -->
+<!-- SOURCE NOTE 018: The device timer continues while the bomb panel is open. -->
+<!-- SOURCE NOTE 019: The bomb must be disarmed before the rescue beacon will transmit. -->
+<!-- SOURCE NOTE 020: After the beacon is activated, the player must reach the helipad. -->
+<!-- SOURCE NOTE 021: The creature wakes when the player comes within its detection radius. -->
+<!-- SOURCE NOTE 022: The creature also becomes active after the bomb is discovered. -->
+<!-- SOURCE NOTE 023: The creature follows the player using a lightweight pursuit behaviour. -->
+<!-- SOURCE NOTE 024: The creature's movement checks the same simple collision boxes as the player. -->
+<!-- SOURCE NOTE 025: The creature can be interrupted by pistol hits or knife strikes. -->
+<!-- SOURCE NOTE 026: The pistol has a finite magazine and a reserve ammunition pool. -->
+<!-- SOURCE NOTE 027: Reloading takes time and should be done away from the creature. -->
+<!-- SOURCE NOTE 028: The knife has a short reach but does not consume ammunition. -->
+<!-- SOURCE NOTE 029: The flashlight is attached to the first-person camera. -->
+<!-- SOURCE NOTE 030: The flashlight can be toggled with the F key. -->
+<!-- SOURCE NOTE 031: The camera uses pointer lock for natural mouse look. -->
+<!-- SOURCE NOTE 032: The player movement uses yaw-relative forward and sideways vectors. -->
+<!-- SOURCE NOTE 033: The player has a sprint stamina value that recovers when not sprinting. -->
+<!-- SOURCE NOTE 034: The player health is displayed in the lower-left HUD. -->
+<!-- SOURCE NOTE 035: The mission timer is displayed in the upper-right HUD. -->
+<!-- SOURCE NOTE 036: The HUD is hidden until the player starts the operation. -->
+<!-- SOURCE NOTE 037: The start screen contains a compact controls reference. -->
+<!-- SOURCE NOTE 038: The pause menu freezes the simulation and the mission countdown. -->
+<!-- SOURCE NOTE 039: The game pauses when the browser tab is hidden. -->
+<!-- SOURCE NOTE 040: The renderer uses ACES filmic tone mapping for a cinematic contrast curve. -->
+<!-- SOURCE NOTE 041: The renderer enables antialiasing where supported by the browser and GPU. -->
+<!-- SOURCE NOTE 042: The renderer uses soft shadow maps for contact and structural shadows. -->
+<!-- SOURCE NOTE 043: The 4K ULTRA preset requests a high pixel ratio and larger shadow map. -->
+<!-- SOURCE NOTE 044: Actual 4K output depends on the display, browser and graphics hardware. -->
+<!-- SOURCE NOTE 045: The HIGH preset is intended as a balanced starting point. -->
+<!-- SOURCE NOTE 046: The PERFORMANCE preset disables shadows and lowers the rain particle count. -->
+<!-- SOURCE NOTE 047: Rain particles are simulated as points and recycled when they reach the deck. -->
+<!-- SOURCE NOTE 048: The ocean is a large subdivided plane with procedural surface displacement. -->
+<!-- SOURCE NOTE 049: The storm sky uses a shader material rather than a photographic skybox. -->
+<!-- SOURCE NOTE 050: Exponential fog reduces distant visibility and creates offshore atmosphere. -->
+<!-- SOURCE NOTE 051: Floodlights use point lights with small intensity variations over time. -->
+<!-- SOURCE NOTE 052: Emergency lights pulse to suggest unstable rig power. -->
+<!-- SOURCE NOTE 053: Steam vents emit a lightweight particle cloud. -->
+<!-- SOURCE NOTE 054: The rig uses repeating structural motifs to establish industrial scale. -->
+<!-- SOURCE NOTE 055: The deck has steel seams and yellow perimeter warning stripes. -->
+<!-- SOURCE NOTE 056: The perimeter has stanchions and upper and lower safety rails. -->
+<!-- SOURCE NOTE 057: Support legs descend below the deck toward the ocean surface. -->
+<!-- SOURCE NOTE 058: Diagonal braces reinforce the support legs visually. -->
+<!-- SOURCE NOTE 059: The crane is assembled from beams, a cab and cable lines. -->
+<!-- SOURCE NOTE 060: The drilling derrick is assembled from repeated truss segments. -->
+<!-- SOURCE NOTE 061: Storage tanks use cylindrical bodies and roof hatches. -->
+<!-- SOURCE NOTE 062: Pipe runs are made from cylinders between defined points. -->
+<!-- SOURCE NOTE 063: Pipe joints receive rings to make the connections visible. -->
+<!-- SOURCE NOTE 064: Shipping containers have corrugated side details and corner castings. -->
+<!-- SOURCE NOTE 065: The crew cabins use window panels and visible door handles. -->
+<!-- SOURCE NOTE 066: The control room includes desks and monitor panels. -->
+<!-- SOURCE NOTE 067: The helipad uses a circular base and simple high-contrast markings. -->
+<!-- SOURCE NOTE 068: Warning signs are placed around the deck to support environmental storytelling. -->
+<!-- SOURCE NOTE 069: Loose debris makes the platform feel abandoned after an emergency. -->
+<!-- SOURCE NOTE 070: Cable spools and oil drums create cover and visual variation. -->
+<!-- SOURCE NOTE 071: Ventilation fans add mechanical silhouettes to the deck. -->
+<!-- SOURCE NOTE 072: The mission design encourages the player to cross the full platform. -->
+<!-- SOURCE NOTE 073: The objective text updates as the player completes mission stages. -->
+<!-- SOURCE NOTE 074: The interaction prompt appears when the player faces a nearby object. -->
+<!-- SOURCE NOTE 075: The interaction system uses a raycaster and a maximum interaction range. -->
+<!-- SOURCE NOTE 076: Collision is approximated with axis-aligned rectangular volumes. -->
+<!-- SOURCE NOTE 077: The player can move around large objects but cannot pass through them. -->
+<!-- SOURCE NOTE 078: The world bounds prevent walking off the playable deck. -->
+<!-- SOURCE NOTE 079: The game uses no external audio files. -->
+<!-- SOURCE NOTE 080: Short procedural tones are generated through the Web Audio API. -->
+<!-- SOURCE NOTE 081: Audio begins only after the player presses the start button. -->
+<!-- SOURCE NOTE 082: No telemetry or external account service is used. -->
+<!-- SOURCE NOTE 083: The debug helper is disabled by default. -->
+<!-- SOURCE NOTE 084: To enable debug helpers, change the DEBUG constant near the end of the script. -->
+<!-- SOURCE NOTE 085: To add another prop, create a helper function and call it from buildWorld. -->
+<!-- SOURCE NOTE 086: To add a mission pickup, create a mesh and register it with addInteractable. -->
+<!-- SOURCE NOTE 087: To add a collider, call addCollider with the object's world position and dimensions. -->
+<!-- SOURCE NOTE 088: To add a new quality setting, add a preset to the QUALITY array. -->
+<!-- SOURCE NOTE 089: To add a new enemy behaviour, extend updateEnemy with a new state. -->
+<!-- SOURCE NOTE 090: To add another bomb puzzle, extend openBombPanel and cutWire. -->
+<!-- SOURCE NOTE 091: To add an additional ending, call finishMission with a different message. -->
+<!-- SOURCE NOTE 092: The game is a browser prototype and not a substitute for a full commercial game engine. -->
+<!-- SOURCE NOTE 093: The world is 3D and rendered in WebGL through Three.js. -->
+<!-- SOURCE NOTE 094: A 4K setting cannot guarantee 4K performance on every Chromebook. -->
+<!-- SOURCE NOTE 095: If the page is slow, switch the graphics preset to PERFORMANCE. -->
+<!-- SOURCE NOTE 096: If pointer lock does not start, click the game canvas once more. -->
+<!-- SOURCE NOTE 097: If the browser blocks audio, interact with the page to enable audio playback. -->
+<!-- SOURCE NOTE 098: If the CDN cannot load, check the internet connection and reload the page. -->
+<!-- SOURCE NOTE 099: The game can be hosted on GitHub Pages as a single index.html file. -->
+<!-- SOURCE NOTE 100: The game is not offline-first because the Three.js library is loaded remotely. -->
+<!-- SOURCE NOTE 101: For a fully offline build, the Three.js library would need to be bundled locally. -->
+<!-- SOURCE NOTE 102: This source keeps all game-specific logic in one module script for easy copying. -->
+<!-- SOURCE NOTE 103: End of source field guide. -->
+
+/* Deck surface construction
+   -------------------------------------
+   NOTE 01: The main deck uses one large receiving surface for the walkable platform.
+   NOTE 02: The deck material uses a generated canvas texture with random wear flecks.
+   NOTE 03: The deck seams are thin boxes placed at regular intervals.
+   NOTE 04: The yellow edge markings identify the platform boundary.
+   NOTE 05: The lower deck layer adds a visible steel lip at the platform edge.
+   NOTE 06: The collider list contains a platform collider for structural reference.
+   NOTE 07: The world boundary check is what prevents leaving the top surface.
+   NOTE 08: Additional deck levels should use a separate vertical movement system.
+   NOTE 09: Additional deck levels should have their own collision bounds.
+   NOTE 10: Walkable stairs should use low step geometry or a ramp mesh.
+*/
+
+/* Support structure construction
+   ------------------------------------------
+   NOTE 01: The support columns are cylinders with a tapered lower profile.
+   NOTE 02: The collar rings break up the long support column silhouette.
+   NOTE 03: Diagonal braces make the under-deck support system readable.
+   NOTE 04: The cross brace visually links the support legs below the deck.
+   NOTE 05: Additional legs can be added by extending the leg position array.
+   NOTE 06: Use a shared material for repeating structural pieces.
+   NOTE 07: Keep support geometry below the player camera to avoid visual clutter.
+   NOTE 08: The ocean plane is placed beneath the structural supports.
+   NOTE 09: The fog helps blend the lowest support sections into the storm.
+   NOTE 10: Large support meshes cast shadows when the selected preset enables them.
+*/
+
+/* Container construction
+   ----------------------------------
+   NOTE 01: Container bodies use a single main box mesh.
+   NOTE 02: Corrugation strips are thin repeated boxes on both long sides.
+   NOTE 03: Corner castings add a small amount of high-contrast detail.
+   NOTE 04: The warning panel is intentionally blank in the procedural prototype.
+   NOTE 05: A future version can add canvas-generated lettering to the panel.
+   NOTE 06: Container dimensions are selected to create cover without blocking all routes.
+   NOTE 07: The collider is slightly larger than the visible container body.
+   NOTE 08: Place containers in groups to define cargo storage lanes.
+   NOTE 09: Use different body colours to distinguish cargo types.
+   NOTE 10: Use rust material on corners to suggest long exposure to sea air.
+*/
+
+/* Storage tank construction
+   -------------------------------------
+   NOTE 01: Tanks are built from cylinders with flat roof caps.
+   NOTE 02: The roof hatch is a smaller cylinder on the upper surface.
+   NOTE 03: A horizontal beam suggests a tank inspection rail.
+   NOTE 04: The tank collider uses the full tank diameter.
+   NOTE 05: Tank heights vary to break up the skyline.
+   NOTE 06: Tank positions leave walking lanes between the main deck objects.
+   NOTE 07: Additional pipes can connect tanks to the existing pipe runs.
+   NOTE 08: Tank labels can be added as flat sign panels.
+   NOTE 09: Tank warning lights can be added as small emissive spheres.
+   NOTE 10: Tank tops are not currently walkable surfaces.
+*/
+
+/* Pipework construction
+   ---------------------------------
+   NOTE 01: Each pipe run is described by a list of three-dimensional points.
+   NOTE 02: Beam helpers connect each adjacent point pair.
+   NOTE 03: Joint rings are placed at every path point.
+   NOTE 04: Pipe radius controls the visual thickness of the run.
+   NOTE 05: Pipe material distinguishes fuel, water and service lines.
+   NOTE 06: Pipe supports lift horizontal pipe runs above the deck.
+   NOTE 07: Pipe runs should avoid crossing the bomb interaction area.
+   NOTE 08: Pipe runs can be extended with extra points.
+   NOTE 09: Elbows are represented by short connected beam segments.
+   NOTE 10: A future version can use curved tube geometry for smoother bends.
+*/
+
+/* Crane construction
+   ------------------------------
+   NOTE 01: The crane is a grouped structure positioned in the northeast work zone.
+   NOTE 02: The base is a compact dark steel housing.
+   NOTE 03: The vertical tower is assembled from repeated support beams.
+   NOTE 04: The cross beam extends left and right from the top mast.
+   NOTE 05: Two dark cables hang from the cross beam.
+   NOTE 06: The operator cab uses translucent glass material.
+   NOTE 07: The crane is an environmental landmark rather than an interactive machine.
+   NOTE 08: A future version can animate the crane hook slowly.
+   NOTE 09: A future version can add a suspended cargo container.
+   NOTE 10: The crane collider prevents the player entering the tower base.
+*/
+
+/* Derrick construction
+   --------------------------------
+   NOTE 01: The derrick uses four tapered support legs.
+   NOTE 02: Horizontal braces repeat at regular vertical intervals.
+   NOTE 03: Diagonal braces create triangular truss patterns.
+   NOTE 04: The top platform caps the tower.
+   NOTE 05: The central drill pipe provides a strong vertical line.
+   NOTE 06: The derrick is placed on the western side of the deck.
+   NOTE 07: The structure is visible above the cabin roof line.
+   NOTE 08: The current collider approximates the derrick footprint.
+   NOTE 09: The tower is not climbable in the current prototype.
+   NOTE 10: A future version can add ladders and maintenance platforms.
+*/
+
+/* Lighting design
+   ---------------------------
+   NOTE 01: The hemisphere light provides broad sky and ground illumination.
+   NOTE 02: The directional light acts as the stormy daylight source.
+   NOTE 03: The point fill light adds a cool interior-like bounce near the centre.
+   NOTE 04: Floodlights use warm tones to contrast with the cool ambient environment.
+   NOTE 05: Emergency lights pulse with a red alarm rhythm.
+   NOTE 06: Each floodlight stores its base intensity and a unique phase value.
+   NOTE 07: Flicker is simulated with a small intensity multiplier.
+   NOTE 08: The player flashlight is a camera-attached spot light.
+   NOTE 09: The flashlight target is also parented to the camera.
+   NOTE 10: Use lower point-light counts on integrated graphics hardware.
+*/
+
+/* Rain and ocean effects
+   ----------------------------------
+   NOTE 01: Rain is a single point cloud with many independently updated vertices.
+   NOTE 02: Each rain particle stores a fall speed in a typed array.
+   NOTE 03: Particles recycle above the camera after reaching the deck height.
+   NOTE 04: The rain cloud follows the player loosely to keep weather around the view.
+   NOTE 05: The ocean plane is larger than the entire platform.
+   NOTE 06: The ocean vertices are displaced once at build time.
+   NOTE 07: The ocean mesh receives shadows from the support structure.
+   NOTE 08: A future version can animate ocean vertices in a shader.
+   NOTE 09: A future version can add foam near support columns.
+   NOTE 10: A future version can add wave crest highlights and reflection probes.
+*/
+
+/* Interface and readability
+   -------------------------------------
+   NOTE 01: The HUD appears only after the player starts the operation.
+   NOTE 02: The mission title remains in the upper-left corner.
+   NOTE 03: The mission description sits below the title.
+   NOTE 04: The operation timer stays in the upper-right corner.
+   NOTE 05: The health and ammo panels remain at the lower-left corner.
+   NOTE 06: The current weapon is shown at the lower-right corner.
+   NOTE 07: The interaction prompt appears below the crosshair.
+   NOTE 08: Toasts communicate important short events.
+   NOTE 09: The bomb panel uses a separate interface layer.
+   NOTE 10: The ending panel communicates success or failure.
+*/
+
+/* Testing and publishing
+   ----------------------------------
+   NOTE 01: Create a GitHub repository for the game project.
+   NOTE 02: Open the repository and choose Add file then Create new file.
+   NOTE 03: Name the file index.html.
+   NOTE 04: Paste the complete source into the editor.
+   NOTE 05: Commit the file to the main branch.
+   NOTE 06: Open repository Settings and find Pages.
+   NOTE 07: Choose the main branch and root folder as the publishing source.
+   NOTE 08: Wait for the Pages deployment to complete.
+   NOTE 09: Open the published website in a new browser tab.
+   NOTE 10: Click Start Operation and allow pointer lock.
+   NOTE 11: Walk around the platform and test each fuse station.
+   NOTE 12: Find the bomb case and complete the wire sequence.
+   NOTE 13: Activate the rescue beacon after disarming the device.
+   NOTE 14: Reach the helipad to finish the mission.
+   NOTE 15: If the game is too slow, use the Performance graphics preset.
+   NOTE 16: If mouse look stops, click the canvas again or resume from pause.
+   NOTE 17: If the Three.js import fails, check the CDN connection.
+   NOTE 18: If GitHub Pages shows a 404, confirm the file is named index.html.
+   NOTE 19: If the page is blank, open the browser console and check for module errors.
+   NOTE 20: Always test the published page, not only the GitHub code editor preview.
+*/
+<!-- DESIGN DECISION 001: Keep the exposed deck routes readable from the first-person camera. -->
+<!-- DESIGN DECISION 002: Use the warm hazard palette only for safety and mission-critical objects. -->
+<!-- DESIGN DECISION 003: Keep the bomb case visible as a compact piece of equipment, not a giant prop. -->
+<!-- DESIGN DECISION 004: Keep the creature silhouette distinct from the industrial background. -->
+<!-- DESIGN DECISION 005: Keep the rescue beacon visible from the helipad approach. -->
+<!-- DESIGN DECISION 006: Use fog to reduce distant contrast without hiding nearby navigation cues. -->
+<!-- DESIGN DECISION 007: Prefer grouped meshes for multi-part industrial props. -->
+<!-- DESIGN DECISION 008: Reuse standard materials for repeated steel and painted surfaces. -->
+<!-- DESIGN DECISION 009: Keep mission instructions short enough to read while moving. -->
+<!-- DESIGN DECISION 010: Make the bomb interaction a deliberate stop in the player's route. -->
+<!-- DESIGN DECISION 011: Keep the main timer visible throughout exploration. -->
+<!-- DESIGN DECISION 012: Make the device timer visually urgent during the disarm sequence. -->
+<!-- DESIGN DECISION 013: Use a clear colour sequence instead of an ambiguous symbol puzzle. -->
+<!-- DESIGN DECISION 014: Make every correct wire cut visibly advance the sequence. -->
+<!-- DESIGN DECISION 015: Make wrong wire cuts apply a predictable time penalty. -->
+<!-- DESIGN DECISION 016: Keep the extraction goal locked until the bomb is safe. -->
+<!-- DESIGN DECISION 017: Keep the player health visible during creature encounters. -->
+<!-- DESIGN DECISION 018: Keep ammunition visible while the pistol is equipped. -->
+<!-- DESIGN DECISION 019: Allow the knife to remain useful after ammunition is depleted. -->
+<!-- DESIGN DECISION 020: Make the graphics preset selectable before the operation begins. -->
+<!-- DESIGN DECISION 021: Keep the exposed deck routes readable from the first-person camera. -->
+<!-- DESIGN DECISION 022: Use the warm hazard palette only for safety and mission-critical objects. -->
+<!-- DESIGN DECISION 023: Keep the bomb case visible as a compact piece of equipment, not a giant prop. -->
+<!-- DESIGN DECISION 024: Keep the creature silhouette distinct from the industrial background. -->
+<!-- DESIGN DECISION 025: Keep the rescue beacon visible from the helipad approach. -->
+<!-- DESIGN DECISION 026: Use fog to reduce distant contrast without hiding nearby navigation cues. -->
+<!-- DESIGN DECISION 027: Prefer grouped meshes for multi-part industrial props. -->
+<!-- DESIGN DECISION 028: Reuse standard materials for repeated steel and painted surfaces. -->
+<!-- DESIGN DECISION 029: Keep mission instructions short enough to read while moving. -->
+<!-- DESIGN DECISION 030: Make the bomb interaction a deliberate stop in the player's route. -->
+<!-- DESIGN DECISION 031: Keep the main timer visible throughout exploration. -->
+<!-- DESIGN DECISION 032: Make the device timer visually urgent during the disarm sequence. -->
+<!-- DESIGN DECISION 033: Use a clear colour sequence instead of an ambiguous symbol puzzle. -->
+<!-- DESIGN DECISION 034: Make every correct wire cut visibly advance the sequence. -->
+<!-- DESIGN DECISION 035: Make wrong wire cuts apply a predictable time penalty. -->
+<!-- DESIGN DECISION 036: Keep the extraction goal locked until the bomb is safe. -->
+<!-- DESIGN DECISION 037: Keep the player health visible during creature encounters. -->
+<!-- DESIGN DECISION 038: Keep ammunition visible while the pistol is equipped. -->
+<!-- DESIGN DECISION 039: Allow the knife to remain useful after ammunition is depleted. -->
+<!-- DESIGN DECISION 040: Make the graphics preset selectable before the operation begins. -->
+<!-- DESIGN DECISION 041: Keep the exposed deck routes readable from the first-person camera. -->
+<!-- DESIGN DECISION 042: Use the warm hazard palette only for safety and mission-critical objects. -->
+<!-- DESIGN DECISION 043: Keep the bomb case visible as a compact piece of equipment, not a giant prop. -->
+<!-- DESIGN DECISION 044: Keep the creature silhouette distinct from the industrial background. -->
+<!-- DESIGN DECISION 045: Keep the rescue beacon visible from the helipad approach. -->
+<!-- DESIGN DECISION 046: Use fog to reduce distant contrast without hiding nearby navigation cues. -->
+<!-- DESIGN DECISION 047: Prefer grouped meshes for multi-part industrial props. -->
+<!-- DESIGN DECISION 048: Reuse standard materials for repeated steel and painted surfaces. -->
+<!-- DESIGN DECISION 049: Keep mission instructions short enough to read while moving. -->
+<!-- DESIGN DECISION 050: Make the bomb interaction a deliberate stop in the player's route. -->
+<!-- DESIGN DECISION 051: Keep the main timer visible throughout exploration. -->
+<!-- DESIGN DECISION 052: Make the device timer visually urgent during the disarm sequence. -->
+<!-- DESIGN DECISION 053: Use a clear colour sequence instead of an ambiguous symbol puzzle. -->
+<!-- DESIGN DECISION 054: Make every correct wire cut visibly advance the sequence. -->
+<!-- DESIGN DECISION 055: Make wrong wire cuts apply a predictable time penalty. -->
+<!-- DESIGN DECISION 056: Keep the extraction goal locked until the bomb is safe. -->
+<!-- DESIGN DECISION 057: Keep the player health visible during creature encounters. -->
+<!-- DESIGN DECISION 058: Keep ammunition visible while the pistol is equipped. -->
+<!-- DESIGN DECISION 059: Allow the knife to remain useful after ammunition is depleted. -->
+<!-- DESIGN DECISION 060: Make the graphics preset selectable before the operation begins. -->
+<!-- DESIGN DECISION 061: Keep the exposed deck routes readable from the first-person camera. -->
+<!-- DESIGN DECISION 062: Use the warm hazard palette only for safety and mission-critical objects. -->
+<!-- DESIGN DECISION 063: Keep the bomb case visible as a compact piece of equipment, not a giant prop. -->
+<!-- DESIGN DECISION 064: Keep the creature silhouette distinct from the industrial background. -->
+<!-- DESIGN DECISION 065: Keep the rescue beacon visible from the helipad approach. -->
+<!-- DESIGN DECISION 066: Use fog to reduce distant contrast without hiding nearby navigation cues. -->
+<!-- DESIGN DECISION 067: Prefer grouped meshes for multi-part industrial props. -->
+<!-- DESIGN DECISION 068: Reuse standard materials for repeated steel and painted surfaces. -->
+<!-- DESIGN DECISION 069: Keep mission instructions short enough to read while moving. -->
+<!-- DESIGN DECISION 070: Make the bomb interaction a deliberate stop in the player's route. -->
+<!-- DESIGN DECISION 071: Keep the main timer visible throughout exploration. -->
+<!-- DESIGN DECISION 072: Make the device timer visually urgent during the disarm sequence. -->
+<!-- DESIGN DECISION 073: Use a clear colour sequence instead of an ambiguous symbol puzzle. -->
+<!-- DESIGN DECISION 074: Make every correct wire cut visibly advance the sequence. -->
+<!-- DESIGN DECISION 075: Make wrong wire cuts apply a predictable time penalty. -->
+<!-- DESIGN DECISION 076: Keep the extraction goal locked until the bomb is safe. -->
+<!-- DESIGN DECISION 077: Keep the player health visible during creature encounters. -->
+<!-- DESIGN DECISION 078: Keep ammunition visible while the pistol is equipped. -->
+<!-- DESIGN DECISION 079: Allow the knife to remain useful after ammunition is depleted. -->
+<!-- DESIGN DECISION 080: Make the graphics preset selectable before the operation begins. -->
+<!-- DESIGN DECISION 081: Keep the exposed deck routes readable from the first-person camera. -->
+<!-- DESIGN DECISION 082: Use the warm hazard palette only for safety and mission-critical objects. -->
+<!-- DESIGN DECISION 083: Keep the bomb case visible as a compact piece of equipment, not a giant prop. -->
+<!-- DESIGN DECISION 084: Keep the creature silhouette distinct from the industrial background. -->
+<!-- DESIGN DECISION 085: Keep the rescue beacon visible from the helipad approach. -->
+<!-- DESIGN DECISION 086: Use fog to reduce distant contrast without hiding nearby navigation cues. -->
+<!-- DESIGN DECISION 087: Prefer grouped meshes for multi-part industrial props. -->
+<!-- DESIGN DECISION 088: Reuse standard materials for repeated steel and painted surfaces. -->
+<!-- DESIGN DECISION 089: Keep mission instructions short enough to read while moving. -->
+<!-- DESIGN DECISION 090: Make the bomb interaction a deliberate stop in the player's route. -->
+<!-- DESIGN DECISION 091: Keep the main timer visible throughout exploration. -->
+<!-- DESIGN DECISION 092: Make the device timer visually urgent during the disarm sequence. -->
+<!-- DESIGN DECISION 093: Use a clear colour sequence instead of an ambiguous symbol puzzle. -->
+<!-- DESIGN DECISION 094: Make every correct wire cut visibly advance the sequence. -->
+<!-- DESIGN DECISION 095: Make wrong wire cuts apply a predictable time penalty. -->
+<!-- DESIGN DECISION 096: Keep the extraction goal locked until the bomb is safe. -->
+<!-- DESIGN DECISION 097: Keep the player health visible during creature encounters. -->
+<!-- DESIGN DECISION 098: Keep ammunition visible while the pistol is equipped. -->
+<!-- DESIGN DECISION 099: Allow the knife to remain useful after ammunition is depleted. -->
+<!-- DESIGN DECISION 100: Make the graphics preset selectable before the operation begins. -->
+<!-- DESIGN DECISION 101: Keep the exposed deck routes readable from the first-person camera. -->
+<!-- DESIGN DECISION 102: Use the warm hazard palette only for safety and mission-critical objects. -->
+<!-- DESIGN DECISION 103: Keep the bomb case visible as a compact piece of equipment, not a giant prop. -->
+<!-- DESIGN DECISION 104: Keep the creature silhouette distinct from the industrial background. -->
+<!-- DESIGN DECISION 105: Keep the rescue beacon visible from the helipad approach. -->
+<!-- DESIGN DECISION 106: Use fog to reduce distant contrast without hiding nearby navigation cues. -->
+<!-- DESIGN DECISION 107: Prefer grouped meshes for multi-part industrial props. -->
+<!-- DESIGN DECISION 108: Reuse standard materials for repeated steel and painted surfaces. -->
+<!-- DESIGN DECISION 109: Keep mission instructions short enough to read while moving. -->
+<!-- DESIGN DECISION 110: Make the bomb interaction a deliberate stop in the player's route. -->
+<!-- DESIGN DECISION 111: Keep the main timer visible throughout exploration. -->
+<!-- DESIGN DECISION 112: Make the device timer visually urgent during the disarm sequence. -->
+<!-- DESIGN DECISION 113: Use a clear colour sequence instead of an ambiguous symbol puzzle. -->
+<!-- DESIGN DECISION 114: Make every correct wire cut visibly advance the sequence. -->
+<!-- DESIGN DECISION 115: Make wrong wire cuts apply a predictable time penalty. -->
+<!-- DESIGN DECISION 116: Keep the extraction goal locked until the bomb is safe. -->
+<!-- DESIGN DECISION 117: Keep the player health visible during creature encounters. -->
+<!-- DESIGN DECISION 118: Keep ammunition visible while the pistol is equipped. -->
+<!-- DESIGN DECISION 119: Allow the knife to remain useful after ammunition is depleted. -->
+<!-- DESIGN DECISION 120: Make the graphics preset selectable before the operation begins. -->
+<!-- DESIGN DECISION 121: Keep the exposed deck routes readable from the first-person camera. -->
+<!-- DESIGN DECISION 122: Use the warm hazard palette only for safety and mission-critical objects. -->
+<!-- DESIGN DECISION 123: Keep the bomb case visible as a compact piece of equipment, not a giant prop. -->
+<!-- DESIGN DECISION 124: Keep the creature silhouette distinct from the industrial background. -->
+<!-- DESIGN DECISION 125: Keep the rescue beacon visible from the helipad approach. -->
+<!-- DESIGN DECISION 126: Use fog to reduce distant contrast without hiding nearby navigation cues. -->
+<!-- DESIGN DECISION 127: Prefer grouped meshes for multi-part industrial props. -->
+<!-- DESIGN DECISION 128: Reuse standard materials for repeated steel and painted surfaces. -->
+<!-- DESIGN DECISION 129: Keep mission instructions short enough to read while moving. -->
+<!-- DESIGN DECISION 130: Make the bomb interaction a deliberate stop in the player's route. -->
+<!-- DESIGN DECISION 131: Keep the main timer visible throughout exploration. -->
+<!-- DESIGN DECISION 132: Make the device timer visually urgent during the disarm sequence. -->
+<!-- DESIGN DECISION 133: Use a clear colour sequence instead of an ambiguous symbol puzzle. -->
+<!-- DESIGN DECISION 134: Make every correct wire cut visibly advance the sequence. -->
+<!-- DESIGN DECISION 135: Make wrong wire cuts apply a predictable time penalty. -->
+<!-- DESIGN DECISION 136: Keep the extraction goal locked until the bomb is safe. -->
+<!-- DESIGN DECISION 137: Keep the player health visible during creature encounters. -->
+<!-- DESIGN DECISION 138: Keep ammunition visible while the pistol is equipped. -->
+<!-- DESIGN DECISION 139: Allow the knife to remain useful after ammunition is depleted. -->
+<!-- DESIGN DECISION 140: Make the graphics preset selectable before the operation begins. -->
+<!-- DESIGN DECISION 141: Keep the exposed deck routes readable from the first-person camera. -->
+<!-- DESIGN DECISION 142: Use the warm hazard palette only for safety and mission-critical objects. -->
+<!-- DESIGN DECISION 143: Keep the bomb case visible as a compact piece of equipment, not a giant prop. -->
+<!-- DESIGN DECISION 144: Keep the creature silhouette distinct from the industrial background. -->
+<!-- DESIGN DECISION 145: Keep the rescue beacon visible from the helipad approach. -->
+<!-- DESIGN DECISION 146: Use fog to reduce distant contrast without hiding nearby navigation cues. -->
+<!-- DESIGN DECISION 147: Prefer grouped meshes for multi-part industrial props. -->
+<!-- DESIGN DECISION 148: Reuse standard materials for repeated steel and painted surfaces. -->
+<!-- DESIGN DECISION 149: Keep mission instructions short enough to read while moving. -->
+<!-- DESIGN DECISION 150: Make the bomb interaction a deliberate stop in the player's route. -->
+<!-- DESIGN DECISION 151: Keep the main timer visible throughout exploration. -->
+<!-- DESIGN DECISION 152: Make the device timer visually urgent during the disarm sequence. -->
+<!-- DESIGN DECISION 153: Use a clear colour sequence instead of an ambiguous symbol puzzle. -->
+<!-- DESIGN DECISION 154: Make every correct wire cut visibly advance the sequence. -->
+<!-- DESIGN DECISION 155: Make wrong wire cuts apply a predictable time penalty. -->
+<!-- DESIGN DECISION 156: Keep the extraction goal locked until the bomb is safe. -->
+<!-- DESIGN DECISION 157: Keep the player health visible during creature encounters. -->
+<!-- DESIGN DECISION 158: Keep ammunition visible while the pistol is equipped. -->
+<!-- DESIGN DECISION 159: Allow the knife to remain useful after ammunition is depleted. -->
+<!-- DESIGN DECISION 160: Make the graphics preset selectable before the operation begins. -->
 </body>
 </html>
+
+
+ 
+
