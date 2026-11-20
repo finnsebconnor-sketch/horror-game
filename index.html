@@ -3,80 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DUAL OPS: BLACKTIDE 09 & CITY CRIME — EXPANDED EDITION</title>
+<title>DUAL OPS: BLACKTIDE 09 & CITY CRIME — ULTRA EDITION</title>
 <style>
-:root{color-scheme:dark;--red:#d44335;--gold:#f0b942;--green:#52d681;--blue:#38bdf8;--ice:#c5d8df;--panel:rgba(4,12,17,.94)}
+:root{color-scheme:dark;--red:#e0483a;--gold:#f5b942;--green:#4ade80;--blue:#38bdf8;--ice:#d4e4ea;--panel:rgba(5,13,19,.94)}
 *{box-sizing:border-box;user-select:none}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02080d;color:var(--ice);font-family:'Segoe UI',Arial,sans-serif}
 #game{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none}
-#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.58) 100%);z-index:2}
-#scanlines{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.04;background:repeating-linear-gradient(0deg,#000 0px,#000 1px,transparent 1px,transparent 3px)}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 48%,rgba(0,0,0,.6) 100%);z-index:2}
 #hud{position:fixed;inset:0;z-index:5;pointer-events:none;display:none}
-#brand{position:absolute;left:24px;top:18px;font-size:11px;letter-spacing:4px;color:#b8cbd2;text-shadow:0 2px 8px #000}
-#mission{position:absolute;left:24px;top:42px;font-size:15px;font-weight:800;letter-spacing:1.5px;color:#fff;text-shadow:0 2px 8px #000}
-#objective{position:absolute;left:24px;top:66px;font-size:12px;color:#9bb0b8;text-shadow:0 2px 8px #000;max-width:420px;line-height:1.45}
+#brand{position:absolute;left:24px;top:18px;font-size:11px;letter-spacing:4px;color:#9eb5be;text-shadow:0 2px 8px #000}
+#mission{position:absolute;left:24px;top:40px;font-size:16px;font-weight:800;letter-spacing:1.5px;color:#fff;text-shadow:0 2px 8px #000}
+#objective{position:absolute;left:24px;top:64px;font-size:12px;color:#b0c4cc;text-shadow:0 2px 8px #000;max-width:440px;line-height:1.45}
 #status{position:absolute;right:24px;top:18px;text-align:right;font-size:11px;letter-spacing:2px;color:#c4d5db;text-shadow:0 2px 8px #000}
-#timer{font-size:30px;font-weight:900;letter-spacing:3px;color:#f2d4b0;margin-top:4px}
-#cashDisplay{font-size:30px;font-weight:900;letter-spacing:2px;color:var(--green);margin-top:4px;display:none}
-#wantedStars{font-size:20px;letter-spacing:4px;color:#475569;margin-top:4px;display:none;text-shadow:0 0 10px rgba(0,0,0,.9)}
-#wantedStars span.active{color:var(--gold);text-shadow:0 0 12px var(--gold)}
-#radarWrap{position:absolute;left:24px;bottom:102px;width:154px;height:154px;border-radius:50%;border:2px solid rgba(180,215,225,.35);background:rgba(3,10,14,.85);overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.75)}
+#timer{font-size:32px;font-weight:900;letter-spacing:3px;color:#f2d4b0;margin-top:4px}
+#cashDisplay{font-size:32px;font-weight:900;letter-spacing:2px;color:var(--green);margin-top:4px;display:none}
+#wantedStars{font-size:22px;letter-spacing:4px;color:#334155;margin-top:4px;display:none;text-shadow:0 0 10px rgba(0,0,0,.9)}
+#wantedStars span.active{color:var(--gold);text-shadow:0 0 14px var(--gold)}
+#radarWrap{position:absolute;left:24px;bottom:104px;width:158px;height:158px;border-radius:50%;border:2px solid rgba(180,215,225,.4);background:rgba(3,10,14,.88);overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.8)}
 #radar{width:100%;height:100%;display:block}
-#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:22px;color:rgba(235,245,248,.9);text-shadow:0 0 8px #000}
-#hitmarker{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:18px;height:18px;opacity:0;transition:opacity .08s}
+#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:22px;color:rgba(240,250,255,.92);text-shadow:0 0 8px #000}
+#hitmarker{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:20px;height:20px;opacity:0;transition:opacity .08s}
 #hitmarker:before,#hitmarker:after{content:"";position:absolute;background:var(--red)}
-#hitmarker:before{left:8px;top:0;width:2px;height:18px}
-#hitmarker:after{top:8px;left:0;width:18px;height:2px}
-#prompt{position:absolute;left:50%;top:59%;transform:translateX(-50%);padding:11px 20px;background:rgba(3,10,14,.9);border:1px solid rgba(180,210,220,.5);font-size:12px;font-weight:800;letter-spacing:1.6px;white-space:nowrap;opacity:0;transition:opacity .12s;box-shadow:0 10px 30px #000}
+#hitmarker:before{left:9px;top:0;width:2px;height:20px}
+#hitmarker:after{top:9px;left:0;width:20px;height:2px}
+#prompt{position:absolute;left:50%;top:59%;transform:translateX(-50%);padding:12px 22px;background:rgba(3,10,14,.92);border:1px solid rgba(180,210,220,.55);font-size:12px;font-weight:800;letter-spacing:1.6px;white-space:nowrap;opacity:0;transition:opacity .12s;box-shadow:0 10px 30px #000}
 #bottom{position:absolute;left:24px;bottom:22px;display:flex;gap:10px}
-.stat{min-width:96px;padding:10px 12px;background:rgba(3,10,14,.85);border:1px solid rgba(150,185,195,.25)}
+.stat{min-width:94px;padding:10px 12px;background:rgba(3,10,14,.86);border:1px solid rgba(150,185,195,.28)}
 .stat small{display:block;font-size:9px;letter-spacing:2px;color:#8299a2;margin-bottom:4px}
 .stat strong{font-size:18px;color:#edf5f7}
-#weapon{position:absolute;right:24px;bottom:22px;text-align:right;background:rgba(3,10,14,.85);border:1px solid rgba(150,185,195,.25);padding:10px 16px;min-width:190px}
+#weapon{position:absolute;right:24px;bottom:22px;text-align:right;background:rgba(3,10,14,.86);border:1px solid rgba(150,185,195,.28);padding:10px 16px;min-width:200px}
 #weapon small{display:block;color:#8299a2;font-size:9px;letter-spacing:2px;margin-bottom:4px}
 #weapon strong{font-size:15px;letter-spacing:1.5px;color:#fff}
-#speedo{font-size:11px;color:var(--blue);letter-spacing:2px;margin-top:4px;display:none}
-#toast{position:absolute;left:50%;top:15%;transform:translateX(-50%);padding:12px 22px;background:rgba(5,12,17,.94);border-left:4px solid var(--gold);font-size:12px;font-weight:800;letter-spacing:1.5px;opacity:0;transition:opacity .2s;box-shadow:0 10px 30px #000}
-#damage{position:absolute;inset:0;background:radial-gradient(ellipse,transparent 35%,rgba(190,0,0,.78));opacity:0;transition:opacity .12s;pointer-events:none}
+#speedo{font-size:12px;font-weight:800;color:var(--blue);letter-spacing:2px;margin-top:4px;display:none}
+#toast{position:absolute;left:50%;top:15%;transform:translateX(-50%);padding:12px 22px;background:rgba(5,12,17,.95);border-left:4px solid var(--gold);font-size:12px;font-weight:800;letter-spacing:1.5px;opacity:0;transition:opacity .2s;box-shadow:0 10px 30px #000}
+#damage{position:absolute;inset:0;background:radial-gradient(ellipse,transparent 35%,rgba(200,0,0,.78));opacity:0;transition:opacity .12s;pointer-events:none}
 
 /* OVERLAYS */
-.overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 70% 25%,rgba(34,58,68,.92),rgba(2,7,11,.97));padding:24px}
+.overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 70% 25%,rgba(34,58,68,.94),rgba(2,7,11,.98));padding:24px}
 #bombPanel,#gunStore,#pause,#ending{display:none}
-.screen{width:min(880px,94vw);padding:clamp(22px,4vw,42px);border:1px solid rgba(170,205,215,.25);background:var(--panel);box-shadow:0 25px 90px #000}
+.screen{width:min(900px,94vw);padding:clamp(22px,4vw,42px);border:1px solid rgba(170,205,215,.28);background:var(--panel);box-shadow:0 25px 90px #000}
 .kicker{font-size:10px;letter-spacing:5px;color:#9eb5be;margin-bottom:10px}
 h1{font-size:clamp(34px,6vw,62px);line-height:.95;letter-spacing:4px;margin:0;color:#e9f2f4;font-weight:900}
 h1 span{color:var(--red)}
 .game-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
-.card{padding:22px;border:1px solid rgba(170,205,215,.2);background:rgba(10,22,30,.75);display:flex;flex-direction:column;justify-content:space-between}
+.card{padding:22px;border:1px solid rgba(170,205,215,.22);background:rgba(10,22,30,.78);display:flex;flex-direction:column;justify-content:space-between}
 .card h2{margin:0 0 8px;font-size:20px;letter-spacing:2px;color:#fff}
 .card p{font-size:13px;line-height:1.6;color:#9eb5be;margin:0 0 18px}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-button{font:inherit;cursor:pointer;border:1px solid rgba(190,220,230,.45);background:rgba(25,43,51,.88);color:#eaf4f6;padding:13px 20px;letter-spacing:2px;font-size:11px;font-weight:800;transition:filter .15s}
-button.primary{background:#a82f2a;border-color:#d15a50}
-button.gold{background:#9c721c;border-color:var(--gold);color:#fff}
+button{font:inherit;cursor:pointer;border:1px solid rgba(190,220,230,.45);background:rgba(25,43,51,.9);color:#eaf4f6;padding:13px 20px;letter-spacing:2px;font-size:11px;font-weight:800;transition:filter .15s}
+button.primary{background:#b0302a;border-color:#e05a50}
+button.gold{background:#a3761c;border-color:var(--gold);color:#fff}
 button:hover{filter:brightness(1.22)}
 .controls{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 24px;margin-top:18px;color:#8fa6ae;font-size:11px;border-top:1px solid rgba(170,205,215,.15);padding-top:14px}
 .controls b{color:#dce8eb}
 
 /* WIRE & SHOP GRIDS */
 .wire-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
-.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.shop-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:20px 0}
 .wire{height:84px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border:1px solid #56666c;background:#0b171d}
 .wire:before{content:"";width:70%;height:8px;border-radius:4px;background:var(--wire);box-shadow:0 0 14px var(--wire)}
-.shop-item{padding:14px;border:1px solid rgba(170,205,215,.25);background:#081319;text-align:center;display:flex;flex-direction:column;justify-content:space-between}
-.shop-item h3{margin:0 0 6px;font-size:13px;letter-spacing:1.5px;color:#fff}
-.shop-item .price{color:var(--green);font-weight:800;font-size:16px;margin-bottom:8px}
-.shop-item p{font-size:11px;color:#8fa6ae;margin:0 0 12px;line-height:1.45}
-@media(max-width:780px){.game-grid,.wire-row,.shop-grid{grid-template-columns:1fr}}
+.shop-item{padding:14px 10px;border:1px solid rgba(170,205,215,.25);background:#081319;text-align:center;display:flex;flex-direction:column;justify-content:space-between}
+.shop-item h3{margin:0 0 6px;font-size:12px;letter-spacing:1.2px;color:#fff}
+.shop-item .price{color:var(--green);font-weight:800;font-size:15px;margin-bottom:8px}
+.shop-item p{font-size:11px;color:#8fa6ae;margin:0 0 12px;line-height:1.4}
+@media(max-width:850px){.game-grid,.wire-row,.shop-grid{grid-template-columns:1fr}}
 </style>
 <script type="importmap">
-{"imports":{"three":"https://jsdelivr.net"}}
+{"imports":{"three":"https://unpkg.com"}}
 </script>
 </head>
 <body>
 <canvas id="game"></canvas>
 <div id="vignette"></div>
-<div id="scanlines"></div>
 
 <!-- HUD -->
 <div id="hud">
@@ -86,10 +84,10 @@ button:hover{filter:brightness(1.22)}
  <div id="status">
   <span id="statusLabel">COUNTDOWN</span>
   <div id="timer">05:00</div>
-  <div id="cashDisplay">$750</div>
+  <div id="cashDisplay">$800</div>
   <div id="wantedStars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
  </div>
- <div id="radarWrap"><canvas id="radar" width="154" height="154"></canvas></div>
+ <div id="radarWrap"><canvas id="radar" width="158" height="158"></canvas></div>
  <div id="crosshair">+</div>
  <div id="hitmarker"></div>
  <div id="prompt">[ E ] INTERACT</div>
@@ -98,7 +96,7 @@ button:hover{filter:brightness(1.22)}
  <div id="bottom">
   <div class="stat"><small>HEALTH</small><strong id="health">100</strong></div>
   <div class="stat"><small>ARMOR</small><strong id="armor">50</strong></div>
-  <div class="stat"><small>AMMO</small><strong id="ammo">12 / 60</strong></div>
+  <div class="stat"><small>AMMO</small><strong id="ammo">12 / 72</strong></div>
   <div class="stat"><small id="objLabel">INTEL</small><strong id="parts">0 / 3</strong></div>
  </div>
  <div id="weapon">
@@ -111,20 +109,20 @@ button:hover{filter:brightness(1.22)}
 <!-- MAIN LAUNCHER -->
 <div id="start" class="overlay">
  <div class="screen">
-  <div class="kicker">EXPANDED PBR ENGINE // SYNTH AUDIO + RADAR + WANTED AI</div>
+  <div class="kicker">ULTRA PBR ENGINE // SYNTH AUDIO + RADAR + WANTED AI</div>
   <h1>DUAL <span>OPERATIONS</span></h1>
   <div class="game-grid">
    <div class="card">
     <div>
      <h2>BLACKTIDE 09</h2>
-     <p>Storm-lashed offshore oil rig. Locate 3 intel terminals, cut the bomb wires in the decoded sequence, and reach the extraction helipad while evading the rig stalker.</p>
+     <p>Storm-lashed offshore oil rig. Locate 3 glowing intel terminals, cut the bomb wires in the decoded sequence, and reach the extraction helipad while evading the rig stalker.</p>
     </div>
     <button class="primary" id="btnBlacktide">PLAY BLACKTIDE 09</button>
    </div>
    <div class="card">
     <div>
      <h2>CITY CRIME</h2>
-     <p>Open-world neon metropolis. Hijack and drive 22 traffic, sports, and police cars, collect cash bundles or eliminate gang targets for cash, survive 5-star police pursuits, and enter Ammu-Nation stores to buy heavy weapons.</p>
+     <p>Open-world neon metropolis. Hijack and drive 24 traffic, supercars &amp; police cruisers, take payphone contracts, collect cash drops, and enter Ammu-Nation stores to buy 5 weapons.</p>
     </div>
     <button class="gold" id="btnCity">PLAY CITY CRIME</button>
    </div>
@@ -135,11 +133,11 @@ button:hover{filter:brightness(1.22)}
   </div>
   <div class="controls">
    <div><b>W A S D</b> — Walk / Drive Car</div>
-   <div><b>MOUSE</b> — Aim / Camera Orbit</div>
+   <div><b>MOUSE</b> — Aim / Camera Look</div>
    <div><b>SHIFT</b> — Sprint / Nitro Boost</div>
    <div><b>SPACE</b> — Jump / Handbrake Drift</div>
    <div><b>E</b> — Interact / Enter-Exit Car / Enter Store</div>
-   <div><b>1 - 4</b> — Pistol / Shotgun / Rifle / Heavy SMG</div>
+   <div><b>1 - 5</b> — Switch Weapons</div>
    <div><b>LEFT CLICK</b> — Fire Weapon</div>
    <div><b>R / F / ESC</b> — Reload / Flashlight / Pause</div>
   </div>
@@ -152,9 +150,10 @@ button:hover{filter:brightness(1.22)}
   <div class="kicker">EXPLOSIVE ORDNANCE // SEQUENCE REQUIRED</div>
   <h2 style="margin:0 0 8px;letter-spacing:3px">CUT WIRES IN INTEL ORDER</h2>
   <p id="wireHint" style="color:#9eb5be;font-size:12px;letter-spacing:1.5px">Intel Collected: 0 / 3</p>
+  <div class="wire-row">
+   <button class="wire" style="--wire:#e34a3d" data-wire="RED">RED WIRE</button>
+   <button class="wire" style="--wire:#3b9ae1" data-wire="BLUE">BLUE WIRE</button>
 Use code with caution.
-RED WIRE
-BLUE WIRE
 YELLOW WIRE
 
 
@@ -162,7 +161,7 @@ STEP BACK
 
 CITY CRIME // WALK-IN ARMORY
 AMMU-NATION STORE
-AVAILABLE CASH: $750
+AVAILABLE CASH: $800
 
 
 
@@ -170,29 +169,37 @@ COMBAT SHOTGUN
 $400
 8-pellet devastating close-range spread. Includes 32 shells.
 
-BUY SHOTGUN
+BUY [KEY 2]
 
 
 
 TACTICAL SMG
 $650
-Ultra-high fire rate submachine gun. Includes 180 rounds.
+Rapid-fire submachine gun. Includes 175 rounds.
 
-BUY SMG
+BUY [KEY 3]
 
 
 
 ASSAULT RIFLE
 $950
-High-damage automatic carbine. Includes 150 rounds.
+High-damage military carbine. Includes 150 rounds.
 
-BUY RIFLE
+BUY [KEY 4]
+
+
+
+PLASMA RAILGUN
+$1600
+One-shot hyper-velocity energy beam. Includes 40 cells.
+
+BUY [KEY 5]
 
 
 
 ARMOR + AMMO
 $250
-Restores 100 Health, 100 Armor, and refills all owned guns.
+Restores 100 Health, 100 Armor, and maxes all ammo.
 
 BUY PACK
 
@@ -216,7 +223,7 @@ MAIN MENU
 
 import * as THREE from 'three';
 // ==========================================
-// 1. WEB AUDIO SYNTHESIZER (NO EXTERNAL FILES)
+// 1. WEB AUDIO SYNTHESIZER
 // ==========================================
 class SoundEngine {
 constructor() {
@@ -225,30 +232,33 @@ this.enabled = true;
 }
 init() {
 if (!this.ctx) {
-this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+if (AudioCtx) this.ctx = new AudioCtx();
 }
-if (this.ctx.state === 'suspended') this.ctx.resume();
+if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
 }
 playShot(type = 'pistol') {
 if (!this.enabled) return;
 this.init();
+if (!this.ctx) return;
 const now = this.ctx.currentTime;
 const osc = this.ctx.createOscillator();
 const gain = this.ctx.createGain();
-osc.type = type === 'shotgun' ? 'sawtooth' : 'triangle';
-const startFreq = type === 'shotgun' ? 140 : type === 'rifle' ? 220 : 280;
+osc.type = type === 'railgun' ? 'sine' : type === 'shotgun' ? 'sawtooth' : 'triangle';
+const startFreq = type === 'railgun' ? 920 : type === 'shotgun' ? 140 : type === 'rifle' ? 230 : 290;
 osc.frequency.setValueAtTime(startFreq, now);
-osc.frequency.exponentialRampToValueAtTime(32, now + 0.14);
+osc.frequency.exponentialRampToValueAtTime(30, now + 0.16);
 gain.gain.setValueAtTime(type === 'shotgun' ? 0.32 : 0.2, now);
-gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+gain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
 osc.connect(gain);
 gain.connect(this.ctx.destination);
 osc.start(now);
-osc.stop(now + 0.16);
+osc.stop(now + 0.18);
 }
 playCash() {
 if (!this.enabled) return;
 this.init();
+if (!this.ctx) return;
 const now = this.ctx.currentTime;
 const osc = this.ctx.createOscillator();
 const gain = this.ctx.createGain();
@@ -265,12 +275,13 @@ osc.stop(now + 0.23);
 playReload() {
 if (!this.enabled) return;
 this.init();
+if (!this.ctx) return;
 const now = this.ctx.currentTime;
 const osc = this.ctx.createOscillator();
 const gain = this.ctx.createGain();
 osc.type = 'square';
 osc.frequency.setValueAtTime(420, now);
-osc.frequency.setValueAtTime(620, now + 0.12);
+osc.frequency.setValueAtTime(640, now + 0.12);
 gain.gain.setValueAtTime(0.08, now);
 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
 osc.connect(gain);
@@ -281,6 +292,7 @@ osc.stop(now + 0.21);
 playBeep(freq = 600, dur = 0.08) {
 if (!this.enabled) return;
 this.init();
+if (!this.ctx) return;
 const now = this.ctx.currentTime;
 const osc = this.ctx.createOscillator();
 const gain = this.ctx.createGain();
@@ -296,19 +308,18 @@ osc.stop(now + dur + 0.01);
 }
 const sfx = new SoundEngine();
 // ==========================================
-// 2. PROCEDURAL PBR TEXTURES & MATERIALS
+// 2. PROCEDURAL PBR TEXTURES
 // ==========================================
 function makeAsphaltTexture() {
 const c = document.createElement('canvas');
 c.width = c.height = 512;
 const ctx = c.getContext('2d');
-ctx.fillStyle = '#151921';
+ctx.fillStyle = '#141820';
 ctx.fillRect(0, 0, 512, 512);
 for (let i = 0; i < 6000; i++) {
 ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.06)';
 ctx.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
 }
-// Crosswalks & lane dividers
 ctx.strokeStyle = '#334155';
 ctx.lineWidth = 6;
 ctx.strokeRect(3, 3, 506, 506);
@@ -333,7 +344,6 @@ for (let i = 0; i <= 512; i += 64) {
 ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
 ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
 }
-// Hazard border
 ctx.fillStyle = '#ca8a04';
 ctx.fillRect(0, 0, 512, 12);
 const tex = new THREE.CanvasTexture(c);
@@ -360,7 +370,7 @@ tex.colorSpace = THREE.SRGBColorSpace;
 return tex;
 }
 // ==========================================
-// 3. THREE.JS RENDERER & CAMERA SETUP
+// 3. THREE.JS RENDERER & VIEWMODEL SETUP
 // ==========================================
 const canvas = document.getElementById('game');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -369,11 +379,10 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.18;
+renderer.toneMappingExposure = 1.2;
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 450);
+const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 480);
 camera.rotation.order = 'YXZ';
-// First-person Weapon Viewmodel
 const gunGroup = new THREE.Group();
 const gunBody = new THREE.Mesh(
 new THREE.BoxGeometry(0.075, 0.085, 0.42),
@@ -385,11 +394,11 @@ new THREE.BoxGeometry(0.025, 0.025, 0.06),
 new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
 );
 gunSight.position.set(0.26, -0.17, -0.35);
-const muzzleFlash = new THREE.PointLight(0xffaa33, 0, 8);
+const muzzleFlash = new THREE.PointLight(0xffaa33, 0, 9);
 muzzleFlash.position.set(0.26, -0.18, -0.78);
 gunGroup.add(gunBody, gunSight, muzzleFlash);
 camera.add(gunGroup);
-const flashlight = new THREE.SpotLight(0xdff6ff, 0, 50, Math.PI / 5, 0.45, 1);
+const flashlight = new THREE.SpotLight(0xdff6ff, 0, 52, Math.PI / 5, 0.45, 1);
 flashlight.target.position.set(0, 0, -10);
 camera.add(flashlight, flashlight.target);
 scene.add(camera);
@@ -408,16 +417,17 @@ velY: 0,
 grounded: true,
 hp: 100,
 armor: 50,
-cash: 750,
+cash: 800,
 wanted: 0,
 wantedDecay: 0,
 inCar: null,
 weaponIdx: 0,
 weapons: [
-{ id: 'pistol', name: 'SERVICE PISTOL', dmg: 36, rate: 0.22, clip: 12, maxClip: 12, reserve: 72, spread: 0.01, pellets: 1, auto: false, color: 0x222831, len: 0.36, owned: true },
-{ id: 'shotgun', name: 'COMBAT SHOTGUN', dmg: 24, rate: 0.72, clip: 8, maxClip: 8, reserve: 32, spread: 0.085, pellets: 8, auto: false, color: 0x5c3a21, len: 0.66, owned: false },
-{ id: 'smg', name: 'TACTICAL SMG', dmg: 21, rate: 0.08, clip: 35, maxClip: 35, reserve: 175, spread: 0.035, pellets: 1, auto: true, color: 0x334155, len: 0.48, owned: false },
-{ id: 'rifle', name: 'ASSAULT RIFLE', dmg: 32, rate: 0.11, clip: 30, maxClip: 30, reserve: 150, spread: 0.02, pellets: 1, auto: true, color: 0x0f172a, len: 0.68, owned: false }
+{ id: 'pistol', name: 'SERVICE PISTOL', dmg: 38, rate: 0.22, clip: 12, maxClip: 12, reserve: 72, spread: 0.01, pellets: 1, auto: false, color: 0x222831, len: 0.36, owned: true },
+{ id: 'shotgun', name: 'COMBAT SHOTGUN', dmg: 25, rate: 0.72, clip: 8, maxClip: 8, reserve: 32, spread: 0.085, pellets: 8, auto: false, color: 0x5c3a21, len: 0.66, owned: false },
+{ id: 'smg', name: 'TACTICAL SMG', dmg: 22, rate: 0.08, clip: 35, maxClip: 35, reserve: 175, spread: 0.035, pellets: 1, auto: true, color: 0x334155, len: 0.48, owned: false },
+{ id: 'rifle', name: 'ASSAULT RIFLE', dmg: 34, rate: 0.11, clip: 30, maxClip: 30, reserve: 150, spread: 0.02, pellets: 1, auto: true, color: 0x0f172a, len: 0.68, owned: false },
+{ id: 'railgun', name: 'PLASMA RAILGUN', dmg: 160, rate: 0.65, clip: 8, maxClip: 8, reserve: 40, spread: 0.002, pellets: 1, auto: false, color: 0x0284c7, len: 0.78, owned: false }
 ],
 cooldown: 0,
 reloading: false
@@ -429,6 +439,7 @@ let cars = [];
 let pickups = [];
 let props = [];
 let tracers = [];
+let particles = [];
 let activePrompt = null;
 // Blacktide 09 state
 let rigTimer = 300;
@@ -471,10 +482,11 @@ if (!w || !w.owned) return;
 player.weaponIdx = idx;
 gunBody.material.color.setHex(w.color);
 gunBody.scale.z = w.len / 0.42;
+gunSight.material.color.setHex(w.id === 'railgun' ? 0x38bdf8 : 0xf43f5e);
 updateHUD();
 }
 function clearWorld() {
-while (scene.children.length > 0) scene.remove(scene.children);
+while (scene.children.length > 0) scene.remove(scene.children[0]);
 scene.add(camera);
 colliders = [];
 interactables = [];
@@ -483,6 +495,7 @@ cars = [];
 pickups = [];
 props = [];
 tracers = [];
+particles = [];
 player.inCar = null;
 player.hp = 100;
 player.armor = 50;
@@ -504,6 +517,20 @@ colliders.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d 
 }
 return mesh;
 }
+function spawnParticles(pos, colorHex, count = 10) {
+const geo = new THREE.BoxGeometry(0.14, 0.14, 0.14);
+const mat = new THREE.MeshBasicMaterial({ color: colorHex });
+for (let i = 0; i < count; i++) {
+const m = new THREE.Mesh(geo, mat);
+m.position.copy(pos);
+scene.add(m);
+particles.push({
+mesh: m,
+vel: new THREE.Vector3((Math.random() - 0.5) * 8, Math.random() * 6 + 2, (Math.random() - 0.5) * 8),
+life: 0.45 + Math.random() * 0.25
+});
+}
+}
 // ==========================================
 // 5. WORLD 1: BLACKTIDE 09 (OIL RIG)
 // ==========================================
@@ -516,10 +543,10 @@ cutWires = [];
 bombDisarmed = false;
 wireOrder = ['RED', 'BLUE', 'YELLOW'].sort(() => Math.random() - 0.5);
 scene.background = new THREE.Color(0x040d14);
-scene.fog = new THREE.FogExp2(0x051018, 0.02);
-scene.add(new THREE.HemisphereLight(0x3a6073, 0x09131a, 0.75));
-const moon = new THREE.DirectionalLight(0x88b4cc, 1.4);
-moon.position.set(35, 60, 25);
+scene.fog = new THREE.FogExp2(0x051018, 0.019);
+scene.add(new THREE.HemisphereLight(0x3a6073, 0x09131a, 0.8));
+const moon = new THREE.DirectionalLight(0x93c5fd, 1.5);
+moon.position.set(35, 65, 25);
 moon.castShadow = true;
 moon.shadow.mapSize.set(2048, 2048);
 scene.add(moon);
@@ -533,7 +560,7 @@ new THREE.MeshStandardMaterial({ color: 0x03131d, roughness: 0.18, metalness: 0.
 sea.rotation.x = -Math.PI / 2;
 sea.position.y = -4.5;
 scene.add(sea);
-const rustMat = new THREE.MeshStandardMaterial({ color: 0x5c2b23, roughness: 0.7, metalness: 0.5 });
+const rustMat = new THREE.MeshStandardMaterial({ color: 0x612d24, roughness: 0.7, metalness: 0.5 });
 const steelMat = new THREE.MeshStandardMaterial({ color: 0x2b3945, roughness: 0.5, metalness: 0.7 });
 [
 [-18, 2, -18, 10, 4, 8, rustMat], [18, 2, -16, 8, 4, 12, steelMat],
@@ -641,14 +668,25 @@ updateHUD();
 // ==========================================
 function buildCarMesh(colorHex, isSports = false, isPolice = false) {
 const g = new THREE.Group();
-const bodyMat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.78, roughness: 0.18 });
+const bodyMat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.8, roughness: 0.18 });
 const glassMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.92, roughness: 0.08 });
-const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.15, isSports ? 0.62 : 0.78, 4.5), bodyMat);
+const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.15, isSports ? 0.62 : 0.78, 4.55), bodyMat);
 chassis.position.y = 0.65;
 chassis.castShadow = true;
 const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.78, isSports ? 0.48 : 0.64, 2.25), glassMat);
 cabin.position.set(0, isSports ? 1.12 : 1.28, -0.2);
 g.add(chassis, cabin);
+if (isSports) {
+const spoiler = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.1, 0.35), bodyMat);
+spoiler.position.set(0, 1.15, -2.05);
+const underglow = new THREE.Mesh(
+new THREE.PlaneGeometry(1.9, 3.8),
+new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45, side: THREE.DoubleSide })
+);
+underglow.rotation.x = Math.PI / 2;
+underglow.position.y = 0.08;
+g.add(spoiler, underglow);
+}
 if (isPolice) {
 const barRed = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.22), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
 barRed.position.set(-0.3, 1.66, -0.2);
@@ -657,9 +695,9 @@ barBlue.position.set(0.3, 1.66, -0.2);
 g.add(barRed, barBlue);
 }
 const hl = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.16, 0.1), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-hl.position.set(0, 0.7, 2.26);
+hl.position.set(0, 0.7, 2.28);
 const tl = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.16, 0.1), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
-tl.position.set(0, 0.7, -2.26);
+tl.position.set(0, 0.7, -2.28);
 g.add(hl, tl);
 const wGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.32, 16);
 wGeo.rotateZ(Math.PI / 2);
@@ -674,28 +712,43 @@ wheels.push(w);
 g.userData.wheels = wheels;
 return g;
 }
-function spawnCashDrop(x, z, amount = 200) {
+function spawnCashDrop(x, z, amount = 250) {
 const mesh = new THREE.Mesh(
-new THREE.BoxGeometry(0.75, 0.28, 0.45),
-new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x15803d, emissiveIntensity: 0.9 })
+new THREE.BoxGeometry(0.8, 0.3, 0.48),
+new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x15803d, emissiveIntensity: 1.0 })
 );
 mesh.position.set(x, 0.55, z);
 scene.add(mesh);
 pickups.push({ mesh, amount });
 }
-function spawnEnemyNPC(x, z, isCop = false) {
-const mesh = new THREE.Mesh(
-new THREE.CapsuleGeometry(0.45, 1.0, 6, 12),
-new THREE.MeshStandardMaterial({ color: isCop ? 0x1d4ed8 : 0x991b1b, roughness: 0.45 })
+function spawnEnemyNPC(x, z, isCop = false, isBounty = false) {
+const group = new THREE.Group();
+const color = isBounty ? 0xf59e0b : isCop ? 0x1d4ed8 : 0x991b1b;
+const torso = new THREE.Mesh(
+new THREE.CapsuleGeometry(0.42, 0.9, 6, 12),
+new THREE.MeshStandardMaterial({ color, roughness: 0.45 })
 );
-mesh.position.set(x, 1.0, z);
-mesh.castShadow = true;
-scene.add(mesh);
+torso.position.y = 0.95;
+torso.castShadow = true;
+const head = new THREE.Mesh(
+new THREE.SphereGeometry(0.28, 12, 12),
+new THREE.MeshStandardMaterial({ color: 0xf1c27d, roughness: 0.6 })
+);
+head.position.y = 1.65;
+const gun = new THREE.Mesh(
+new THREE.BoxGeometry(0.1, 0.12, 0.45),
+new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.8 })
+);
+gun.position.set(0.32, 1.15, 0.3);
+group.add(torso, head, gun);
+group.position.set(x, 0, z);
+scene.add(group);
 enemies.push({
-mesh,
-hp: isCop ? 110 : 85,
+mesh: group,
+hp: isBounty ? 220 : isCop ? 110 : 85,
 isGangster: !isCop,
 isCop,
+isBounty,
 shootTimer: Math.random() * 1.5
 });
 }
@@ -707,12 +760,11 @@ player.wantedDecay = 22;
 if (player.wanted > prev) {
 sfx.playBeep(520, 0.12);
 toast(WANTED LEVEL: ${player.wanted} STAR${player.wanted > 1 ? 'S' : ''}!);
-// Spawn pursuing police squad near player
 for (let i = 0; i < player.wanted; i++) {
 const angle = Math.random() * Math.PI * 2;
 const sx = Math.max(-135, Math.min(135, player.pos.x + Math.cos(angle) * 32));
 const sz = Math.max(-135, Math.min(135, player.pos.z + Math.sin(angle) * 32));
-spawnEnemyNPC(sx, sz, true);
+spawnEnemyNPC(sx, sz, true, false);
 }
 }
 updateHUD();
@@ -721,10 +773,10 @@ function initCityCrime() {
 clearWorld();
 mode = 'city';
 flashlight.intensity = 0;
-scene.background = new THREE.Color(0x091124);
-scene.fog = new THREE.FogExp2(0x091124, 0.0075);
-scene.add(new THREE.HemisphereLight(0x60a5fa, 0x1e293b, 1.0));
-const sun = new THREE.DirectionalLight(0xffedd5, 1.9);
+scene.background = new THREE.Color(0x0a1329);
+scene.fog = new THREE.FogExp2(0x0a1329, 0.0072);
+scene.add(new THREE.HemisphereLight(0x60a5fa, 0x1e293b, 1.05));
+const sun = new THREE.DirectionalLight(0xffedd5, 1.95);
 sun.position.set(70, 120, 60);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
@@ -746,14 +798,14 @@ const bldgMat2 = new THREE.MeshStandardMaterial({ map: makeSkyscraperTexture('#1
 const blockCoords = [-100, -60, -20, 20, 60, 100];
 blockCoords.forEach((bx, ix) => {
 blockCoords.forEach((bz, iz) => {
-if (bx === -20 && bz === -20) return; // Downtown Store
-if (bx === 60 && bz === 60) return;   // Eastside Store
-if (bx === -60 && bz === 60) return;  // Westside Store
-const h = 20 + Math.abs((bx * 7 + bz * 13) % 42);
+if (bx === -20 && bz === -20) return;
+if (bx === 60 && bz === 60) return;
+if (bx === -60 && bz === 60) return;
+const h = 22 + Math.abs((bx * 7 + bz * 13) % 44);
 addBox(bx, h / 2, bz, 22, h, 22, (ix + iz) % 2 === 0 ? bldgMat1 : bldgMat2, true);
 });
 });
-// Streetlights & Destructible Hydrants along avenues
+// Streetlights & Destructible Fire Hydrants
 const poleMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 });
 const hydrantMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.4 });
 [-80, -40, 0, 40, 80].forEach(lane => {
@@ -794,18 +846,36 @@ $('gunStore').style.display = 'flex';
 }
 });
 });
-// Spawn 22 Traffic, Sports & Police Cars
+// Payphone Hit Contracts
+const phoneSpots = [[12, -12], [-50, -50], [50, -50]];
+phoneSpots.forEach((pp, idx) => {
+addBox(pp[0], 1.2, pp[1], 0.9, 2.4, 0.9, new THREE.MeshStandardMaterial({ color: 0x15803d, emissive: 0x166534, emissiveIntensity: 1.2 }));
+interactables.push({
+pos: new THREE.Vector3(pp[0], 1.2, pp[1]),
+radius: 3.6,
+label: [ E ] ANSWER PAYPHONE CONTRACT #$1000,
+action() {
+const bx = (Math.random() - 0.5) * 180;
+const bz = (Math.random() - 0.5) * 180;
+spawnEnemyNPC(bx, bz, false, true);
+sfx.playBeep(950, 0.16);
+toast('CONTRACT ACCEPTED: ELIMINATE GOLD BOUNTY TARGET ($1,000)!');
+}
+});
+});
+// Spawn 24 Traffic, Supercars & Police Cruisers
 const carPalette = [
-{ name: 'APEX GT SUPERCAR', color: 0xef4444, accel: 34, sports: true, police: false },
-{ name: 'COBALT INTERCEPTOR', color: 0x3b82f6, accel: 31, sports: true, police: false },
-{ name: 'METRO POLICE CRUISER', color: 0x0f172a, accel: 30, sports: false, police: true },
+{ name: 'APEX GT SUPERCAR', color: 0xef4444, accel: 36, sports: true, police: false },
+{ name: 'COBALT INTERCEPTOR', color: 0x3b82f6, accel: 33, sports: true, police: false },
+{ name: 'VENOM HYPERCAR', color: 0xa855f7, accel: 38, sports: true, police: false },
+{ name: 'METRO POLICE CRUISER', color: 0x0f172a, accel: 31, sports: false, police: true },
 { name: 'MIDNIGHT COUPE', color: 0x1e293b, accel: 27, sports: false, police: false },
 { name: 'SOLAR CITY TAXI', color: 0xeab308, accel: 24, sports: false, police: false },
 { name: 'EMERALD SEDAN', color: 0x10b981, accel: 25, sports: false, police: false },
 { name: 'SILVER CRUISER', color: 0x94a3b8, accel: 26, sports: false, police: false }
 ];
 const roadLanes = [-120, -80, -40, 0, 40, 80, 120];
-for (let i = 0; i < 22; i++) {
+for (let i = 0; i < 24; i++) {
 const spec = carPalette[i % carPalette.length];
 const mesh = buildCarMesh(spec.color, spec.sports, spec.police);
 const alongX = i % 2 === 0;
@@ -824,22 +894,18 @@ isPolice: spec.police
 });
 }
 // Spawn Cash Drops & Street Gangsters
-for (let i = 0; i < 24; i++) {
+for (let i = 0; i < 26; i++) {
 const cx = -115 + ((i * 43) % 230);
 const cz = -115 + ((i * 61) % 230);
-spawnCashDrop(cx, cz, 200);
-if (i % 2 === 0) spawnEnemyNPC(cx + 3, cz + 3, false);
+spawnCashDrop(cx, cz, 250);
+if (i % 2 === 0) spawnEnemyNPC(cx + 3, cz + 3, false, false);
 }
 player.pos.set(0, 1.7, 12);
 yaw = Math.PI; pitch = 0;
-$('brand').textContent = 'CITY CRIME // OPEN WORLD';
-$('mission').textContent = 'FREE ROAM: EARN CASH & BUY GUNS';
-$('objective').textContent = 'Grab cash drops, defeat gangsters for money, hijack cars [E], and visit glowing Ammu-Nation stores.';
-$('statusLabel').textContent = 'SYNDICATE FUNDS';
-$('timer').style.display = 'none';
-$('cashDisplay').style.display = 'block';
-$('wantedStars').style.display = 'block';
-$('objLabel').textContent = 'CARS';
+\(('brand').textContent = 'CITY CRIME // OPEN WORLD';\)('mission').textContent = 'FREE ROAM: EARN CASH & BUY GUNS';
+\(('objective').textContent = 'Collect cash drops, answer green payphone contracts, hijack cars [E], and visit glowing Ammu-Nation stores.';\)('statusLabel').textContent = 'SYNDICATE FUNDS';
+\(('timer').style.display = 'none';\)('cashDisplay').style.display = 'block';
+\(('wantedStars').style.display = 'block';\)('objLabel').textContent = 'CARS';
 equipWeapon(0);
 updateHUD();
 }
@@ -848,10 +914,10 @@ updateHUD();
 // ==========================================
 function spawnTracer(start, end, color = 0xfef08a) {
 const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
-const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.85 });
+const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.9 });
 const line = new THREE.Line(geo, mat);
 scene.add(line);
-tracers.push({ line, life: 0.08 });
+tracers.push({ line, life: 0.09 });
 }
 function fireWeapon() {
 if (player.inCar || player.reloading || player.cooldown > 0) return;
@@ -863,8 +929,9 @@ return;
 w.clip--;
 player.cooldown = w.rate;
 sfx.playShot(w.id);
-muzzleFlash.intensity = 22;
-setTimeout(() => muzzleFlash.intensity = 0, 50);
+muzzleFlash.color.setHex(w.id === 'railgun' ? 0x38bdf8 : 0xffaa33);
+muzzleFlash.intensity = 24;
+setTimeout(() => muzzleFlash.intensity = 0, 55);
 gunGroup.position.z = 0.09;
 gunGroup.rotation.x = 0.08;
 updateHUD();
@@ -881,11 +948,12 @@ const dir = new THREE.Vector3(
 -1
 ).normalize().applyQuaternion(camera.quaternion);
 raycaster.set(camera.position, dir);
-const endPoint = camera.position.clone().addScaledVector(dir, 90);
+const endPoint = camera.position.clone().addScaledVector(dir, 95);
 const enemyMeshes = enemies.map(e => e.mesh);
 const hits = raycaster.intersectObjects(enemyMeshes, true);
 if (hits.length > 0 && hits[0].distance < 95) {
 endPoint.copy(hits[0].point);
+spawnParticles(hits[0].point, w.id === 'railgun' ? 0x38bdf8 : 0xef4444, 6);
 $('hitmarker').style.opacity = 1;
 setTimeout(() => $('hitmarker').style.opacity = 0, 90);
 let hitObj = hits[0].object;
@@ -901,17 +969,20 @@ enemy.mesh.position.set(-32, 1.2, -32);
 toast('STALKER REPELLED TEMPORARILY!');
 }
 } else if (enemy.hp <= 0) {
-const reward = enemy.isCop ? 150 : 300;
+const reward = enemy.isBounty ? 1000 : enemy.isCop ? 150 : 300;
 spawnCashDrop(enemy.mesh.position.x, enemy.mesh.position.z, reward);
+spawnParticles(enemy.mesh.position.clone().add(new THREE.Vector3(0, 1, 0)), 0xf59e0b, 14);
 scene.remove(enemy.mesh);
 enemies = enemies.filter(e => e !== enemy);
 addWantedLevel(1);
-toast(${enemy.isCop ? 'OFFICER' : 'GANGSTER'} DOWN — +$${reward} DROPPED);
-setTimeout(() => spawnEnemyNPC((Math.random() - 0.5) * 220, (Math.random() - 0.5) * 220, false), 6000);
+toast(${enemy.isBounty ? 'BOUNTY TARGET' : enemy.isCop ? 'OFFICER' : 'GANGSTER'} DOWN — +$${reward} DROPPED);
+if (!enemy.isBounty) {
+setTimeout(() => spawnEnemyNPC((Math.random() - 0.5) * 220, (Math.random() - 0.5) * 220, false, false), 6000);
 }
 }
 }
-spawnTracer(muzzleWorld, endPoint);
+}
+spawnTracer(muzzleWorld, endPoint, w.id === 'railgun' ? 0x38bdf8 : 0xfef08a);
 }
 }
 function reloadWeapon() {
@@ -958,11 +1029,10 @@ function drawRadar() {
 const w = radarCanvas.width, h = radarCanvas.height;
 const cx = w / 2, cy = h / 2;
 rCtx.clearRect(0, 0, w, h);
-// Radar rings
-rCtx.strokeStyle = 'rgba(150, 195, 210, 0.16)';
+rCtx.strokeStyle = 'rgba(150, 195, 210, 0.18)';
 rCtx.lineWidth = 1;
-rCtx.beginPath(); rCtx.arc(cx, cy, 36, 0, Math.PI * 2); rCtx.stroke();
-rCtx.beginPath(); rCtx.arc(cx, cy, 68, 0, Math.PI * 2); rCtx.stroke();
+rCtx.beginPath(); rCtx.arc(cx, cy, 38, 0, Math.PI * 2); rCtx.stroke();
+rCtx.beginPath(); rCtx.arc(cx, cy, 72, 0, Math.PI * 2); rCtx.stroke();
 const scale = mode === 'blacktide' ? 1.5 : 0.65;
 const heading = player.inCar ? player.inCar.mesh.rotation.y + Math.PI : yaw;
 function toRadar(worldPos) {
@@ -975,20 +1045,17 @@ x: cx + (dx * cos - dz * sin),
 y: cy + (dx * sin + dz * cos)
 };
 }
-// Interactables (Stores / Bomb / Intel)
 for (const item of interactables) {
 if (item.collected) continue;
 const p = toRadar(item.pos);
 rCtx.fillStyle = mode === 'city' ? '#f59e0b' : '#38bdf8';
 rCtx.fillRect(p.x - 3.5, p.y - 3.5, 7, 7);
 }
-// Cash pickups
-rCtx.fillStyle = '#52d681';
+rCtx.fillStyle = '#4ade80';
 for (const c of pickups) {
 const p = toRadar(c.mesh.position);
 rCtx.fillRect(p.x - 2, p.y - 2, 4, 4);
 }
-// Cars
 if (mode === 'city') {
 for (const car of cars) {
 if (car === player.inCar) continue;
@@ -997,13 +1064,11 @@ rCtx.fillStyle = car.isPolice ? '#60a5fa' : '#94a3b8';
 rCtx.fillRect(p.x - 2.5, p.y - 2.5, 5, 5);
 }
 }
-// Enemies
 for (const e of enemies) {
 const p = toRadar(e.mesh.position);
-rCtx.fillStyle = e.isCop ? '#3b82f6' : '#ef4444';
-rCtx.beginPath(); rCtx.arc(p.x, p.y, 3.5, 0, Math.PI * 2); rCtx.fill();
+rCtx.fillStyle = e.isBounty ? '#facc15' : e.isCop ? '#3b82f6' : '#ef4444';
+rCtx.beginPath(); rCtx.arc(p.x, p.y, e.isBounty ? 5 : 3.5, 0, Math.PI * 2); rCtx.fill();
 }
-// Player Center Triangle
 rCtx.fillStyle = '#ffffff';
 rCtx.beginPath();
 rCtx.moveTo(cx, cy - 6);
@@ -1021,6 +1086,7 @@ if (e.code === 'Digit1') equipWeapon(0);
 if (e.code === 'Digit2') equipWeapon(1);
 if (e.code === 'Digit3') equipWeapon(2);
 if (e.code === 'Digit4') equipWeapon(3);
+if (e.code === 'Digit5') equipWeapon(4);
 if (e.code === 'KeyR') reloadWeapon();
 if (e.code === 'Space' && !player.inCar && player.grounded) {
 player.velY = 6.8;
@@ -1165,6 +1231,12 @@ player.weapons[3].clip = 30;
 player.weapons[3].reserve = 150;
 equipWeapon(3);
 toast('ASSAULT RIFLE PURCHASED! [KEY 4]');
+} else if (item === 'railgun') {
+player.weapons[4].owned = true;
+player.weapons[4].clip = 8;
+player.weapons[4].reserve = 40;
+equipWeapon(4);
+toast('PLASMA RAILGUN PURCHASED! [KEY 5]');
 } else if (item === 'refill') {
 player.hp = 100;
 player.armor = 100;
@@ -1176,7 +1248,7 @@ updateHUD();
 });
 ('closeStore').onclick = () => {('gunStore').style.display = 'none';
 canvas.requestPointerLock();
- };
+};
 window.addEventListener('resize', () => {
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.updateProjectionMatrix();
@@ -1208,12 +1280,23 @@ scene.remove(tracers[i].line);
 tracers.splice(i, 1);
 }
 }
+// 3D Particle updates
+for (let i = particles.length - 1; i >= 0; i--) {
+const p = particles[i];
+p.vel.y -= 18 * dt;
+p.mesh.position.addScaledVector(p.vel, dt);
+p.life -= dt;
+if (p.life <= 0) {
+scene.remove(p.mesh);
+particles.splice(i, 1);
+}
+}
 // Player Movement vs Car Physics
 if (player.inCar) {
 const car = player.inCar;
 const accel = (keys['KeyW'] ? 1 : 0) - (keys['KeyS'] ? 1 : 0);
 const steer = (keys['KeyA'] ? 1 : 0) - (keys['KeyD'] ? 1 : 0);
-const boost = keys['ShiftLeft'] ? 1.4 : 1.0;
+const boost = keys['ShiftLeft'] ? 1.45 : 1.0;
 const brake = keys['Space'] ? 0.88 : 1.0;
 car.speed += accel * car.accelPower * boost * dt;
 car.speed *= Math.pow(0.28, dt) * brake;
@@ -1223,7 +1306,6 @@ car.mesh.rotation.y += steer * turnRate * Math.sign(car.speed) * dt;
 }
 const forward = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
 const nextPos = car.mesh.position.clone().addScaledVector(forward, car.speed * dt);
-// Building collision for car
 let blocked = Math.abs(nextPos.x) > 155 || Math.abs(nextPos.z) > 155;
 for (const c of colliders) {
 if (nextPos.x + 1.4 > c.minX && nextPos.x - 1.4 < c.maxX && nextPos.z + 1.4 > c.minZ && nextPos.z - 1.4 < c.maxZ) {
@@ -1236,7 +1318,6 @@ car.mesh.position.copy(nextPos);
 } else {
 car.speed *= -0.35;
 }
-// Spin wheels
 if (car.mesh.userData.wheels) {
 car.mesh.userData.wheels.forEach(w => w.rotation.x += car.speed * dt * 2.5);
 }
@@ -1246,6 +1327,7 @@ if (!pr.broken && car.mesh.position.distanceTo(pr.mesh.position) < 2.2) {
 pr.broken = true;
 pr.mesh.rotation.z = Math.PI / 2;
 pr.mesh.position.y = 0.2;
+spawnParticles(pr.mesh.position, 0x38bdf8, 12);
 sfx.playBeep(300, 0.08);
 }
 }
@@ -1253,8 +1335,9 @@ if (Math.abs(car.speed) > 9) {
 for (let i = enemies.length - 1; i >= 0; i--) {
 const e = enemies[i];
 if (car.mesh.position.distanceTo(e.mesh.position) < 2.6) {
-const reward = e.isCop ? 150 : 300;
+const reward = e.isBounty ? 1000 : e.isCop ? 150 : 300;
 spawnCashDrop(e.mesh.position.x, e.mesh.position.z, reward);
+spawnParticles(e.mesh.position, 0xef4444, 12);
 scene.remove(e.mesh);
 enemies.splice(i, 1);
 addWantedLevel(1);
@@ -1262,9 +1345,8 @@ toast(ROADKILL — +$${reward} DROPPED);
 }
 }
 }
-// Speedometer & Chase Camera
 \(('speedo').style.display = 'block';\)('speedo').textContent = ${Math.round(Math.abs(car.speed) * 3.2)} MPH;
-const camOffset = forward.clone().multiplyScalar(-7.2).add(new THREE.Vector3(0, 3.2, 0));
+const camOffset = forward.clone().multiplyScalar(-7.4).add(new THREE.Vector3(0, 3.2, 0));
 camera.position.lerp(car.mesh.position.clone().add(camOffset), 10 * dt);
 camera.lookAt(car.mesh.position.clone().add(new THREE.Vector3(0, 1.35, 0)));
 player.pos.copy(car.mesh.position);
@@ -1291,7 +1373,6 @@ if (player.pos.x + 0.45 > c.minX && player.pos.x - 0.45 < c.maxX && nextZ + 0.45
 }
 if (!hitX) player.pos.x = nextX;
 if (!hitZ) player.pos.z = nextZ;
-// Jump & Gravity
 player.velY -= 18 * dt;
 player.pos.y += player.velY * dt;
 if (player.pos.y <= 1.7) {
@@ -1317,7 +1398,6 @@ if (car !== player.inCar && car.aiActive) {
 const dir = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
 const aiSpeed = (car.isPolice && player.wanted > 0) ? 16 : 11;
 if (car.isPolice && player.wanted > 0) {
-// Police car steers toward player
 const targetAngle = Math.atan2(player.pos.x - car.mesh.position.x, player.pos.z - car.mesh.position.z);
 car.mesh.rotation.y = targetAngle;
 }
@@ -1393,7 +1473,7 @@ e.mesh.lookAt(player.pos.x, e.mesh.position.y, player.pos.z);
 } else {
 applyPlayerDamage(40 * dt);
 }
-} else if ((e.isGangster || (e.isCop && player.wanted > 0)) && dist < 44) {
+} else if ((e.isGangster || (e.isCop && player.wanted > 0)) && dist < 46) {
 e.mesh.lookAt(player.pos.x, e.mesh.position.y, player.pos.z);
 if (dist > 11) {
 toPlayer.normalize();
@@ -1403,7 +1483,7 @@ e.shootTimer -= dt;
 if (e.shootTimer <= 0) {
 e.shootTimer = e.isCop ? 1.2 : 1.7;
 if (!player.inCar && Math.random() < 0.45) {
-spawnTracer(e.mesh.position.clone().add(new THREE.Vector3(0, 0.5, 0)), player.pos, 0xef4444);
+spawnTracer(e.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)), player.pos, 0xef4444);
 applyPlayerDamage(e.isCop ? 11 : 8);
 }
 }
@@ -1429,3 +1509,5 @@ drawRadar();
 renderer.render(scene, camera);
 }
 requestAnimationFrame(animate);
+
+
