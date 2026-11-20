@@ -65,8 +65,6 @@ button.gold{background:#a3761c;border-color:var(--gold);color:#fff}
 button:hover{filter:brightness(1.22)}
 .controls{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 24px;margin-top:18px;color:#8fa6ae;font-size:11px;border-top:1px solid rgba(170,205,215,.15);padding-top:14px}
 .controls b{color:#dce8eb}
-
-/* WIRE & SHOP GRIDS */
 .wire-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
 .shop-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:20px 0}
 .wire{height:84px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border:1px solid #56666c;background:#0b171d}
@@ -85,8 +83,6 @@ button:hover{filter:brightness(1.22)}
 <canvas id="game"></canvas>
 <div id="vignette"></div>
 <div id="scareFlash"></div>
-
-<!-- HUD -->
 <div id="hud">
  <div id="brand">BLACKTIDE 09</div>
  <div id="mission">MISSION</div>
@@ -115,8 +111,6 @@ button:hover{filter:brightness(1.22)}
   <div id="speedo">0 MPH</div>
  </div>
 </div>
-
-<!-- MAIN LAUNCHER -->
 <div id="start" class="overlay">
  <div class="screen">
   <div class="kicker">ULTRA PBR ENGINE // CLICK ANY GAME CARD TO DEPLOY</div>
@@ -132,7 +126,13 @@ button:hover{filter:brightness(1.22)}
    <div class="card city-card" id="cardCity" role="button" tabindex="0">
     <div>
      <h2>CITY CRIME <span class="badge ultra">ULTRA GRAPHICS</span></h2>
-     
+Use code with caution.
+Next-gen neon metropolis with dynamic shadows, wet reflective streets, illuminated skyscrapers, and traffic. Hijack sports cars, rob cash drops, visit the Gun Store, and survive 5-star police chases.
+
+CLICK TO PLAY CITY CRIME
+
+
+
 WASD / ARROWS — Move / Drive
 MOUSE + CLICK — Look & Fire Weapon
 E — Interact / Enter Car / Shop
@@ -141,9 +141,15 @@ R — Reload Weapon
 1 / 2 / 3 — Switch Weapons  |  ESC — Pause
 
 
+
+
+
 REACTOR CORE OVERLOAD
 CUT THE DEFUSAL WIRE
 Intel decoded: Cut the wire matching the emergency strobe frequency.
+
+
+
 
 
 UNDERGROUND ARMORY
@@ -151,11 +157,17 @@ BLACK MARKET DEALER — $800
 
 RETURN TO STREET [ESC]
 
+
+
+
 SIMULATION PAUSED
 OPERATIONS MENU
 
 RESUME GAME
 SWITCH GAME
+
+
+
 
 
 MISSION REPORT
@@ -166,49 +178,57 @@ PLAY AGAIN
 MAIN MENU
 
 
+
+---
+
+### Step 2: Copy & Paste Part 2 (Bottom Half)
+Place your cursor at the **very bottom** of what you just pasted (right after the last `</div>`), press Enter, and paste **Part 2** below:
+
+```html
+<script type="module">
 import * as THREE from 'three';
-/* ================= AUDIO SYNTHESIZER ================= */
+
 class SoundFX {
-constructor() { this.ctx = null; this.drone = null; }
-init() {
-if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-if (this.ctx.state === 'suspended') this.ctx.resume();
-}
-playTone(freq, type, dur, vol = 0.15, slide = 0) {
-if (!this.ctx) return;
-const o = this.ctx.createOscillator(), g = this.ctx.createGain();
-o.type = type; o.frequency.setValueAtTime(freq, this.ctx.currentTime);
-if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(20, slide), this.ctx.currentTime + dur);
-g.gain.setValueAtTime(vol, this.ctx.currentTime);
-g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
-o.connect(g); g.connect(this.ctx.destination);
-o.start(); o.stop(this.ctx.currentTime + dur);
-}
-shoot(heavy = false) {
-this.init();
-this.playTone(heavy ? 110 : 180, 'sawtooth', heavy ? 0.22 : 0.12, 0.22, 28);
-this.playTone(90, 'square', 0.09, 0.18, 22);
-}
-scare() {
-this.init();
-this.playTone(95, 'sawtooth', 0.65, 0.32, 34);
-this.playTone(620, 'square', 0.45, 0.18, 140);
-}
-pickup() { this.init(); this.playTone(520, 'sine', 0.12, 0.15, 880); }
-hit() { this.init(); this.playTone(320, 'triangle', 0.08, 0.18, 90); }
-startHorrorDrone() {
-this.init(); this.stopDrone();
-const o = this.ctx.createOscillator(), g = this.ctx.createGain();
-o.type = 'sawtooth'; o.frequency.value = 42;
-const f = this.ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 110;
-g.gain.value = 0.09;
-o.connect(f); f.connect(g); g.connect(this.ctx.destination);
-o.start(); this.drone = o;
-}
-stopDrone() { if (this.drone) { try { this.drone.stop(); } catch {} this.drone = null; } }
+  constructor() { this.ctx = null; this.drone = null; }
+  init() {
+    if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+  }
+  playTone(freq, type, dur, vol = 0.15, slide = 0) {
+    if (!this.ctx) return;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, this.ctx.currentTime);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(20, slide), this.ctx.currentTime + dur);
+    g.gain.setValueAtTime(vol, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+    o.connect(g); g.connect(this.ctx.destination);
+    o.start(); o.stop(this.ctx.currentTime + dur);
+  }
+  shoot(heavy = false) {
+    this.init();
+    this.playTone(heavy ? 110 : 180, 'sawtooth', heavy ? 0.22 : 0.12, 0.22, 28);
+    this.playTone(90, 'square', 0.09, 0.18, 22);
+  }
+  scare() {
+    this.init();
+    this.playTone(95, 'sawtooth', 0.65, 0.32, 34);
+    this.playTone(620, 'square', 0.45, 0.18, 140);
+  }
+  pickup() { this.init(); this.playTone(520, 'sine', 0.12, 0.15, 880); }
+  hit() { this.init(); this.playTone(320, 'triangle', 0.08, 0.18, 90); }
+  startHorrorDrone() {
+    this.init(); this.stopDrone();
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = 'sawtooth'; o.frequency.value = 42;
+    const f = this.ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 110;
+    g.gain.value = 0.09;
+    o.connect(f); f.connect(g); g.connect(this.ctx.destination);
+    o.start(); this.drone = o;
+  }
+  stopDrone() { if (this.drone) { try { this.drone.stop(); } catch {} this.drone = null; } }
 }
 const sfx = new SoundFX();
-/* ================= RENDERER & CORE STATE ================= */
+
 const canvas = document.getElementById('game');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -217,183 +237,187 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.15;
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, 260);
 const radarCtx = document.getElementById('radar').getContext('2d');
+
 const state = {
-mode: null, active: false, paused: false,
-hp: 100, armor: 50, cash: 800, wanted: 0,
-timer: 240, intel: 0, bombDefused: false, wireColor: 'RED',
-weaponIdx: 0,
-weapons: [
-{ name: 'SERVICE PISTOL', mag: 12, maxMag: 12, reserve: 72, dmg: 34, rate: 0.24, spread: 0.012, owned: true },
-{ name: 'TACTICAL SMG', mag: 30, maxMag: 30, reserve: 150, dmg: 22, rate: 0.09, spread: 0.032, owned: false },
-{ name: 'COMBAT SHOTGUN', mag: 8, maxMag: 8, reserve: 40, dmg: 95, rate: 0.65, spread: 0.075, owned: false }
-],
-lastShot: 0, flashlightOn: true,
-pos: new THREE.Vector3(0, 1.7, 0),
-vel: new THREE.Vector3(),
-yaw: 0, pitch: 0,
-inCar: null, carSpeed: 0,
-colliders: [], enemies: [], pickups: [], cars: [], lights: [], interactables: [],
-scareCooldown: 0, heartbeatTimer: 0
+  mode: null, active: false, paused: false,
+  hp: 100, armor: 50, cash: 800, wanted: 0,
+  timer: 240, intel: 0, bombDefused: false, wireColor: 'RED',
+  weaponIdx: 0,
+  weapons: [
+    { name: 'SERVICE PISTOL', mag: 12, maxMag: 12, reserve: 72, dmg: 34, rate: 0.24, spread: 0.012, owned: true },
+    { name: 'TACTICAL SMG', mag: 30, maxMag: 30, reserve: 150, dmg: 22, rate: 0.09, spread: 0.032, owned: false },
+    { name: 'COMBAT SHOTGUN', mag: 8, maxMag: 8, reserve: 40, dmg: 95, rate: 0.65, spread: 0.075, owned: false }
+  ],
+  lastShot: 0, flashlightOn: true,
+  pos: new THREE.Vector3(0, 1.7, 0),
+  yaw: 0, pitch: 0,
+  inCar: null, carSpeed: 0,
+  colliders: [], enemies: [], pickups: [], cars: [], lights: [], interactables: [],
+  scareCooldown: 0, heartbeatTimer: 0
 };
+
 const keys = {};
 window.addEventListener('keydown', e => {
-keys[e.code] = true;
-if (!state.active) return;
-if (e.code === 'Escape') togglePause();
-if (e.code === 'KeyR') reloadWeapon();
-if (e.code === 'KeyF' && state.mode === 'horror' && state.flashlight) {
-state.flashlightOn = !state.flashlightOn;
-state.flashlight.visible = state.flashlightOn;
-toast(state.flashlightOn ? 'FLASHLIGHT ON' : 'FLASHLIGHT OFF (STEALTH)');
-}
-if (e.code === 'Digit1') selectWeapon(0);
-if (e.code === 'Digit2') selectWeapon(1);
-if (e.code === 'Digit3') selectWeapon(2);
-if (e.code === 'KeyE') handleInteract();
+  keys[e.code] = true;
+  if (!state.active) return;
+  if (e.code === 'Escape') togglePause();
+  if (e.code === 'KeyR') reloadWeapon();
+  if (e.code === 'KeyF' && state.mode === 'horror' && state.flashlight) {
+    state.flashlightOn = !state.flashlightOn;
+    state.flashlight.visible = state.flashlightOn;
+    toast(state.flashlightOn ? 'FLASHLIGHT ON' : 'FLASHLIGHT OFF (STEALTH)');
+  }
+  if (e.code === 'Digit1') selectWeapon(0);
+  if (e.code === 'Digit2') selectWeapon(1);
+  if (e.code === 'Digit3') selectWeapon(2);
+  if (e.code === 'KeyE') handleInteract();
 });
 window.addEventListener('keyup', e => keys[e.code] = false);
 window.addEventListener('resize', () => {
-camera.aspect = window.innerWidth / window.innerHeight;
-camera.updateProjectionMatrix();
-renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 });
-/* ================= PROCEDURAL TEXTURES ================= */
+
 function makeGridTex(bg, line, size = 256, step = 32, emissive = false) {
-const c = document.createElement('canvas'); c.width = c.height = size;
-const g = c.getContext('2d');
-g.fillStyle = bg; g.fillRect(0, 0, size, size);
-g.strokeStyle = line; g.lineWidth = 2;
-for (let i = 0; i <= size; i += step) {
-g.beginPath(); g.moveTo(i, 0); g.lineTo(i, size); g.stroke();
-g.beginPath(); g.moveTo(0, i); g.lineTo(size, i); g.stroke();
+  const c = document.createElement('canvas'); c.width = c.height = size;
+  const g = c.getContext('2d');
+  g.fillStyle = bg; g.fillRect(0, 0, size, size);
+  g.strokeStyle = line; g.lineWidth = 2;
+  for (let i = 0; i <= size; i += step) {
+    g.beginPath(); g.moveTo(i, 0); g.lineTo(i, size); g.stroke();
+    g.beginPath(); g.moveTo(0, i); g.lineTo(size, i); g.stroke();
+  }
+  if (emissive) {
+    for (let y = 8; y < size; y += 32) {
+      for (let x = 8; x < size; x += 32) {
+        if (Math.random() > 0.35) {
+          g.fillStyle = Math.random() > 0.2 ? '#ffe9a8' : '#7dd3fc';
+          g.fillRect(x, y, 16, 20);
+        }
+      }
+    }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
 }
-if (emissive) {
-for (let y = 8; y < size; y += 32) {
-for (let x = 8; x < size; x += 32) {
-if (Math.random() > 0.35) {
-g.fillStyle = Math.random() > 0.2 ? '#ffe9a8' : '#7dd3fc';
-g.fillRect(x, y, 16, 20);
-}
-}
-}
-}
-const t = new THREE.CanvasTexture(c);
-t.wrapS = t.wrapT = THREE.RepeatWrapping;
-return t;
-}
+
 function makeRoadTex() {
-const c = document.createElement('canvas'); c.width = c.height = 512;
-const g = c.getContext('2d');
-g.fillStyle = '#141920'; g.fillRect(0, 0, 512, 512);
-for (let i = 0; i < 3500; i++) {
-g.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.18)';
-g.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
+  const c = document.createElement('canvas'); c.width = c.height = 512;
+  const g = c.getContext('2d');
+  g.fillStyle = '#141920'; g.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 3500; i++) {
+    g.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.18)';
+    g.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
+  }
+  g.fillStyle = '#eab308'; g.fillRect(252, 0, 8, 512);
+  g.fillStyle = '#e2e8f0'; g.fillRect(24, 0, 6, 512); g.fillRect(482, 0, 6, 512);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
 }
-g.fillStyle = '#eab308'; g.fillRect(252, 0, 8, 512);
-g.fillStyle = '#e2e8f0'; g.fillRect(24, 0, 6, 512); g.fillRect(482, 0, 6, 512);
-const t = new THREE.CanvasTexture(c);
-t.wrapS = t.wrapT = THREE.RepeatWrapping;
-return t;
-}
-/* ================= WORLD BUILDERS ================= */
+
 function clearWorld() {
-while (scene.children.length) scene.remove(scene.children[0]);
-state.colliders = []; state.enemies = []; state.pickups = [];
-state.cars = []; state.lights = []; state.interactables = [];
-state.inCar = null; state.carSpeed = 0;
-sfx.stopDrone();
+  while (scene.children.length) scene.remove(scene.children);
+  state.colliders = []; state.enemies = []; state.pickups = [];
+  state.cars = []; state.lights = []; state.interactables = [];
+  state.inCar = null; state.carSpeed = 0;
+  sfx.stopDrone();
 }
+
 function addBox(w, h, d, x, y, z, mat, solid = true, cast = true) {
-const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-m.position.set(x, y, z);
-m.castShadow = cast; m.receiveShadow = true;
-scene.add(m);
-if (solid) state.colliders.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2 });
-return m;
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.castShadow = cast; m.receiveShadow = true;
+  scene.add(m);
+  if (solid) state.colliders.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2 });
+  return m;
 }
-/* ---------- GAME 1: COMPACT CLAUSTROPHOBIC HORROR MAP ---------- */
+
 function buildHorrorRig() {
-clearWorld();
-scene.background = new THREE.Color(0x010203);
-scene.fog = new THREE.FogExp2(0x010203, 0.115); // Thick claustrophobic darkness
-const metalTex = makeGridTex('#12171a', '#1f292e', 256, 64);
-metalTex.repeat.set(8, 8);
-const wallMat = new THREE.MeshStandardMaterial({ map: metalTex, roughness: 0.75, metalness: 0.65 });
-const floorMat = new THREE.MeshStandardMaterial({ map: metalTex, roughness: 0.35, metalness: 0.8 });
-const ceilMat = new THREE.MeshStandardMaterial({ color: 0x090d10, roughness: 0.9 });
-// Tight 36x36 interior deck (much smaller & terrifying!)
-addBox(38, 0.5, 38, 0, -0.25, 0, floorMat, false, false);
-addBox(38, 0.5, 38, 0, 3.8, 0, ceilMat, false, false);
-// Outer perimeter walls
-addBox(38, 4, 1, 0, 2, -18.5, wallMat);
-addBox(38, 4, 1, 0, 2, 18.5, wallMat);
-addBox(1, 4, 38, -18.5, 2, 0, wallMat);
-addBox(1, 4, 38, 18.5, 2, 0, wallMat);
-// Tight maze corridors & rooms
-const walls = [
-[12, 4, 1, -12, 2, -10], [10, 4, 1, 8, 2, -10],
-[1, 4, 12, -6, 2, -4], [1, 4, 11, 6, 2, -3],
-[11, 4, 1, -12, 2, 4], [12, 4, 1, 11, 2, 5],
-[1, 4, 10, -2, 2, 11], [1, 4, 9, 8, 2, 12],
-[8, 4, 1, -10, 2, 12]
-];
-walls.forEach(w => addBox(...w, wallMat));
-// Dim ambient + Player narrow high-contrast Flashlight
-scene.add(new THREE.AmbientLight(0x090d12, 0.35));
-const flash = new THREE.SpotLight(0xdbeafe, 6.5, 22, Math.PI * 0.19, 0.45, 1.3);
-flash.castShadow = true;
-flash.shadow.mapSize.set(1024, 1024);
-camera.add(flash);
-camera.add(flash.target);
-flash.target.position.set(0, 0, -5);
-scene.add(camera);
-state.flashlight = flash;
-// Flickering red emergency alarm lights
-[[-13, 3.2, -14], [13, 3.2, -14], [0, 3.2, 0], [-13, 3.2, 14], [14, 3.2, 13]].forEach(([x, y, z], i) => {
-const pl = new THREE.PointLight(0xff1e1e, 2.2, 11);
-pl.position.set(x, y, z);
-scene.add(pl);
-state.lights.push({ light: pl, phase: i * 1.7, base: 2.2 });
-const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
-bulb.position.set(x, y + 0.3, z);
-scene.add(bulb);
-});
-// 3 Glowing Intel Terminals in tight rooms
-const termMat = new THREE.MeshStandardMaterial({ color: 0x0ea5e9, emissive: 0x0284c7, emissiveIntensity: 2.2 });
-[[-14, 1.1, -15], [14, 1.1, -15], [-14, 1.1, 15]].forEach(([x, y, z], idx) => {
-const m = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.5, 0.7), termMat);
-m.position.set(x, y, z); scene.add(m);
-const l = new THREE.PointLight(0x38bdf8, 1.8, 6); l.position.set(x, y + 0.6, z); scene.add(l);
-state.interactables.push({ type: 'intel', mesh: m, pos: new THREE.Vector3(x, 1.7, z), done: false, label: [ E ] DOWNLOAD INTEL #${idx + 1} });
-});
-// Warhead Bomb Console
-const bombMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xdc2626, emissiveIntensity: 2.5 });
-const bomb = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 1.0), bombMat);
-bomb.position.set(14, 1.1, 15); scene.add(bomb);
-state.interactables.push({ type: 'bomb', mesh: bomb, pos: new THREE.Vector3(14, 1.7, 15), done: false, label: '[ E ] DEFUSE REACTOR WARHEAD' });
-// Extraction Hatch
-const exitMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x16a34a, emissiveIntensity: 1.8 });
-const exit = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 2.2), exitMat);
-exit.position.set(0, 0.1, 16); scene.add(exit);
-state.interactables.push({ type: 'exit', mesh: exit, pos: new THREE.Vector3(0, 1.7, 16), done: false, label: '[ E ] BOARD EXTRACTION POD' });
-// Shadow Stalker Horror Monsters
-const stalkerCoords = [[-11, -5], [11, -6], [-10, 9], [12, 8], [0, -14]];
-stalkerCoords.forEach(([x, z]) => spawnHorrorStalker(x, z));
-state.pos.set(0, 1.7, 14);
-state.yaw = 0; state.pitch = 0;
-sfx.startHorrorDrone();
+  clearWorld();
+  scene.background = new THREE.Color(0x010203);
+  scene.fog = new THREE.FogExp2(0x010203, 0.115);
+
+  const metalTex = makeGridTex('#12171a', '#1f292e', 256, 64);
+  metalTex.repeat.set(8, 8);
+  const wallMat = new THREE.MeshStandardMaterial({ map: metalTex, roughness: 0.75, metalness: 0.65 });
+  const floorMat = new THREE.MeshStandardMaterial({ map: metalTex, roughness: 0.35, metalness: 0.8 });
+  const ceilMat = new THREE.MeshStandardMaterial({ color: 0x090d10, roughness: 0.9 });
+
+  addBox(38, 0.5, 38, 0, -0.25, 0, floorMat, false, false);
+  addBox(38, 0.5, 38, 0, 3.8, 0, ceilMat, false, false);
+  addBox(38, 4, 1, 0, 2, -18.5, wallMat);
+  addBox(38, 4, 1, 0, 2, 18.5, wallMat);
+  addBox(1, 4, 38, -18.5, 2, 0, wallMat);
+  addBox(1, 4, 38, 18.5, 2, 0, wallMat);
+
+  const walls = [
+    [12, 4, 1, -12, 2, -10], [10, 4, 1, 8, 2, -10],
+    [1, 4, 12, -6, 2, -4], [1, 4, 11, 6, 2, -3],
+    [11, 4, 1, -12, 2, 4], [10, 4, 1, 11, 2, 5],
+    [1, 4, 10, -2, 2, 11], [1, 4, 8, 5, 2, 12],
+    [8, 4, 1, -10, 2, 12]
+  ];
+  walls.forEach(w => addBox(...w, wallMat));
+
+  scene.add(new THREE.AmbientLight(0x090d12, 0.35));
+  const flash = new THREE.SpotLight(0xdbeafe, 6.5, 22, Math.PI * 0.19, 0.45, 1.3);
+  flash.castShadow = true;
+  flash.shadow.mapSize.set(1024, 1024);
+  camera.add(flash);
+  camera.add(flash.target);
+  flash.target.position.set(0, 0, -5);
+  scene.add(camera);
+  state.flashlight = flash;
+
+  [[-13, 3.2, -14], [13, 3.2, -14], [0, 3.2, 0], [-13, 3.2, 14], [14, 3.2, 13]].forEach(([x, y, z], i) => {
+    const pl = new THREE.PointLight(0xff1e1e, 2.2, 11);
+    pl.position.set(x, y, z);
+    scene.add(pl);
+    state.lights.push({ light: pl, phase: i * 1.7, base: 2.2 });
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
+    bulb.position.set(x, y + 0.3, z);
+    scene.add(bulb);
+  });
+
+  const termMat = new THREE.MeshStandardMaterial({ color: 0x0ea5e9, emissive: 0x0284c7, emissiveIntensity: 2.2 });
+  [[-14, 1.1, -15], [14, 1.1, -15], [-14, 1.1, 15]].forEach(([x, y, z], idx) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.5, 0.7), termMat);
+    m.position.set(x, y, z); scene.add(m);
+    const l = new THREE.PointLight(0x38bdf8, 1.8, 6); l.position.set(x, y + 0.6, z); scene.add(l);
+    state.interactables.push({ type: 'intel', mesh: m, pos: new THREE.Vector3(x, 1.7, z), done: false, label: `[ E ] DOWNLOAD INTEL #${idx + 1}` });
+  });
+
+  const bombMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xdc2626, emissiveIntensity: 2.5 });
+  const bomb = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 1.0), bombMat);
+  bomb.position.set(14, 1.1, 15); scene.add(bomb);
+  state.interactables.push({ type: 'bomb', mesh: bomb, pos: new THREE.Vector3(14, 1.7, 15), done: false, label: '[ E ] DEFUSE REACTOR WARHEAD' });
+
+  const exitMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x16a34a, emissiveIntensity: 1.8 });
+  const exit = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 2.2), exitMat);
+  exit.position.set(0, 0.1, 16); scene.add(exit);
+  state.interactables.push({ type: 'exit', mesh: exit, pos: new THREE.Vector3(0, 1.7, 16), done: false, label: '[ E ] BOARD EXTRACTION POD' });
+
+  [[-11, -5], [11, -6], [-10, 9], [10, 9], [0, -14]].forEach(([x, z]) => spawnHorrorStalker(x, z));
+
+  state.pos.set(0, 1.7, 14);
+  state.yaw = 0; state.pitch = 0;
+  sfx.startHorrorDrone();
 }
+
 function spawnHorrorStalker(x, z) {
-const g = new THREE.Group();
+  const g = new THREE.Group();
 const bodyMat = new THREE.MeshStandardMaterial({ color: 0x070709, roughness: 0.2, metalness: 0.9 });
 const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.2, 1.9, 8), bodyMat);
 torso.position.y = 1.05; g.add(torso);
 const head = new THREE.Mesh(new THREE.SphereGeometry(0.26, 10, 10), bodyMat);
 head.position.y = 2.15; g.add(head);
-// Piercing glowing eyes in the dark
 const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff1111 });
 const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.045), eyeMat); eyeL.position.set(-0.09, 2.18, 0.22);
 const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.045), eyeMat); eyeR.position.set(0.09, 2.18, 0.22);
@@ -402,13 +426,11 @@ g.position.set(x, 0, z);
 scene.add(g);
 state.enemies.push({ mesh: g, hp: 90, speed: 4.3, isHorror: true, alerted: false, attackCd: 0 });
 }
-/* ---------- GAME 2: ULTRA GRAPHICS CITY CRIME ---------- */
 function buildUltraCity() {
 clearWorld();
 renderer.toneMappingExposure = 1.28;
 scene.background = new THREE.Color(0x0b1628);
 scene.fog = new THREE.FogExp2(0x0b1628, 0.0085);
-// Three-point atmospheric twilight lighting + directional sun shadows
 const hemi = new THREE.HemisphereLight(0x60a5fa, 0x1e293b, 0.85);
 scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xffedd5, 1.9);
@@ -420,7 +442,6 @@ const d = 75;
 sun.shadow.camera.left = -d; sun.shadow.camera.right = d;
 sun.shadow.camera.top = d; sun.shadow.camera.bottom = -d;
 scene.add(sun);
-// Wet reflective asphalt city ground
 const roadTex = makeRoadTex();
 roadTex.repeat.set(14, 14);
 const groundMat = new THREE.MeshStandardMaterial({ map: roadTex, roughness: 0.22, metalness: 0.55 });
@@ -428,7 +449,6 @@ const ground = new THREE.Mesh(new THREE.PlaneGeometry(240, 240), groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 scene.add(ground);
-// Illuminated Skyscrapers with glowing window grids & neon trims
 const winTex1 = makeGridTex('#0f172a', '#1e293b', 256, 32, true);
 winTex1.repeat.set(2, 5);
 const winTex2 = makeGridTex('#111827', '#1f2937', 256, 32, true);
@@ -438,19 +458,17 @@ new THREE.MeshStandardMaterial({ map: winTex1, emissiveMap: winTex1, emissive: 0
 new THREE.MeshStandardMaterial({ map: winTex2, emissiveMap: winTex2, emissive: 0xbae6fd, emissiveIntensity: 0.7, roughness: 0.3, metalness: 0.65 })
 ];
 const blocks = [
-[-32, -32, 18, 34, 18], [32, -32, 20, 42, 18], [-32, 32, 18, 28, 20], [32, 32, 22, 48, 20],
+[-32, -32, 18, 34, 18], [32, -32, 20, 42, 18], [-32, 32, 18, 28, 20], [32, 32, 22, 46, 20],
 [-68, -32, 18, 38, 18], [68, -32, 18, 30, 18], [-68, 32, 20, 44, 18], [68, 32, 18, 36, 18],
-[-32, -68, 18, 32, 18], [32, -68, 18, 40, 18], [-32, 68, 20, 35, 18], [32, 68, 18, 30, 18]
+[-32, -68, 18, 32, 18], [32, -68, 18, 40, 18], [-32, 68, 20, 35, 18], [32, 68, 22, 48, 20]
 ];
 blocks.forEach(([x, z, w, h, d], idx) => {
 addBox(w, h, d, x, h / 2, z, bldgMats[idx % 2], true, true);
-// Neon rooftop accent strip
 const neonCol = idx % 2 === 0 ? 0x38bdf8 : 0xf43f5e;
 const trim = new THREE.Mesh(new THREE.BoxGeometry(w + 0.4, 0.5, d + 0.4), new THREE.MeshBasicMaterial({ color: neonCol }));
 trim.position.set(x, h + 0.25, z);
 scene.add(trim);
 });
-// Streetlamps with warm pools of light
 [[-16, -16], [16, -16], [-16, 16], [16, 16], [0, -48], [0, 48]].forEach(([x, z]) => {
 addBox(0.25, 6, 0.25, x, 3, z, new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 }), false);
 const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.35), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
@@ -458,17 +476,14 @@ bulb.position.set(x, 6.1, z); scene.add(bulb);
 const pl = new THREE.PointLight(0xfde047, 2.5, 22);
 pl.position.set(x, 5.8, z); scene.add(pl);
 });
-// Gun Store Landmark
 const shopMesh = new THREE.Mesh(new THREE.BoxGeometry(4, 3, 4), new THREE.MeshStandardMaterial({ color: 0x1e293b, emissive: 0xf59e0b, emissiveIntensity: 0.35 }));
 shopMesh.position.set(-20, 1.5, 0); scene.add(shopMesh);
 const shopSign = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1, 3.6), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
 shopSign.position.set(-17.9, 3.4, 0); scene.add(shopSign);
 state.interactables.push({ type: 'shop', mesh: shopMesh, pos: new THREE.Vector3(-17, 1.7, 0), label: '[ E ] ENTER BLACK MARKET GUN STORE' });
-// Drivable Sports Cars with Headlights & Taillights
 spawnSportsCar(6, -10, 0xe11d48);
 spawnSportsCar(-8, 18, 0x0284c7);
 spawnSportsCar(22, 6, 0xf59e0b);
-// Cash Drops & Street Enemies
 for (let i = 0; i < 6; i++) {
 const cx = (Math.random() - 0.5) * 90, cz = (Math.random() - 0.5) * 90;
 const cashMesh = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.35, 0.45), new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x22c55e, emissiveIntensity: 1.4 }));
@@ -487,13 +502,11 @@ const body = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.75, 4.4), paint);
 body.position.y = 0.65; body.castShadow = true; car.add(body);
 const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.6, 2.2), glass);
 cabin.position.set(0, 1.25, -0.2); car.add(cabin);
-// Wheels
 const wMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.7 });
 [[-1.05, 0.4, 1.35], [1.05, 0.4, 1.35], [-1.05, 0.4, -1.35], [1.05, 0.4, -1.35]].forEach(([wx, wy, wz]) => {
 const w = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.3, 12), wMat);
 w.rotation.z = Math.PI / 2; w.position.set(wx, wy, wz); car.add(w);
 });
-// Glowing Headlights & Taillights
 const hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const tlMat = new THREE.MeshBasicMaterial({ color: 0xff1e1e });
 [-0.7, 0.7].forEach(hx => {
@@ -514,7 +527,6 @@ head.position.y = 1.85; g.add(head);
 g.position.set(x, 0, z); scene.add(g);
 state.enemies.push({ mesh: g, hp: isCop ? 80 : 60, speed: isCop ? 4.2 : 2.8, isHorror: false, isCop, attackCd: 0 });
 }
-/* ================= LAUNCH & UI LOGIC ================= */
 function launchGame(mode) {
 sfx.init();
 state.mode = mode;
@@ -560,7 +572,6 @@ buildUltraCity();
 updateHUD();
 canvas.requestPointerLock?.();
 }
-// Clickable cards + buttons
 document.getElementById('cardHorror').addEventListener('click', () => launchGame('horror'));
 document.getElementById('cardCity').addEventListener('click', () => launchGame('city'));
 document.getElementById('btnResume').addEventListener('click', () => togglePause(false));
@@ -602,7 +613,6 @@ t.textContent = msg; t.style.opacity = '1';
 clearTimeout(t._tid);
 t._tid = setTimeout(() => t.style.opacity = '0', 2400);
 }
-/* ================= COMBAT, INTERACTION & MINI-GAMES ================= */
 canvas.addEventListener('click', () => {
 if (state.active && !state.paused && document.pointerLockElement !== canvas) {
 canvas.requestPointerLock?.();
@@ -638,7 +648,6 @@ if (w.mag <= 0) return toast('EMPTY! PRESS [R] TO RELOAD');
 state.lastShot = now;
 w.mag--;
 sfx.shoot(state.weaponIdx === 2);
-// Muzzle flash light pulse
 const flash = new THREE.PointLight(0xffb703, 5, 10);
 flash.position.copy(camera.position);
 scene.add(flash);
@@ -746,14 +755,18 @@ const items = [
 ];
 items.forEach(it => {
 const div = document.createElement('div'); div.className = 'shop-item';
-div.innerHTML = `${it.name}$${it
-.price}${it.desc}; const b = document.createElement('button'); b.className = 'gold'; b.textContent = 'PURCHASE'; b.onclick = () => { if (state.cash < it.price) return toast('INSUFFICIENT FUNDS'); state.cash -= it.price; it.buy(); sfx.pickup(); document.getElementById('shopCash').textContent = $${state.cash}; updateHUD(); toast(PURCHASED ${it.name}`);
+div.innerHTML = <div><h3>${it.name}</h3><div class="price">$${it.price}</div><p>${it.desc}</p></div>;
+const b = document.createElement('button'); b.className = 'gold'; b.textContent = 'PURCHASE';
+b.onclick = () => {
+if (state.cash < it.price) return toast('INSUFFICIENT FUNDS');
+state.cash -= it.price; it.buy(); sfx.pickup();
+document.getElementById('shopCash').textContent = $${state.cash};
+updateHUD(); toast(PURCHASED ${it.name});
 };
 div.appendChild(b); grid.appendChild(div);
 });
 document.getElementById('gunStore').style.display = 'flex';
 }
-/* ================= SIMULATION LOOP ================= */
 function collides(x, z, r = 0.45) {
 for (const b of state.colliders) {
 if (x + r > b.minX && x - r < b.maxX && z + r > b.minZ && z - r < b.maxZ) return true;
@@ -788,7 +801,8 @@ stars.forEach((s, i) => s.classList.toggle('active', i < state.wanted));
 }
 function drawRadar() {
 const ctx = radarCtx;
-ctx.clearRect(0, 0, 158, 158);
+ctx.clearRect(0,
+0, 158, 158);
 ctx.strokeStyle = 'rgba(148,163,184,0.22)';
 ctx.beginPath(); ctx.arc(79, 79, 52, 0, Math.PI * 2); ctx.stroke();
 ctx.beginPath(); ctx.moveTo(79, 0); ctx.lineTo(79, 158); ctx.moveTo(0, 79); ctx.lineTo(158, 79); ctx.stroke();
@@ -818,7 +832,6 @@ if (!state.active || state.paused) {
 renderer.render(scene, camera);
 return;
 }
-// Timer & Flickering Horror Alarm Lights
 if (state.mode === 'horror') {
 state.timer -= dt;
 if (state.timer <= 0) return endGame(false, 'REACTOR MELTDOWN', 'Time ran out. Blacktide 09 detonated.');
@@ -830,7 +843,6 @@ const flicker = Math.sin(now * 0.015 + l.phase) > 0.35 ? l.base : 0.15;
 l.light.intensity = flicker + (Math.random() > 0.94 ? 2.5 : 0);
 });
 }
-// Movement (On foot or driving)
 const fwd = (keys['KeyW'] || keys['ArrowUp'] ? 1 : 0) - (keys['KeyS'] || keys['ArrowDown'] ? 1 : 0);
 const str = (keys['KeyD'] || keys['ArrowRight'] ? 1 : 0) - (keys['KeyA'] || keys['ArrowLeft'] ? 1 : 0);
 if (state.inCar) {
@@ -866,7 +878,6 @@ camera.rotation.order = 'YXZ';
 camera.rotation.y = state.yaw;
 camera.rotation.x = state.pitch;
 }
-// Cash Pickups
 state.pickups = state.pickups.filter(p => {
 p.mesh.rotation.y += 2.5 * dt;
 if (state.pos.distanceTo(p.pos) < 2.2) {
@@ -877,7 +888,6 @@ return false;
 }
 return true;
 });
-// Enemy AI + Horror Jump-Scare Lunges
 state.scareCooldown = Math.max(0, state.scareCooldown - dt);
 let nearestHorror = 99;
 state.enemies.forEach(e => {
@@ -907,7 +917,6 @@ sf.style.opacity = '1'; setTimeout(() => sf.style.opacity = '0', 180);
 }
 }
 });
-// Proximity Heartbeat in Horror Mode
 if (state.mode === 'horror' && nearestHorror < 10) {
 state.heartbeatTimer -= dt;
 if (state.heartbeatTimer <= 0) {
@@ -915,7 +924,6 @@ state.heartbeatTimer = Math.max(0.28, nearestHorror * 0.09);
 sfx.playTone(55, 'sine', 0.14, 0.25, 30);
 }
 }
-// Interaction Prompt
 const prompt = document.getElementById('prompt');
 let promptText = '';
 if (state.mode === 'city' && !state.inCar) {
@@ -930,6 +938,8 @@ drawRadar();
 renderer.render(scene, camera);
 }
 requestAnimationFrame(animate);
+
 </script>
 </body>
 </html>
+
