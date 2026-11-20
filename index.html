@@ -9,7 +9,8 @@
 *{box-sizing:border-box;user-select:none}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02080d;color:var(--ice);font-family:'Segoe UI',Arial,sans-serif}
 #game{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none}
-#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 48%,rgba(0,0,0,.6) 100%);z-index:2}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 48%,rgba(0,0,0,.65) 100%);z-index:2;transition:background .3s}
+#vignette.horror{background:radial-gradient(ellipse at center,transparent 22%,rgba(0,0,0,.92) 85%,#000 100%)}
 #hud{position:fixed;inset:0;z-index:5;pointer-events:none;display:none}
 #brand{position:absolute;left:24px;top:18px;font-size:11px;letter-spacing:4px;color:#9eb5be;text-shadow:0 2px 8px #000}
 #mission{position:absolute;left:24px;top:40px;font-size:16px;font-weight:800;letter-spacing:1.5px;color:#fff;text-shadow:0 2px 8px #000}
@@ -36,22 +37,30 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02080d;col
 #weapon strong{font-size:15px;letter-spacing:1.5px;color:#fff}
 #speedo{font-size:12px;font-weight:800;color:var(--blue);letter-spacing:2px;margin-top:4px;display:none}
 #toast{position:absolute;left:50%;top:15%;transform:translateX(-50%);padding:12px 22px;background:rgba(5,12,17,.95);border-left:4px solid var(--gold);font-size:12px;font-weight:800;letter-spacing:1.5px;opacity:0;transition:opacity .2s;box-shadow:0 10px 30px #000}
-#damage{position:absolute;inset:0;background:radial-gradient(ellipse,transparent 35%,rgba(200,0,0,.78));opacity:0;transition:opacity .12s;pointer-events:none}
+#damage{position:absolute;inset:0;background:radial-gradient(ellipse,transparent 30%,rgba(190,0,0,.85));opacity:0;transition:opacity .1s;pointer-events:none}
+#scareFlash{position:fixed;inset:0;z-index:4;pointer-events:none;background:radial-gradient(circle,rgba(255,20,20,.45),rgba(0,0,0,.95));opacity:0;transition:opacity .08s}
 
 /* OVERLAYS */
 .overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 70% 25%,rgba(34,58,68,.94),rgba(2,7,11,.98));padding:24px}
 #bombPanel,#gunStore,#pause,#ending{display:none}
-.screen{width:min(900px,94vw);padding:clamp(22px,4vw,42px);border:1px solid rgba(170,205,215,.28);background:var(--panel);box-shadow:0 25px 90px #000}
+.screen{width:min(920px,94vw);padding:clamp(22px,4vw,42px);border:1px solid rgba(170,205,215,.28);background:var(--panel);box-shadow:0 25px 90px #000}
 .kicker{font-size:10px;letter-spacing:5px;color:#9eb5be;margin-bottom:10px}
 h1{font-size:clamp(34px,6vw,62px);line-height:.95;letter-spacing:4px;margin:0;color:#e9f2f4;font-weight:900}
 h1 span{color:var(--red)}
 .game-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
-.card{padding:22px;border:1px solid rgba(170,205,215,.22);background:rgba(10,22,30,.78);display:flex;flex-direction:column;justify-content:space-between}
-.card h2{margin:0 0 8px;font-size:20px;letter-spacing:2px;color:#fff}
+.card{padding:22px;border:1px solid rgba(170,205,215,.25);background:rgba(10,22,30,.85);display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s,background .18s}
+.card:hover{transform:translateY(-4px);border-color:var(--ice);background:rgba(16,34,46,.95);box-shadow:0 14px 35px rgba(0,0,0,.85)}
+.card.horror-card:hover{border-color:var(--red);box-shadow:0 14px 35px rgba(224,72,58,.28)}
+.card.city-card:hover{border-color:var(--blue);box-shadow:0 14px 35px rgba(56,189,248,.28)}
+.card h2{margin:0 0 8px;font-size:20px;letter-spacing:2px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+.badge{font-size:9px;padding:4px 8px;letter-spacing:2px;border-radius:3px}
+.badge.horror{background:rgba(224,72,58,.2);color:#ff7b70;border:1px solid var(--red)}
+.badge.ultra{background:rgba(56,189,248,.2);color:#7dd3fc;border:1px solid var(--blue)}
 .card p{font-size:13px;line-height:1.6;color:#9eb5be;margin:0 0 18px}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-button{font:inherit;cursor:pointer;border:1px solid rgba(190,220,230,.45);background:rgba(25,43,51,.9);color:#eaf4f6;padding:13px 20px;letter-spacing:2px;font-size:11px;font-weight:800;transition:filter .15s}
-button.primary{background:#b0302a;border-color:#e05a50}
+button{font:inherit;cursor:pointer;border:1px solid rgba(190,220,230,.45);background:rgba(25,43,51,.9);color:#eaf4f6;padding:13px 20px;letter-spacing:2px;font-size:11px;font-weight:800;transition:filter .15s,transform .1s}
+button.primary{background:#b0302a;border-color:#e05a50;width:100%}
+button.blue{background:#0284c7;border-color:#38bdf8;width:100%}
 button.gold{background:#a3761c;border-color:var(--gold);color:#fff}
 button:hover{filter:brightness(1.22)}
 .controls{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 24px;margin-top:18px;color:#8fa6ae;font-size:11px;border-top:1px solid rgba(170,205,215,.15);padding-top:14px}
@@ -75,6 +84,7 @@ button:hover{filter:brightness(1.22)}
 <body>
 <canvas id="game"></canvas>
 <div id="vignette"></div>
+<div id="scareFlash"></div>
 
 <!-- HUD -->
 <div id="hud">
@@ -83,7 +93,7 @@ button:hover{filter:brightness(1.22)}
  <div id="objective">Objective details</div>
  <div id="status">
   <span id="statusLabel">COUNTDOWN</span>
-  <div id="timer">05:00</div>
+  <div id="timer">04:00</div>
   <div id="cashDisplay">$800</div>
   <div id="wantedStars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
  </div>
@@ -109,112 +119,47 @@ button:hover{filter:brightness(1.22)}
 <!-- MAIN LAUNCHER -->
 <div id="start" class="overlay">
  <div class="screen">
-  <div class="kicker">ULTRA PBR ENGINE // SYNTH AUDIO + RADAR + WANTED AI</div>
+  <div class="kicker">ULTRA PBR ENGINE // CLICK ANY GAME CARD TO DEPLOY</div>
   <h1>DUAL <span>OPERATIONS</span></h1>
   <div class="game-grid">
-   <div class="card">
+   <div class="card horror-card" id="cardHorror" role="button" tabindex="0">
     <div>
-     <h2>BLACKTIDE 09</h2>
-     <p>Storm-lashed offshore oil rig. Locate 3 glowing intel terminals, cut the bomb wires in the decoded sequence, and reach the extraction helipad while evading the rig stalker.</p>
+     <h2>BLACKTIDE 09 <span class="badge horror">SURVIVAL HORROR</span></h2>
+     <p>Claustrophobic flooded lower decks of an abandoned offshore rig. Pitch-black corridors, flickering red alarms, and relentless shadow stalkers hunting you in the dark. Find 3 intel terminals, defuse the warhead, and escape.</p>
     </div>
-    <button class="primary" id="btnBlacktide">PLAY BLACKTIDE 09</button>
+    <button class="primary" id="btnHorror" type="button">CLICK TO PLAY BLACKTIDE 09</button>
    </div>
-   <div class="card">
+   <div class="card city-card" id="cardCity" role="button" tabindex="0">
     <div>
-     <h2>CITY CRIME</h2>
-     <p>Open-world neon metropolis. Hijack and drive 24 traffic, supercars &amp; police cruisers, take payphone contracts, collect cash drops, and enter Ammu-Nation stores to buy 5 weapons.</p>
-    </div>
-    <button class="gold" id="btnCity">PLAY CITY CRIME</button>
-   </div>
-  </div>
-  <div class="actions">
-   <button id="btnQuality">GRAPHICS: ULTRA (SHADOWS + PBR)</button>
-   <button id="btnAudio">AUDIO: ON</button>
-  </div>
-  <div class="controls">
-   <div><b>W A S D</b> — Walk / Drive Car</div>
-   <div><b>MOUSE</b> — Aim / Camera Look</div>
-   <div><b>SHIFT</b> — Sprint / Nitro Boost</div>
-   <div><b>SPACE</b> — Jump / Handbrake Drift</div>
-   <div><b>E</b> — Interact / Enter-Exit Car / Enter Store</div>
-   <div><b>1 - 5</b> — Switch Weapons</div>
-   <div><b>LEFT CLICK</b> — Fire Weapon</div>
-   <div><b>R / F / ESC</b> — Reload / Flashlight / Pause</div>
-  </div>
- </div>
-</div>
-
-<!-- BOMB DEFUSAL MODAL -->
-<div id="bombPanel" class="overlay">
- <div class="screen" style="width:min(620px,94vw)">
-  <div class="kicker">EXPLOSIVE ORDNANCE // SEQUENCE REQUIRED</div>
-  <h2 style="margin:0 0 8px;letter-spacing:3px">CUT WIRES IN INTEL ORDER</h2>
-  <p id="wireHint" style="color:#9eb5be;font-size:12px;letter-spacing:1.5px">Intel Collected: 0 / 3</p>
-  <div class="wire-row">
-   <button class="wire" style="--wire:#e34a3d" data-wire="RED">RED WIRE</button>
-   <button class="wire" style="--wire:#3b9ae1" data-wire="BLUE">BLUE WIRE</button>
-Use code with caution.
-YELLOW WIRE
+     <h2>CITY CRIME <span class="badge ultra">ULTRA GRAPHICS</span></h2>
+     
+WASD / ARROWS — Move / Drive
+MOUSE + CLICK — Look & Fire Weapon
+E — Interact / Enter Car / Shop
+F — Toggle Flashlight (Horror)
+R — Reload Weapon
+1 / 2 / 3 — Switch Weapons  |  ESC — Pause
 
 
-STEP BACK
-
-CITY CRIME // WALK-IN ARMORY
-AMMU-NATION STORE
-AVAILABLE CASH: $800
+REACTOR CORE OVERLOAD
+CUT THE DEFUSAL WIRE
+Intel decoded: Cut the wire matching the emergency strobe frequency.
 
 
+UNDERGROUND ARMORY
+BLACK MARKET DEALER — $800
 
-COMBAT SHOTGUN
-$400
-8-pellet devastating close-range spread. Includes 32 shells.
+RETURN TO STREET [ESC]
 
-BUY [KEY 2]
+SIMULATION PAUSED
+OPERATIONS MENU
 
-
-
-TACTICAL SMG
-$650
-Rapid-fire submachine gun. Includes 175 rounds.
-
-BUY [KEY 3]
-
-
-
-ASSAULT RIFLE
-$950
-High-damage military carbine. Includes 150 rounds.
-
-BUY [KEY 4]
-
-
-
-PLASMA RAILGUN
-$1600
-One-shot hyper-velocity energy beam. Includes 40 cells.
-
-BUY [KEY 5]
-
-
-
-ARMOR + AMMO
-$250
-Restores 100 Health, 100 Armor, and maxes all ammo.
-
-BUY PACK
-
-
-LEAVE STORE [ ESC ]
-
-SYSTEM PAUSED
-OPERATION MENU
-
-RESUME
+RESUME GAME
 SWITCH GAME
 
 
-MISSION COMPLETE
-EXTRACTED
+MISSION REPORT
+FLATLINED
 
 
 PLAY AGAIN
@@ -222,156 +167,48 @@ MAIN MENU
 
 
 import * as THREE from 'three';
-// ==========================================
-// 1. WEB AUDIO SYNTHESIZER
-// ==========================================
-class SoundEngine {
-constructor() {
-this.ctx = null;
-this.enabled = true;
-}
+/* ================= AUDIO SYNTHESIZER ================= */
+class SoundFX {
+constructor() { this.ctx = null; this.drone = null; }
 init() {
-if (!this.ctx) {
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-if (AudioCtx) this.ctx = new AudioCtx();
+if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+if (this.ctx.state === 'suspended') this.ctx.resume();
 }
-if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
-}
-playShot(type = 'pistol') {
-if (!this.enabled) return;
-this.init();
+playTone(freq, type, dur, vol = 0.15, slide = 0) {
 if (!this.ctx) return;
-const now = this.ctx.currentTime;
-const osc = this.ctx.createOscillator();
-const gain = this.ctx.createGain();
-osc.type = type === 'railgun' ? 'sine' : type === 'shotgun' ? 'sawtooth' : 'triangle';
-const startFreq = type === 'railgun' ? 920 : type === 'shotgun' ? 140 : type === 'rifle' ? 230 : 290;
-osc.frequency.setValueAtTime(startFreq, now);
-osc.frequency.exponentialRampToValueAtTime(30, now + 0.16);
-gain.gain.setValueAtTime(type === 'shotgun' ? 0.32 : 0.2, now);
-gain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
-osc.connect(gain);
-gain.connect(this.ctx.destination);
-osc.start(now);
-osc.stop(now + 0.18);
+const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+o.type = type; o.frequency.setValueAtTime(freq, this.ctx.currentTime);
+if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(20, slide), this.ctx.currentTime + dur);
+g.gain.setValueAtTime(vol, this.ctx.currentTime);
+g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+o.connect(g); g.connect(this.ctx.destination);
+o.start(); o.stop(this.ctx.currentTime + dur);
 }
-playCash() {
-if (!this.enabled) return;
+shoot(heavy = false) {
 this.init();
-if (!this.ctx) return;
-const now = this.ctx.currentTime;
-const osc = this.ctx.createOscillator();
-const gain = this.ctx.createGain();
-osc.type = 'sine';
-osc.frequency.setValueAtTime(880, now);
-osc.frequency.setValueAtTime(1320, now + 0.06);
-gain.gain.setValueAtTime(0.15, now);
-gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-osc.connect(gain);
-gain.connect(this.ctx.destination);
-osc.start(now);
-osc.stop(now + 0.23);
+this.playTone(heavy ? 110 : 180, 'sawtooth', heavy ? 0.22 : 0.12, 0.22, 28);
+this.playTone(90, 'square', 0.09, 0.18, 22);
 }
-playReload() {
-if (!this.enabled) return;
+scare() {
 this.init();
-if (!this.ctx) return;
-const now = this.ctx.currentTime;
-const osc = this.ctx.createOscillator();
-const gain = this.ctx.createGain();
-osc.type = 'square';
-osc.frequency.setValueAtTime(420, now);
-osc.frequency.setValueAtTime(640, now + 0.12);
-gain.gain.setValueAtTime(0.08, now);
-gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-osc.connect(gain);
-gain.connect(this.ctx.destination);
-osc.start(now);
-osc.stop(now + 0.21);
+this.playTone(95, 'sawtooth', 0.65, 0.32, 34);
+this.playTone(620, 'square', 0.45, 0.18, 140);
 }
-playBeep(freq = 600, dur = 0.08) {
-if (!this.enabled) return;
-this.init();
-if (!this.ctx) return;
-const now = this.ctx.currentTime;
-const osc = this.ctx.createOscillator();
-const gain = this.ctx.createGain();
-osc.type = 'sine';
-osc.frequency.setValueAtTime(freq, now);
-gain.gain.setValueAtTime(0.08, now);
-gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-osc.connect(gain);
-gain.connect(this.ctx.destination);
-osc.start(now);
-osc.stop(now + dur + 0.01);
+pickup() { this.init(); this.playTone(520, 'sine', 0.12, 0.15, 880); }
+hit() { this.init(); this.playTone(320, 'triangle', 0.08, 0.18, 90); }
+startHorrorDrone() {
+this.init(); this.stopDrone();
+const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+o.type = 'sawtooth'; o.frequency.value = 42;
+const f = this.ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 110;
+g.gain.value = 0.09;
+o.connect(f); f.connect(g); g.connect(this.ctx.destination);
+o.start(); this.drone = o;
 }
+stopDrone() { if (this.drone) { try { this.drone.stop(); } catch {} this.drone = null; } }
 }
-const sfx = new SoundEngine();
-// ==========================================
-// 2. PROCEDURAL PBR TEXTURES
-// ==========================================
-function makeAsphaltTexture() {
-const c = document.createElement('canvas');
-c.width = c.height = 512;
-const ctx = c.getContext('2d');
-ctx.fillStyle = '#141820';
-ctx.fillRect(0, 0, 512, 512);
-for (let i = 0; i < 6000; i++) {
-ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.06)';
-ctx.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
-}
-ctx.strokeStyle = '#334155';
-ctx.lineWidth = 6;
-ctx.strokeRect(3, 3, 506, 506);
-ctx.fillStyle = '#eab308';
-for (let y = 16; y < 512; y += 48) {
-ctx.fillRect(253, y, 6, 24);
-}
-const tex = new THREE.CanvasTexture(c);
-tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-tex.colorSpace = THREE.SRGBColorSpace;
-return tex;
-}
-function makeDeckTexture() {
-const c = document.createElement('canvas');
-c.width = c.height = 512;
-const ctx = c.getContext('2d');
-ctx.fillStyle = '#16212b';
-ctx.fillRect(0, 0, 512, 512);
-ctx.strokeStyle = '#283847';
-ctx.lineWidth = 4;
-for (let i = 0; i <= 512; i += 64) {
-ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
-ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
-}
-ctx.fillStyle = '#ca8a04';
-ctx.fillRect(0, 0, 512, 12);
-const tex = new THREE.CanvasTexture(c);
-tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-tex.colorSpace = THREE.SRGBColorSpace;
-return tex;
-}
-function makeSkyscraperTexture(tint = '#101824') {
-const c = document.createElement('canvas');
-c.width = 256; c.height = 512;
-const ctx = c.getContext('2d');
-ctx.fillStyle = tint;
-ctx.fillRect(0, 0, 256, 512);
-for (let y = 18; y < 490; y += 28) {
-for (let x = 16; x < 236; x += 28) {
-const lit = Math.random() > 0.32;
-ctx.fillStyle = lit ? (Math.random() > 0.25 ? '#fef08a' : '#7dd3fc') : '#070b10';
-ctx.fillRect(x, y, 16, 18);
-}
-}
-const tex = new THREE.CanvasTexture(c);
-tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-tex.colorSpace = THREE.SRGBColorSpace;
-return tex;
-}
-// ==========================================
-// 3. THREE.JS RENDERER & VIEWMODEL SETUP
-// ==========================================
+const sfx = new SoundFX();
+/* ================= RENDERER & CORE STATE ================= */
 const canvas = document.getElementById('game');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -379,1135 +216,717 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
+renderer.toneMappingExposure = 1.15;
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 480);
-camera.rotation.order = 'YXZ';
-const gunGroup = new THREE.Group();
-const gunBody = new THREE.Mesh(
-new THREE.BoxGeometry(0.075, 0.085, 0.42),
-new THREE.MeshStandardMaterial({ color: 0x222831, metalness: 0.85, roughness: 0.22 })
-);
-gunBody.position.set(0.26, -0.22, -0.44);
-const gunSight = new THREE.Mesh(
-new THREE.BoxGeometry(0.025, 0.025, 0.06),
-new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
-);
-gunSight.position.set(0.26, -0.17, -0.35);
-const muzzleFlash = new THREE.PointLight(0xffaa33, 0, 9);
-muzzleFlash.position.set(0.26, -0.18, -0.78);
-gunGroup.add(gunBody, gunSight, muzzleFlash);
-camera.add(gunGroup);
-const flashlight = new THREE.SpotLight(0xdff6ff, 0, 52, Math.PI / 5, 0.45, 1);
-flashlight.target.position.set(0, 0, -10);
-camera.add(flashlight, flashlight.target);
-scene.add(camera);
-// ==========================================
-// 4. GAME STATE & WEAPON DEFINITIONS
-// ==========================================
-let mode = null;
-let paused = false;
-let gameOver = false;
-let ultraGraphics = true;
-const keys = {};
-let yaw = 0, pitch = 0;
-const player = {
-pos: new THREE.Vector3(0, 1.7, 0),
-velY: 0,
-grounded: true,
-hp: 100,
-armor: 50,
-cash: 800,
-wanted: 0,
-wantedDecay: 0,
-inCar: null,
+const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, 260);
+const radarCtx = document.getElementById('radar').getContext('2d');
+const state = {
+mode: null, active: false, paused: false,
+hp: 100, armor: 50, cash: 800, wanted: 0,
+timer: 240, intel: 0, bombDefused: false, wireColor: 'RED',
 weaponIdx: 0,
 weapons: [
-{ id: 'pistol', name: 'SERVICE PISTOL', dmg: 38, rate: 0.22, clip: 12, maxClip: 12, reserve: 72, spread: 0.01, pellets: 1, auto: false, color: 0x222831, len: 0.36, owned: true },
-{ id: 'shotgun', name: 'COMBAT SHOTGUN', dmg: 25, rate: 0.72, clip: 8, maxClip: 8, reserve: 32, spread: 0.085, pellets: 8, auto: false, color: 0x5c3a21, len: 0.66, owned: false },
-{ id: 'smg', name: 'TACTICAL SMG', dmg: 22, rate: 0.08, clip: 35, maxClip: 35, reserve: 175, spread: 0.035, pellets: 1, auto: true, color: 0x334155, len: 0.48, owned: false },
-{ id: 'rifle', name: 'ASSAULT RIFLE', dmg: 34, rate: 0.11, clip: 30, maxClip: 30, reserve: 150, spread: 0.02, pellets: 1, auto: true, color: 0x0f172a, len: 0.68, owned: false },
-{ id: 'railgun', name: 'PLASMA RAILGUN', dmg: 160, rate: 0.65, clip: 8, maxClip: 8, reserve: 40, spread: 0.002, pellets: 1, auto: false, color: 0x0284c7, len: 0.78, owned: false }
+{ name: 'SERVICE PISTOL', mag: 12, maxMag: 12, reserve: 72, dmg: 34, rate: 0.24, spread: 0.012, owned: true },
+{ name: 'TACTICAL SMG', mag: 30, maxMag: 30, reserve: 150, dmg: 22, rate: 0.09, spread: 0.032, owned: false },
+{ name: 'COMBAT SHOTGUN', mag: 8, maxMag: 8, reserve: 40, dmg: 95, rate: 0.65, spread: 0.075, owned: false }
 ],
-cooldown: 0,
-reloading: false
+lastShot: 0, flashlightOn: true,
+pos: new THREE.Vector3(0, 1.7, 0),
+vel: new THREE.Vector3(),
+yaw: 0, pitch: 0,
+inCar: null, carSpeed: 0,
+colliders: [], enemies: [], pickups: [], cars: [], lights: [], interactables: [],
+scareCooldown: 0, heartbeatTimer: 0
 };
-let colliders = [];
-let interactables = [];
-let enemies = [];
-let cars = [];
-let pickups = [];
-let props = [];
-let tracers = [];
-let particles = [];
-let activePrompt = null;
-// Blacktide 09 state
-let rigTimer = 300;
-let tickAccum = 0;
-let intelCount = 0;
-let wireOrder = [];
-let cutWires = [];
-let bombDisarmed = false;
-let stalker = null;
-const $ = id => document.getElementById(id);
-function toast(msg) {
-const t = $('toast');
-t.textContent = msg;
-t.style.opacity = 1;
-clearTimeout(t._to);
-t._to = setTimeout(() => t.style.opacity = 0, 2600);
-}
-function updateHUD() {
-$('health').textContent = Math.max(0, Math.ceil(player.hp));
-$('armor').textContent = Math.max(0, Math.ceil(player.armor));
-const w = player.weapons[player.weaponIdx];
-$('ammo').textContent = ${w.clip} / ${w.reserve};
-$('weaponName').textContent = player.inCar ? player.inCar.name : w.name;
-$('cashDisplay').textContent = $${player.cash};
-$('storeCash').textContent = $${player.cash};
-if (mode === 'blacktide') {
-$('parts').textContent = ${intelCount} / 3;
-const m = String(Math.floor(rigTimer / 60)).padStart(2, '0');
-const s = String(Math.floor(rigTimer % 60)).padStart(2, '0');
-$('timer').textContent = ${m}:${s};
-} else if (mode === 'city') {
-$('parts').textContent = cars.length;
-const stars = $('wantedStars').querySelectorAll('span');
-stars.forEach((st, i) => st.classList.toggle('active', i < player.wanted));
-}
-}
-function equipWeapon(idx) {
-const w = player.weapons[idx];
-if (!w || !w.owned) return;
-player.weaponIdx = idx;
-gunBody.material.color.setHex(w.color);
-gunBody.scale.z = w.len / 0.42;
-gunSight.material.color.setHex(w.id === 'railgun' ? 0x38bdf8 : 0xf43f5e);
-updateHUD();
-}
-function clearWorld() {
-while (scene.children.length > 0) scene.remove(scene.children[0]);
-scene.add(camera);
-colliders = [];
-interactables = [];
-enemies = [];
-cars = [];
-pickups = [];
-props = [];
-tracers = [];
-particles = [];
-player.inCar = null;
-player.hp = 100;
-player.armor = 50;
-player.wanted = 0;
-player.velY = 0;
-gunGroup.visible = true;
-$('speedo').style.display = 'none';
-gameOver = false;
-paused = false;
-}
-function addBox(x, y, z, w, h, d, mat, solid = true) {
-const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-mesh.position.set(x, y, z);
-mesh.castShadow = true;
-mesh.receiveShadow = true;
-scene.add(mesh);
-if (solid) {
-colliders.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2, maxY: y + h / 2 });
-}
-return mesh;
-}
-function spawnParticles(pos, colorHex, count = 10) {
-const geo = new THREE.BoxGeometry(0.14, 0.14, 0.14);
-const mat = new THREE.MeshBasicMaterial({ color: colorHex });
-for (let i = 0; i < count; i++) {
-const m = new THREE.Mesh(geo, mat);
-m.position.copy(pos);
-scene.add(m);
-particles.push({
-mesh: m,
-vel: new THREE.Vector3((Math.random() - 0.5) * 8, Math.random() * 6 + 2, (Math.random() - 0.5) * 8),
-life: 0.45 + Math.random() * 0.25
-});
-}
-}
-// ==========================================
-// 5. WORLD 1: BLACKTIDE 09 (OIL RIG)
-// ==========================================
-function initBlacktide() {
-clearWorld();
-mode = 'blacktide';
-rigTimer = 300;
-intelCount = 0;
-cutWires = [];
-bombDisarmed = false;
-wireOrder = ['RED', 'BLUE', 'YELLOW'].sort(() => Math.random() - 0.5);
-scene.background = new THREE.Color(0x040d14);
-scene.fog = new THREE.FogExp2(0x051018, 0.019);
-scene.add(new THREE.HemisphereLight(0x3a6073, 0x09131a, 0.8));
-const moon = new THREE.DirectionalLight(0x93c5fd, 1.5);
-moon.position.set(35, 65, 25);
-moon.castShadow = true;
-moon.shadow.mapSize.set(2048, 2048);
-scene.add(moon);
-const deckTex = makeDeckTexture();
-deckTex.repeat.set(16, 16);
-addBox(0, -0.5, 0, 80, 1, 80, new THREE.MeshStandardMaterial({ map: deckTex, roughness: 0.65, metalness: 0.4 }), false);
-const sea = new THREE.Mesh(
-new THREE.PlaneGeometry(450, 450),
-new THREE.MeshStandardMaterial({ color: 0x03131d, roughness: 0.18, metalness: 0.85 })
-);
-sea.rotation.x = -Math.PI / 2;
-sea.position.y = -4.5;
-scene.add(sea);
-const rustMat = new THREE.MeshStandardMaterial({ color: 0x612d24, roughness: 0.7, metalness: 0.5 });
-const steelMat = new THREE.MeshStandardMaterial({ color: 0x2b3945, roughness: 0.5, metalness: 0.7 });
-[
-[-18, 2, -18, 10, 4, 8, rustMat], [18, 2, -16, 8, 4, 12, steelMat],
-[-18, 2, 18, 12, 4, 8, steelMat], [16, 2, 18, 10, 4, 10, rustMat],
-[0, 3, -26, 16, 6, 6, steelMat], [-28, 2, 0, 6, 4, 18, rustMat],
-[28, 2, -4, 6, 4, 14, rustMat]
-].forEach(b => addBox(...b));
-// Perimeter Railings
-addBox(0, 1, -40, 80, 2, 0.5, steelMat);
-addBox(0, 1, 40, 80, 2, 0.5, steelMat);
-addBox(-40, 1, 0, 0.5, 2, 80, steelMat);
-addBox(40, 1, 0, 0.5, 2, 80, steelMat);
-// 3 Intel Terminals
-const intelSpots = [[-24, 1.1, -24], [26, 1.1, -22], [-26, 1.1, 24]];
-intelSpots.forEach((p, idx) => {
-addBox(p[0], 0.6, p[2], 1.2, 1.2, 1.2, steelMat);
-const screen = new THREE.Mesh(
-new THREE.BoxGeometry(0.8, 0.5, 0.1),
-new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 2.2 })
-);
-screen.position.set(p[0], 1.35, p[2]);
-scene.add(screen);
-const l = new THREE.PointLight(0x38bdf8, 5, 12);
-l.position.set(p[0], 2.2, p[2]);
-scene.add(l);
-interactables.push({
-pos: new THREE.Vector3(p[0], 1.2, p[2]),
-radius: 3.4,
-label: [ E ] DOWNLOAD WIRE INTEL #${idx + 1},
-collected: false,
-action(item) {
-if (item.collected) return;
-item.collected = true;
-screen.material.emissive.setHex(0x22c55e);
-intelCount++;
-sfx.playBeep(880, 0.15);
-toast(INTEL ${intelCount}/3: STEP ${intelCount} IS ${wireOrder[intelCount - 1]} WIRE);
-updateHUD();
-}
-});
-});
-// Main Bomb Device
-addBox(0, 0.8, -12, 1.8, 1.6, 1.4, new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.25 }));
-const bombLight = new THREE.PointLight(0xef4444, 10, 16);
-bombLight.position.set(0, 2.3, -12);
-scene.add(bombLight);
-interactables.push({
-pos: new THREE.Vector3(0, 1.2, -12),
-radius: 3.6,
-label: '[ E ] ACCESS BOMB CONTROL PANEL',
-action() {
-if (bombDisarmed) return toast('DEVICE ALREADY DISARMED — HEAD TO HELIPAD');
-document.exitPointerLock();
-$('wireHint').textContent = intelCount === 0
-? 'WARNING: No intel downloaded yet! Guessing is lethal.'
-: Decoded Sequence (${intelCount}/3): ${wireOrder.slice(0, intelCount).join(' -> ')};
-$('wireStatus').textContent = '';
-$('bombPanel').style.display = 'flex';
-}
-});
-// Extraction Helipad
-const pad = new THREE.Mesh(
-new THREE.CylinderGeometry(5.8, 5.8, 0.2, 24),
-new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xb45309, emissiveIntensity: 0.7 })
-);
-pad.position.set(28, 0.1, 28);
-scene.add(pad);
-interactables.push({
-pos: new THREE.Vector3(28, 1.2, 28),
-radius: 5.8,
-label: '[ E ] CALL EXTRACTION CHOPPER',
-action() {
-if (!bombDisarmed) return toast('CANNOT EXTRACT WHILE BOMB IS ARMED!');
-endGame('MISSION ACCOMPLISHED', 'EXTRACTED ALIVE', 'You decoded the sequence, disarmed the Blacktide 09 device, and escaped the rig.');
-}
-});
-// Rig Stalker Creature
-const sMesh = new THREE.Mesh(
-new THREE.CapsuleGeometry(0.55, 1.35, 8, 16),
-new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.2, metalness: 0.85 })
-);
-const eye = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.1, 0.2), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
-eye.position.set(0, 0.65, 0.48);
-sMesh.add(eye);
-sMesh.position.set(-15, 1.2, -30);
-scene.add(sMesh);
-stalker = { mesh: sMesh, hp: 240, stun: 0, speed: 5.8 };
-enemies.push(stalker);
-player.pos.set(0, 1.7, 30);
-yaw = 0; pitch = 0;
-flashlight.intensity = 28;
-$('brand').textContent = 'BLACKTIDE 09 // NORTH ATLANTIC';
-$('mission').textContent = 'MISSION: DISARM THE DEVICE';
-$('objective').textContent = 'Download 3 intel terminals, cut the bomb wires in order, then extract at the yellow helipad.';
-$('statusLabel').textContent = 'DETONATION IN';
-$('timer').style.display = 'block';
-$('cashDisplay').style.display = 'none';
-$('wantedStars').style.display = 'none';
-$('objLabel').textContent = 'INTEL';
-equipWeapon(0);
-updateHUD();
-}
-// ==========================================
-// 6. WORLD 2: CITY CRIME (OPEN WORLD)
-// ==========================================
-function buildCarMesh(colorHex, isSports = false, isPolice = false) {
-const g = new THREE.Group();
-const bodyMat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.8, roughness: 0.18 });
-const glassMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.92, roughness: 0.08 });
-const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.15, isSports ? 0.62 : 0.78, 4.55), bodyMat);
-chassis.position.y = 0.65;
-chassis.castShadow = true;
-const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.78, isSports ? 0.48 : 0.64, 2.25), glassMat);
-cabin.position.set(0, isSports ? 1.12 : 1.28, -0.2);
-g.add(chassis, cabin);
-if (isSports) {
-const spoiler = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.1, 0.35), bodyMat);
-spoiler.position.set(0, 1.15, -2.05);
-const underglow = new THREE.Mesh(
-new THREE.PlaneGeometry(1.9, 3.8),
-new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.45, side: THREE.DoubleSide })
-);
-underglow.rotation.x = Math.PI / 2;
-underglow.position.y = 0.08;
-g.add(spoiler, underglow);
-}
-if (isPolice) {
-const barRed = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.22), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
-barRed.position.set(-0.3, 1.66, -0.2);
-const barBlue = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.22), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
-barBlue.position.set(0.3, 1.66, -0.2);
-g.add(barRed, barBlue);
-}
-const hl = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.16, 0.1), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-hl.position.set(0, 0.7, 2.28);
-const tl = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.16, 0.1), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
-tl.position.set(0, 0.7, -2.28);
-g.add(hl, tl);
-const wGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.32, 16);
-wGeo.rotateZ(Math.PI / 2);
-const wMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.85 });
-const wheels = [];
-[[-1.08, 0.38, 1.38], [1.08, 0.38, 1.38], [-1.08, 0.38, -1.38], [1.08, 0.38, -1.38]].forEach(wp => {
-const w = new THREE.Mesh(wGeo, wMat);
-w.position.set(...wp);
-g.add(w);
-wheels.push(w);
-});
-g.userData.wheels = wheels;
-return g;
-}
-function spawnCashDrop(x, z, amount = 250) {
-const mesh = new THREE.Mesh(
-new THREE.BoxGeometry(0.8, 0.3, 0.48),
-new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x15803d, emissiveIntensity: 1.0 })
-);
-mesh.position.set(x, 0.55, z);
-scene.add(mesh);
-pickups.push({ mesh, amount });
-}
-function spawnEnemyNPC(x, z, isCop = false, isBounty = false) {
-const group = new THREE.Group();
-const color = isBounty ? 0xf59e0b : isCop ? 0x1d4ed8 : 0x991b1b;
-const torso = new THREE.Mesh(
-new THREE.CapsuleGeometry(0.42, 0.9, 6, 12),
-new THREE.MeshStandardMaterial({ color, roughness: 0.45 })
-);
-torso.position.y = 0.95;
-torso.castShadow = true;
-const head = new THREE.Mesh(
-new THREE.SphereGeometry(0.28, 12, 12),
-new THREE.MeshStandardMaterial({ color: 0xf1c27d, roughness: 0.6 })
-);
-head.position.y = 1.65;
-const gun = new THREE.Mesh(
-new THREE.BoxGeometry(0.1, 0.12, 0.45),
-new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.8 })
-);
-gun.position.set(0.32, 1.15, 0.3);
-group.add(torso, head, gun);
-group.position.set(x, 0, z);
-scene.add(group);
-enemies.push({
-mesh: group,
-hp: isBounty ? 220 : isCop ? 110 : 85,
-isGangster: !isCop,
-isCop,
-isBounty,
-shootTimer: Math.random() * 1.5
-});
-}
-function addWantedLevel(amount = 1) {
-if (mode !== 'city') return;
-const prev = player.wanted;
-player.wanted = Math.min(5, player.wanted + amount);
-player.wantedDecay = 22;
-if (player.wanted > prev) {
-sfx.playBeep(520, 0.12);
-toast(WANTED LEVEL: ${player.wanted} STAR${player.wanted > 1 ? 'S' : ''}!);
-for (let i = 0; i < player.wanted; i++) {
-const angle = Math.random() * Math.PI * 2;
-const sx = Math.max(-135, Math.min(135, player.pos.x + Math.cos(angle) * 32));
-const sz = Math.max(-135, Math.min(135, player.pos.z + Math.sin(angle) * 32));
-spawnEnemyNPC(sx, sz, true, false);
-}
-}
-updateHUD();
-}
-function initCityCrime() {
-clearWorld();
-mode = 'city';
-flashlight.intensity = 0;
-scene.background = new THREE.Color(0x0a1329);
-scene.fog = new THREE.FogExp2(0x0a1329, 0.0072);
-scene.add(new THREE.HemisphereLight(0x60a5fa, 0x1e293b, 1.05));
-const sun = new THREE.DirectionalLight(0xffedd5, 1.95);
-sun.position.set(70, 120, 60);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-sun.shadow.camera.left = -140; sun.shadow.camera.right = 140;
-sun.shadow.camera.top = 140; sun.shadow.camera.bottom = -140;
-scene.add(sun);
-const roadTex = makeAsphaltTexture();
-roadTex.repeat.set(26, 26);
-const ground = new THREE.Mesh(
-new THREE.PlaneGeometry(340, 340),
-new THREE.MeshStandardMaterial({ map: roadTex, roughness: 0.78 })
-);
-ground.rotation.x = -Math.PI / 2;
-ground.receiveShadow = true;
-scene.add(ground);
-// City Blocks & Skyscrapers
-const bldgMat1 = new THREE.MeshStandardMaterial({ map: makeSkyscraperTexture('#101824'), roughness: 0.3, metalness: 0.55 });
-const bldgMat2 = new THREE.MeshStandardMaterial({ map: makeSkyscraperTexture('#1b1929'), roughness: 0.35, metalness: 0.5 });
-const blockCoords = [-100, -60, -20, 20, 60, 100];
-blockCoords.forEach((bx, ix) => {
-blockCoords.forEach((bz, iz) => {
-if (bx === -20 && bz === -20) return;
-if (bx === 60 && bz === 60) return;
-if (bx === -60 && bz === 60) return;
-const h = 22 + Math.abs((bx * 7 + bz * 13) % 44);
-addBox(bx, h / 2, bz, 22, h, 22, (ix + iz) % 2 === 0 ? bldgMat1 : bldgMat2, true);
-});
-});
-// Streetlights & Destructible Fire Hydrants
-const poleMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 });
-const hydrantMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.4 });
-[-80, -40, 0, 40, 80].forEach(lane => {
-[-90, -30, 30, 90].forEach(pos => {
-addBox(lane + 11.5, 3, pos, 0.25, 6, 0.25, poleMat, false);
-const hyd = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.25, 0.8, 8), hydrantMat);
-hyd.position.set(lane - 11.5, 0.4, pos + 4);
-scene.add(hyd);
-props.push({ mesh: hyd, broken: false });
-});
-});
-// Three Walk-In Ammu-Nation Gun Stores
-const storeLocations = [
-{ x: -20, z: -20, name: 'DOWNTOWN AMMU-NATION' },
-{ x: 60, z: 60, name: 'EASTSIDE AMMU-NATION' },
-{ x: -60, z: 60, name: 'WESTSIDE AMMU-NATION' }
-];
-storeLocations.forEach(st => {
-addBox(st.x, 3.2, st.z - 4, 15, 6.4, 9, new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4 }));
-const neon = new THREE.Mesh(
-new THREE.BoxGeometry(11, 1.3, 0.4),
-new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 2.5 })
-);
-neon.position.set(st.x, 5.5, st.z + 0.6);
-scene.add(neon);
-const doorLight = new THREE.PointLight(0xf59e0b, 14, 20);
-doorLight.position.set(st.x, 3, st.z + 3.5);
-scene.add(doorLight);
-interactables.push({
-pos: new THREE.Vector3(st.x, 1.5, st.z + 2.8),
-radius: 4.8,
-label: [ E ] ENTER ${st.name},
-action() {
-if (player.inCar) return toast('EXIT VEHICLE TO ENTER GUN STORE');
-document.exitPointerLock();
-updateHUD();
-$('gunStore').style.display = 'flex';
-}
-});
-});
-// Payphone Hit Contracts
-const phoneSpots = [[12, -12], [-50, -50], [50, -50]];
-phoneSpots.forEach((pp, idx) => {
-addBox(pp[0], 1.2, pp[1], 0.9, 2.4, 0.9, new THREE.MeshStandardMaterial({ color: 0x15803d, emissive: 0x166534, emissiveIntensity: 1.2 }));
-interactables.push({
-pos: new THREE.Vector3(pp[0], 1.2, pp[1]),
-radius: 3.6,
-label: [ E ] ANSWER PAYPHONE CONTRACT #$1000,
-action() {
-const bx = (Math.random() - 0.5) * 180;
-const bz = (Math.random() - 0.5) * 180;
-spawnEnemyNPC(bx, bz, false, true);
-sfx.playBeep(950, 0.16);
-toast('CONTRACT ACCEPTED: ELIMINATE GOLD BOUNTY TARGET ($1,000)!');
-}
-});
-});
-// Spawn 24 Traffic, Supercars & Police Cruisers
-const carPalette = [
-{ name: 'APEX GT SUPERCAR', color: 0xef4444, accel: 36, sports: true, police: false },
-{ name: 'COBALT INTERCEPTOR', color: 0x3b82f6, accel: 33, sports: true, police: false },
-{ name: 'VENOM HYPERCAR', color: 0xa855f7, accel: 38, sports: true, police: false },
-{ name: 'METRO POLICE CRUISER', color: 0x0f172a, accel: 31, sports: false, police: true },
-{ name: 'MIDNIGHT COUPE', color: 0x1e293b, accel: 27, sports: false, police: false },
-{ name: 'SOLAR CITY TAXI', color: 0xeab308, accel: 24, sports: false, police: false },
-{ name: 'EMERALD SEDAN', color: 0x10b981, accel: 25, sports: false, police: false },
-{ name: 'SILVER CRUISER', color: 0x94a3b8, accel: 26, sports: false, police: false }
-];
-const roadLanes = [-120, -80, -40, 0, 40, 80, 120];
-for (let i = 0; i < 24; i++) {
-const spec = carPalette[i % carPalette.length];
-const mesh = buildCarMesh(spec.color, spec.sports, spec.police);
-const alongX = i % 2 === 0;
-const lane = roadLanes[i % roadLanes.length];
-const offset = -110 + (i * 23) % 220;
-mesh.position.set(alongX ? offset : lane, 0, alongX ? lane : offset);
-mesh.rotation.y = alongX ? (i % 4 === 0 ? Math.PI / 2 : -Math.PI / 2) : (i % 4 === 1 ? 0 : Math.PI);
-scene.add(mesh);
-cars.push({
-mesh,
-name: spec.name,
-accelPower: spec.accel,
-speed: 0,
-aiActive: true,
-isPolice: spec.police
-});
-}
-// Spawn Cash Drops & Street Gangsters
-for (let i = 0; i < 26; i++) {
-const cx = -115 + ((i * 43) % 230);
-const cz = -115 + ((i * 61) % 230);
-spawnCashDrop(cx, cz, 250);
-if (i % 2 === 0) spawnEnemyNPC(cx + 3, cz + 3, false, false);
-}
-player.pos.set(0, 1.7, 12);
-yaw = Math.PI; pitch = 0;
-\(('brand').textContent = 'CITY CRIME // OPEN WORLD';\)('mission').textContent = 'FREE ROAM: EARN CASH & BUY GUNS';
-\(('objective').textContent = 'Collect cash drops, answer green payphone contracts, hijack cars [E], and visit glowing Ammu-Nation stores.';\)('statusLabel').textContent = 'SYNDICATE FUNDS';
-\(('timer').style.display = 'none';\)('cashDisplay').style.display = 'block';
-\(('wantedStars').style.display = 'block';\)('objLabel').textContent = 'CARS';
-equipWeapon(0);
-updateHUD();
-}
-// ==========================================
-// 7. WEAPON FIRING, TRACERS & RELOADING
-// ==========================================
-function spawnTracer(start, end, color = 0xfef08a) {
-const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
-const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.9 });
-const line = new THREE.Line(geo, mat);
-scene.add(line);
-tracers.push({ line, life: 0.09 });
-}
-function fireWeapon() {
-if (player.inCar || player.reloading || player.cooldown > 0) return;
-const w = player.weapons[player.weaponIdx];
-if (w.clip <= 0) {
-reloadWeapon();
-return;
-}
-w.clip--;
-player.cooldown = w.rate;
-sfx.playShot(w.id);
-muzzleFlash.color.setHex(w.id === 'railgun' ? 0x38bdf8 : 0xffaa33);
-muzzleFlash.intensity = 24;
-setTimeout(() => muzzleFlash.intensity = 0, 55);
-gunGroup.position.z = 0.09;
-gunGroup.rotation.x = 0.08;
-updateHUD();
-if (mode === 'city' && player.wanted === 0 && Math.random() < 0.35) {
-addWantedLevel(1);
-}
-const raycaster = new THREE.Raycaster();
-const muzzleWorld = new THREE.Vector3();
-gunBody.getWorldPosition(muzzleWorld);
-for (let p = 0; p < w.pellets; p++) {
-const dir = new THREE.Vector3(
-(Math.random() - 0.5) * w.spread,
-(Math.random() - 0.5) * w.spread,
--1
-).normalize().applyQuaternion(camera.quaternion);
-raycaster.set(camera.position, dir);
-const endPoint = camera.position.clone().addScaledVector(dir, 95);
-const enemyMeshes = enemies.map(e => e.mesh);
-const hits = raycaster.intersectObjects(enemyMeshes, true);
-if (hits.length > 0 && hits[0].distance < 95) {
-endPoint.copy(hits[0].point);
-spawnParticles(hits[0].point, w.id === 'railgun' ? 0x38bdf8 : 0xef4444, 6);
-$('hitmarker').style.opacity = 1;
-setTimeout(() => $('hitmarker').style.opacity = 0, 90);
-let hitObj = hits[0].object;
-while (hitObj.parent && !enemyMeshes.includes(hitObj)) hitObj = hitObj.parent;
-const enemy = enemies.find(e => e.mesh === hitObj);
-if (enemy) {
-enemy.hp -= w.dmg;
-if (enemy === stalker) {
-enemy.stun = 1.8;
-if (enemy.hp <= 0) {
-enemy.hp = 240;
-enemy.mesh.position.set(-32, 1.2, -32);
-toast('STALKER REPELLED TEMPORARILY!');
-}
-} else if (enemy.hp <= 0) {
-const reward = enemy.isBounty ? 1000 : enemy.isCop ? 150 : 300;
-spawnCashDrop(enemy.mesh.position.x, enemy.mesh.position.z, reward);
-spawnParticles(enemy.mesh.position.clone().add(new THREE.Vector3(0, 1, 0)), 0xf59e0b, 14);
-scene.remove(enemy.mesh);
-enemies = enemies.filter(e => e !== enemy);
-addWantedLevel(1);
-toast(${enemy.isBounty ? 'BOUNTY TARGET' : enemy.isCop ? 'OFFICER' : 'GANGSTER'} DOWN — +$${reward} DROPPED);
-if (!enemy.isBounty) {
-setTimeout(() => spawnEnemyNPC((Math.random() - 0.5) * 220, (Math.random() - 0.5) * 220, false, false), 6000);
-}
-}
-}
-}
-spawnTracer(muzzleWorld, endPoint, w.id === 'railgun' ? 0x38bdf8 : 0xfef08a);
-}
-}
-function reloadWeapon() {
-const w = player.weapons[player.weaponIdx];
-if (player.reloading || w.clip === w.maxClip || w.reserve <= 0) return;
-player.reloading = true;
-sfx.playReload();
-toast('RELOADING...');
-setTimeout(() => {
-const need = w.maxClip - w.clip;
-const take = Math.min(need, w.reserve);
-w.clip += take;
-w.reserve -= take;
-player.reloading = false;
-updateHUD();
-}, 850);
-}
-function applyPlayerDamage(dmg) {
-if (player.armor > 0) {
-const absorbed = Math.min(player.armor, dmg * 0.7);
-player.armor -= absorbed;
-player.hp -= (dmg - absorbed);
-} else {
-player.hp -= dmg;
-}
-$('damage').style.opacity = 0.72;
-setTimeout(() => $('damage').style.opacity = 0, 130);
-updateHUD();
-}
-function endGame(kicker, title, desc) {
-gameOver = true;
-document.exitPointerLock();
-$('endKicker').textContent = kicker;
-$('endTitle').textContent = title;
-$('endDesc').textContent = desc;
-$('ending').style.display = 'flex';
-}
-// ==========================================
-// 8. LIVE RADAR MINIMAP RENDERER
-// ==========================================
-const radarCanvas = $('radar');
-const rCtx = radarCanvas.getContext('2d');
-function drawRadar() {
-const w = radarCanvas.width, h = radarCanvas.height;
-const cx = w / 2, cy = h / 2;
-rCtx.clearRect(0, 0, w, h);
-rCtx.strokeStyle = 'rgba(150, 195, 210, 0.18)';
-rCtx.lineWidth = 1;
-rCtx.beginPath(); rCtx.arc(cx, cy, 38, 0, Math.PI * 2); rCtx.stroke();
-rCtx.beginPath(); rCtx.arc(cx, cy, 72, 0, Math.PI * 2); rCtx.stroke();
-const scale = mode === 'blacktide' ? 1.5 : 0.65;
-const heading = player.inCar ? player.inCar.mesh.rotation.y + Math.PI : yaw;
-function toRadar(worldPos) {
-const dx = (worldPos.x - player.pos.x) * scale;
-const dz = (worldPos.z - player.pos.z) * scale;
-const cos = Math.cos(heading);
-const sin = Math.sin(heading);
-return {
-x: cx + (dx * cos - dz * sin),
-y: cy + (dx * sin + dz * cos)
-};
-}
-for (const item of interactables) {
-if (item.collected) continue;
-const p = toRadar(item.pos);
-rCtx.fillStyle = mode === 'city' ? '#f59e0b' : '#38bdf8';
-rCtx.fillRect(p.x - 3.5, p.y - 3.5, 7, 7);
-}
-rCtx.fillStyle = '#4ade80';
-for (const c of pickups) {
-const p = toRadar(c.mesh.position);
-rCtx.fillRect(p.x - 2, p.y - 2, 4, 4);
-}
-if (mode === 'city') {
-for (const car of cars) {
-if (car === player.inCar) continue;
-const p = toRadar(car.mesh.position);
-rCtx.fillStyle = car.isPolice ? '#60a5fa' : '#94a3b8';
-rCtx.fillRect(p.x - 2.5, p.y - 2.5, 5, 5);
-}
-}
-for (const e of enemies) {
-const p = toRadar(e.mesh.position);
-rCtx.fillStyle = e.isBounty ? '#facc15' : e.isCop ? '#3b82f6' : '#ef4444';
-rCtx.beginPath(); rCtx.arc(p.x, p.y, e.isBounty ? 5 : 3.5, 0, Math.PI * 2); rCtx.fill();
-}
-rCtx.fillStyle = '#ffffff';
-rCtx.beginPath();
-rCtx.moveTo(cx, cy - 6);
-rCtx.lineTo(cx - 4.5, cy + 5);
-rCtx.lineTo(cx + 4.5, cy + 5);
-rCtx.closePath();
-rCtx.fill();
-}
-// ==========================================
-// 9. INPUT & UI EVENT HANDLERS
-// ==========================================
+const keys = {};
 window.addEventListener('keydown', e => {
 keys[e.code] = true;
-if (e.code === 'Digit1') equipWeapon(0);
-if (e.code === 'Digit2') equipWeapon(1);
-if (e.code === 'Digit3') equipWeapon(2);
-if (e.code === 'Digit4') equipWeapon(3);
-if (e.code === 'Digit5') equipWeapon(4);
+if (!state.active) return;
+if (e.code === 'Escape') togglePause();
 if (e.code === 'KeyR') reloadWeapon();
-if (e.code === 'Space' && !player.inCar && player.grounded) {
-player.velY = 6.8;
-player.grounded = false;
+if (e.code === 'KeyF' && state.mode === 'horror' && state.flashlight) {
+state.flashlightOn = !state.flashlightOn;
+state.flashlight.visible = state.flashlightOn;
+toast(state.flashlightOn ? 'FLASHLIGHT ON' : 'FLASHLIGHT OFF (STEALTH)');
 }
-if (e.code === 'KeyF' && mode === 'blacktide') {
-flashlight.intensity = flashlight.intensity > 0 ? 0 : 28;
-sfx.playBeep(700, 0.05);
-}
-if (e.code === 'KeyE' && !paused && !gameOver) {
-if (player.inCar) {
-const c = player.inCar;
-player.pos.copy(c.mesh.position).add(new THREE.Vector3(2.5, 1.7, 0));
-player.inCar = null;
-gunGroup.visible = true;
-$('speedo').style.display = 'none';
-updateHUD();
-return;
-}
-if (activePrompt) {
-activePrompt.action(activePrompt);
-}
-}
-if ((e.code === 'KeyP' || e.code === 'Escape') && mode && !gameOver) {
-if (('bombPanel').style.display === 'flex' || ('gunStore').style.display === 'flex') {
-\(('bombPanel').style.display = 'none';\)('gunStore').style.display = 'none';
-canvas.requestPointerLock();
-return;
-}
-paused = !paused;
-$('pause').style.display = paused ? 'flex' : 'none';
-if (paused) document.exitPointerLock();
-else canvas.requestPointerLock();
-}
+if (e.code === 'Digit1') selectWeapon(0);
+if (e.code === 'Digit2') selectWeapon(1);
+if (e.code === 'Digit3') selectWeapon(2);
+if (e.code === 'KeyE') handleInteract();
 });
 window.addEventListener('keyup', e => keys[e.code] = false);
-let mouseDown = false;
-window.addEventListener('mousedown', e => {
-if (e.button === 0 && mode && !paused && !gameOver &&
-\(('bombPanel').style.display !== 'flex' &&\)('gunStore').style.display !== 'flex') {
-sfx.init();
-if (document.pointerLockElement !== canvas) canvas.requestPointerLock();
-mouseDown = true;
-fireWeapon();
-}
-});
-window.addEventListener('mouseup', () => mouseDown = false);
-window.addEventListener('mousemove', e => {
-if (document.pointerLockElement === canvas && !paused && !gameOver) {
-yaw -= e.movementX * 0.0022;
-pitch = Math.max(-1.4, Math.min(1.4, pitch - e.movementY * 0.0022));
-}
-});
-$('btnQuality').onclick = (e) => {
-ultraGraphics = !ultraGraphics;
-renderer.shadowMap.enabled = ultraGraphics;
-renderer.setPixelRatio(ultraGraphics ? Math.min(window.devicePixelRatio, 2) : 1);
-scene.traverse(o => { if (o.material) o.material.needsUpdate = true; });
-e.target.textContent = ultraGraphics ? 'GRAPHICS: ULTRA (SHADOWS + PBR)' : 'GRAPHICS: PERFORMANCE';
-};
-$('btnAudio').onclick = (e) => {
-sfx.enabled = !sfx.enabled;
-e.target.textContent = sfx.enabled ? 'AUDIO: ON' : 'AUDIO: MUTED';
-};
-$('btnBlacktide').onclick = () => {
-sfx.init();
-\(('start').style.display = 'none';\)('hud').style.display = 'block';
-initBlacktide();
-canvas.requestPointerLock();
-};
-$('btnCity').onclick = () => {
-sfx.init();
-\(('start').style.display = 'none';\)('hud').style.display = 'block';
-initCityCrime();
-canvas.requestPointerLock();
-};
-$('btnResume').onclick = () => {
-paused = false;
-$('pause').style.display = 'none';
-canvas.requestPointerLock();
-};
-('btnMenu').onclick = ('btnEndMenu').onclick = () => {
-\(('pause').style.display = 'none';\)('ending').style.display = 'none';
-\(('hud').style.display = 'none';\)('start').style.display = 'flex';
-mode = null;
-};
-('btnRestart').onclick = () => {('ending').style.display = 'none';
-if (mode === 'blacktide') initBlacktide();
-else initCityCrime();
-canvas.requestPointerLock();
-};
-// Bomb Wire Cutting
-document.querySelectorAll('[data-wire]').forEach(btn => {
-btn.onclick = () => {
-const color = btn.dataset.wire;
-const expected = wireOrder[cutWires.length];
-if (color === expected) {
-cutWires.push(color);
-sfx.playBeep(950, 0.12);
-$('wireStatus').textContent = CUT ${color} — VERIFIED (${cutWires.length}/3);
-if (cutWires.length === 3) {
-bombDisarmed = true;
-$('bombPanel').style.display = 'none';
-toast('BOMB DISARMED! RUN TO THE EXTRACTION HELIPAD!');
-canvas.requestPointerLock();
-}
-} else {
-$('bombPanel').style.display = 'none';
-endGame('SIGNAL LOST', 'DEVICE DETONATED', Wrong wire cut (${color}). Expected ${expected}.);
-}
-};
-});
-('closeBomb').onclick = () => {('bombPanel').style.display = 'none';
-canvas.requestPointerLock();
-};
-// Gun Store Purchases
-document.querySelectorAll('[data-buy]').forEach(btn => {
-btn.onclick = () => {
-const item = btn.dataset.buy;
-const cost = Number(btn.dataset.cost);
-if (player.cash < cost) {
-sfx.playBeep(240, 0.15);
-return toast('NOT ENOUGH CASH!');
-}
-player.cash -= cost;
-sfx.playCash();
-if (item === 'shotgun') {
-player.weapons[1].owned = true;
-player.weapons[1].clip = 8;
-player.weapons[1].reserve = 32;
-equipWeapon(1);
-toast('COMBAT SHOTGUN PURCHASED! [KEY 2]');
-} else if (item === 'smg') {
-player.weapons[2].owned = true;
-player.weapons[2].clip = 35;
-player.weapons[2].reserve = 175;
-equipWeapon(2);
-toast('TACTICAL SMG PURCHASED! [KEY 3]');
-} else if (item === 'rifle') {
-player.weapons[3].owned = true;
-player.weapons[3].clip = 30;
-player.weapons[3].reserve = 150;
-equipWeapon(3);
-toast('ASSAULT RIFLE PURCHASED! [KEY 4]');
-} else if (item === 'railgun') {
-player.weapons[4].owned = true;
-player.weapons[4].clip = 8;
-player.weapons[4].reserve = 40;
-equipWeapon(4);
-toast('PLASMA RAILGUN PURCHASED! [KEY 5]');
-} else if (item === 'refill') {
-player.hp = 100;
-player.armor = 100;
-player.weapons.forEach(w => { if (w.owned) { w.clip = w.maxClip; w.reserve = w.maxClip * 5; } });
-toast('HEALTH, ARMOR & ALL AMMO MAXED!');
-}
-updateHUD();
-};
-});
-('closeStore').onclick = () => {('gunStore').style.display = 'none';
-canvas.requestPointerLock();
-};
 window.addEventListener('resize', () => {
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.updateProjectionMatrix();
 renderer.setSize(window.innerWidth, window.innerHeight);
 });
-// ==========================================
-// 10. MAIN SIMULATION & RENDER LOOP
-// ==========================================
-let lastTime = performance.now();
+/* ================= PROCEDURAL TEXTURES ================= */
+function makeGridTex(bg, line, size = 256, step = 32, emissive = false) {
+const c = document.createElement('canvas'); c.width = c.height = size;
+const g = c.getContext('2d');
+g.fillStyle = bg; g.fillRect(0, 0, size, size);
+g.strokeStyle = line; g.lineWidth = 2;
+for (let i = 0; i <= size; i += step) {
+g.beginPath(); g.moveTo(i, 0); g.lineTo(i, size); g.stroke();
+g.beginPath(); g.moveTo(0, i); g.lineTo(size, i); g.stroke();
+}
+if (emissive) {
+for (let y = 8; y < size; y += 32) {
+for (let x = 8; x < size; x += 32) {
+if (Math.random() > 0.35) {
+g.fillStyle = Math.random() > 0.2 ? '#ffe9a8' : '#7dd3fc';
+g.fillRect(x, y, 16, 20);
+}
+}
+}
+}
+const t = new THREE.CanvasTexture(c);
+t.wrapS = t.wrapT = THREE.RepeatWrapping;
+return t;
+}
+function makeRoadTex() {
+const c = document.createElement('canvas'); c.width = c.height = 512;
+const g = c.getContext('2d');
+g.fillStyle = '#141920'; g.fillRect(0, 0, 512, 512);
+for (let i = 0; i < 3500; i++) {
+g.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.18)';
+g.fillRect(Math.random() * 512, Math.random() * 512, 2, 2);
+}
+g.fillStyle = '#eab308'; g.fillRect(252, 0, 8, 512);
+g.fillStyle = '#e2e8f0'; g.fillRect(24, 0, 6, 512); g.fillRect(482, 0, 6, 512);
+const t = new THREE.CanvasTexture(c);
+t.wrapS = t.wrapT = THREE.RepeatWrapping;
+return t;
+}
+/* ================= WORLD BUILDERS ================= */
+function clearWorld() {
+while (scene.children.length) scene.remove(scene.children[0]);
+state.colliders = []; state.enemies = []; state.pickups = [];
+state.cars = []; state.lights = []; state.interactables = [];
+state.inCar = null; state.carSpeed = 0;
+sfx.stopDrone();
+}
+function addBox(w, h, d, x, y, z, mat, solid = true, cast = true) {
+const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+m.position.set(x, y, z);
+m.castShadow = cast; m.receiveShadow = true;
+scene.add(m);
+if (solid) state.colliders.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2 });
+return m;
+}
+/* ---------- GAME 1: COMPACT CLAUSTROPHOBIC HORROR MAP ---------- */
+function buildHorrorRig() {
+clearWorld();
+scene.background = new THREE.Color(0x010203);
+scene.fog = new THREE.FogExp2(0x010203, 0.115); // Thick claustrophobic darkness
+const metalTex = makeGridTex('#12171a', '#1f292e', 256, 64);
+metalTex.repeat.set(8, 8);
+const wallMat = new THREE.MeshStandardMaterial({ map: metalTex, roughness: 0.75, metalness: 0.65 });
+const floorMat = new THREE.MeshStandardMaterial({ map: metalTex, roughness: 0.35, metalness: 0.8 });
+const ceilMat = new THREE.MeshStandardMaterial({ color: 0x090d10, roughness: 0.9 });
+// Tight 36x36 interior deck (much smaller & terrifying!)
+addBox(38, 0.5, 38, 0, -0.25, 0, floorMat, false, false);
+addBox(38, 0.5, 38, 0, 3.8, 0, ceilMat, false, false);
+// Outer perimeter walls
+addBox(38, 4, 1, 0, 2, -18.5, wallMat);
+addBox(38, 4, 1, 0, 2, 18.5, wallMat);
+addBox(1, 4, 38, -18.5, 2, 0, wallMat);
+addBox(1, 4, 38, 18.5, 2, 0, wallMat);
+// Tight maze corridors & rooms
+const walls = [
+[12, 4, 1, -12, 2, -10], [10, 4, 1, 8, 2, -10],
+[1, 4, 12, -6, 2, -4], [1, 4, 11, 6, 2, -3],
+[11, 4, 1, -12, 2, 4], [12, 4, 1, 11, 2, 5],
+[1, 4, 10, -2, 2, 11], [1, 4, 9, 8, 2, 12],
+[8, 4, 1, -10, 2, 12]
+];
+walls.forEach(w => addBox(...w, wallMat));
+// Dim ambient + Player narrow high-contrast Flashlight
+scene.add(new THREE.AmbientLight(0x090d12, 0.35));
+const flash = new THREE.SpotLight(0xdbeafe, 6.5, 22, Math.PI * 0.19, 0.45, 1.3);
+flash.castShadow = true;
+flash.shadow.mapSize.set(1024, 1024);
+camera.add(flash);
+camera.add(flash.target);
+flash.target.position.set(0, 0, -5);
+scene.add(camera);
+state.flashlight = flash;
+// Flickering red emergency alarm lights
+[[-13, 3.2, -14], [13, 3.2, -14], [0, 3.2, 0], [-13, 3.2, 14], [14, 3.2, 13]].forEach(([x, y, z], i) => {
+const pl = new THREE.PointLight(0xff1e1e, 2.2, 11);
+pl.position.set(x, y, z);
+scene.add(pl);
+state.lights.push({ light: pl, phase: i * 1.7, base: 2.2 });
+const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
+bulb.position.set(x, y + 0.3, z);
+scene.add(bulb);
+});
+// 3 Glowing Intel Terminals in tight rooms
+const termMat = new THREE.MeshStandardMaterial({ color: 0x0ea5e9, emissive: 0x0284c7, emissiveIntensity: 2.2 });
+[[-14, 1.1, -15], [14, 1.1, -15], [-14, 1.1, 15]].forEach(([x, y, z], idx) => {
+const m = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.5, 0.7), termMat);
+m.position.set(x, y, z); scene.add(m);
+const l = new THREE.PointLight(0x38bdf8, 1.8, 6); l.position.set(x, y + 0.6, z); scene.add(l);
+state.interactables.push({ type: 'intel', mesh: m, pos: new THREE.Vector3(x, 1.7, z), done: false, label: [ E ] DOWNLOAD INTEL #${idx + 1} });
+});
+// Warhead Bomb Console
+const bombMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xdc2626, emissiveIntensity: 2.5 });
+const bomb = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 1.0), bombMat);
+bomb.position.set(14, 1.1, 15); scene.add(bomb);
+state.interactables.push({ type: 'bomb', mesh: bomb, pos: new THREE.Vector3(14, 1.7, 15), done: false, label: '[ E ] DEFUSE REACTOR WARHEAD' });
+// Extraction Hatch
+const exitMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x16a34a, emissiveIntensity: 1.8 });
+const exit = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 2.2), exitMat);
+exit.position.set(0, 0.1, 16); scene.add(exit);
+state.interactables.push({ type: 'exit', mesh: exit, pos: new THREE.Vector3(0, 1.7, 16), done: false, label: '[ E ] BOARD EXTRACTION POD' });
+// Shadow Stalker Horror Monsters
+const stalkerCoords = [[-11, -5], [11, -6], [-10, 9], [12, 8], [0, -14]];
+stalkerCoords.forEach(([x, z]) => spawnHorrorStalker(x, z));
+state.pos.set(0, 1.7, 14);
+state.yaw = 0; state.pitch = 0;
+sfx.startHorrorDrone();
+}
+function spawnHorrorStalker(x, z) {
+const g = new THREE.Group();
+const bodyMat = new THREE.MeshStandardMaterial({ color: 0x070709, roughness: 0.2, metalness: 0.9 });
+const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.2, 1.9, 8), bodyMat);
+torso.position.y = 1.05; g.add(torso);
+const head = new THREE.Mesh(new THREE.SphereGeometry(0.26, 10, 10), bodyMat);
+head.position.y = 2.15; g.add(head);
+// Piercing glowing eyes in the dark
+const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff1111 });
+const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.045), eyeMat); eyeL.position.set(-0.09, 2.18, 0.22);
+const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.045), eyeMat); eyeR.position.set(0.09, 2.18, 0.22);
+g.add(eyeL, eyeR);
+g.position.set(x, 0, z);
+scene.add(g);
+state.enemies.push({ mesh: g, hp: 90, speed: 4.3, isHorror: true, alerted: false, attackCd: 0 });
+}
+/* ---------- GAME 2: ULTRA GRAPHICS CITY CRIME ---------- */
+function buildUltraCity() {
+clearWorld();
+renderer.toneMappingExposure = 1.28;
+scene.background = new THREE.Color(0x0b1628);
+scene.fog = new THREE.FogExp2(0x0b1628, 0.0085);
+// Three-point atmospheric twilight lighting + directional sun shadows
+const hemi = new THREE.HemisphereLight(0x60a5fa, 0x1e293b, 0.85);
+scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffedd5, 1.9);
+sun.position.set(45, 75, 35);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 10; sun.shadow.camera.far = 180;
+const d = 75;
+sun.shadow.camera.left = -d; sun.shadow.camera.right = d;
+sun.shadow.camera.top = d; sun.shadow.camera.bottom = -d;
+scene.add(sun);
+// Wet reflective asphalt city ground
+const roadTex = makeRoadTex();
+roadTex.repeat.set(14, 14);
+const groundMat = new THREE.MeshStandardMaterial({ map: roadTex, roughness: 0.22, metalness: 0.55 });
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(240, 240), groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+// Illuminated Skyscrapers with glowing window grids & neon trims
+const winTex1 = makeGridTex('#0f172a', '#1e293b', 256, 32, true);
+winTex1.repeat.set(2, 5);
+const winTex2 = makeGridTex('#111827', '#1f2937', 256, 32, true);
+winTex2.repeat.set(2, 4);
+const bldgMats = [
+new THREE.MeshStandardMaterial({ map: winTex1, emissiveMap: winTex1, emissive: 0xffffff, emissiveIntensity: 0.75, roughness: 0.25, metalness: 0.7 }),
+new THREE.MeshStandardMaterial({ map: winTex2, emissiveMap: winTex2, emissive: 0xbae6fd, emissiveIntensity: 0.7, roughness: 0.3, metalness: 0.65 })
+];
+const blocks = [
+[-32, -32, 18, 34, 18], [32, -32, 20, 42, 18], [-32, 32, 18, 28, 20], [32, 32, 22, 48, 20],
+[-68, -32, 18, 38, 18], [68, -32, 18, 30, 18], [-68, 32, 20, 44, 18], [68, 32, 18, 36, 18],
+[-32, -68, 18, 32, 18], [32, -68, 18, 40, 18], [-32, 68, 20, 35, 18], [32, 68, 18, 30, 18]
+];
+blocks.forEach(([x, z, w, h, d], idx) => {
+addBox(w, h, d, x, h / 2, z, bldgMats[idx % 2], true, true);
+// Neon rooftop accent strip
+const neonCol = idx % 2 === 0 ? 0x38bdf8 : 0xf43f5e;
+const trim = new THREE.Mesh(new THREE.BoxGeometry(w + 0.4, 0.5, d + 0.4), new THREE.MeshBasicMaterial({ color: neonCol }));
+trim.position.set(x, h + 0.25, z);
+scene.add(trim);
+});
+// Streetlamps with warm pools of light
+[[-16, -16], [16, -16], [-16, 16], [16, 16], [0, -48], [0, 48]].forEach(([x, z]) => {
+addBox(0.25, 6, 0.25, x, 3, z, new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 }), false);
+const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.35), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+bulb.position.set(x, 6.1, z); scene.add(bulb);
+const pl = new THREE.PointLight(0xfde047, 2.5, 22);
+pl.position.set(x, 5.8, z); scene.add(pl);
+});
+// Gun Store Landmark
+const shopMesh = new THREE.Mesh(new THREE.BoxGeometry(4, 3, 4), new THREE.MeshStandardMaterial({ color: 0x1e293b, emissive: 0xf59e0b, emissiveIntensity: 0.35 }));
+shopMesh.position.set(-20, 1.5, 0); scene.add(shopMesh);
+const shopSign = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1, 3.6), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
+shopSign.position.set(-17.9, 3.4, 0); scene.add(shopSign);
+state.interactables.push({ type: 'shop', mesh: shopMesh, pos: new THREE.Vector3(-17, 1.7, 0), label: '[ E ] ENTER BLACK MARKET GUN STORE' });
+// Drivable Sports Cars with Headlights & Taillights
+spawnSportsCar(6, -10, 0xe11d48);
+spawnSportsCar(-8, 18, 0x0284c7);
+spawnSportsCar(22, 6, 0xf59e0b);
+// Cash Drops & Street Enemies
+for (let i = 0; i < 6; i++) {
+const cx = (Math.random() - 0.5) * 90, cz = (Math.random() - 0.5) * 90;
+const cashMesh = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.35, 0.45), new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x22c55e, emissiveIntensity: 1.4 }));
+cashMesh.position.set(cx, 0.5, cz); scene.add(cashMesh);
+state.pickups.push({ mesh: cashMesh, pos: new THREE.Vector3(cx, 1, cz), value: 250 });
+}
+for (let i = 0; i < 6; i++) spawnCityEnemy((Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80, false);
+state.pos.set(0, 1.7, 8);
+state.yaw = 0; state.pitch = 0;
+}
+function spawnSportsCar(x, z, color) {
+const car = new THREE.Group();
+const paint = new THREE.MeshStandardMaterial({ color, roughness: 0.15, metalness: 0.85 });
+const glass = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.1, metalness: 0.95 });
+const body = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.75, 4.4), paint);
+body.position.y = 0.65; body.castShadow = true; car.add(body);
+const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.6, 2.2), glass);
+cabin.position.set(0, 1.25, -0.2); car.add(cabin);
+// Wheels
+const wMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.7 });
+[[-1.05, 0.4, 1.35], [1.05, 0.4, 1.35], [-1.05, 0.4, -1.35], [1.05, 0.4, -1.35]].forEach(([wx, wy, wz]) => {
+const w = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.3, 12), wMat);
+w.rotation.z = Math.PI / 2; w.position.set(wx, wy, wz); car.add(w);
+});
+// Glowing Headlights & Taillights
+const hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const tlMat = new THREE.MeshBasicMaterial({ color: 0xff1e1e });
+[-0.7, 0.7].forEach(hx => {
+const hl = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.2, 0.1), hlMat); hl.position.set(hx, 0.7, 2.21); car.add(hl);
+const tl = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.2, 0.1), tlMat); tl.position.set(hx, 0.75, -2.21); car.add(tl);
+});
+car.position.set(x, 0, z);
+scene.add(car);
+state.cars.push({ mesh: car, yaw: 0 });
+}
+function spawnCityEnemy(x, z, isCop) {
+const g = new THREE.Group();
+const mat = new THREE.MeshStandardMaterial({ color: isCop ? 0x1d4ed8 : 0x7f1d1d, roughness: 0.5 });
+const body = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.3, 0.45), mat);
+body.position.y = 0.95; body.castShadow = true; g.add(body);
+const head = new THREE.Mesh(new THREE.SphereGeometry(0.24), new THREE.MeshStandardMaterial({ color: 0xfdba74 }));
+head.position.y = 1.85; g.add(head);
+g.position.set(x, 0, z); scene.add(g);
+state.enemies.push({ mesh: g, hp: isCop ? 80 : 60, speed: isCop ? 4.2 : 2.8, isHorror: false, isCop, attackCd: 0 });
+}
+/* ================= LAUNCH & UI LOGIC ================= */
+function launchGame(mode) {
+sfx.init();
+state.mode = mode;
+state.active = true;
+state.paused = false;
+state.hp = 100;
+state.armor = mode === 'horror' ? 25 : 50;
+state.cash = 800;
+state.wanted = 0;
+state.timer = 240;
+state.intel = 0;
+state.bombDefused = false;
+state.weaponIdx = 0;
+state.weapons.forEach((w, i) => { w.mag = w.maxMag; w.owned = i === 0; });
+document.getElementById('start').style.display = 'none';
+document.getElementById('ending').style.display = 'none';
+document.getElementById('pause').style.display = 'none';
+document.getElementById('hud').style.display = 'block';
+const vig = document.getElementById('vignette');
+if (mode === 'horror') {
+vig.classList.add('horror');
+document.getElementById('brand').textContent = 'BLACKTIDE 09 // DECK 04';
+document.getElementById('mission').textContent = 'CONTAINMENT BREACH';
+document.getElementById('objective').textContent = 'Download all 3 intel terminals in the dark, defuse the reactor warhead, and reach the extraction pod.';
+document.getElementById('statusLabel').textContent = 'MELTDOWN IN';
+document.getElementById('timer').style.display = 'block';
+document.getElementById('cashDisplay').style.display = 'none';
+document.getElementById('wantedStars').style.display = 'none';
+document.getElementById('objLabel').textContent = 'INTEL';
+buildHorrorRig();
+} else {
+vig.classList.remove('horror');
+document.getElementById('brand').textContent = 'CITY CRIME // ULTRA EDITION';
+document.getElementById('mission').textContent = 'NEON SYNDICATE';
+document.getElementById('objective').textContent = 'Collect cash drops, hijack sports cars, upgrade weapons at the Gun Store, and survive police heat.';
+document.getElementById('statusLabel').textContent = 'SYNDICATE BANK';
+document.getElementById('timer').style.display = 'none';
+document.getElementById('cashDisplay').style.display = 'block';
+document.getElementById('wantedStars').style.display = 'block';
+document.getElementById('objLabel').textContent = 'HEAT';
+buildUltraCity();
+}
+updateHUD();
+canvas.requestPointerLock?.();
+}
+// Clickable cards + buttons
+document.getElementById('cardHorror').addEventListener('click', () => launchGame('horror'));
+document.getElementById('cardCity').addEventListener('click', () => launchGame('city'));
+document.getElementById('btnResume').addEventListener('click', () => togglePause(false));
+document.getElementById('btnMenu').addEventListener('click', returnToMenu);
+document.getElementById('btnEndMenu').addEventListener('click', returnToMenu);
+document.getElementById('btnRetry').addEventListener('click', () => launchGame(state.mode));
+document.getElementById('closeShop').addEventListener('click', () => {
+document.getElementById('gunStore').style.display = 'none';
+state.paused = false;
+canvas.requestPointerLock?.();
+});
+function returnToMenu() {
+state.active = false;
+sfx.stopDrone();
+document.exitPointerLock?.();
+['hud', 'pause', 'ending', 'bombPanel', 'gunStore'].forEach(id => document.getElementById(id).style.display = 'none');
+document.getElementById('start').style.display = 'flex';
+}
+function togglePause(force) {
+state.paused = force !== undefined ? force : !state.paused;
+document.getElementById('pause').style.display = state.paused ? 'flex' : 'none';
+if (state.paused) document.exitPointerLock?.();
+else canvas.requestPointerLock?.();
+}
+function endGame(win, title, desc) {
+state.active = false;
+sfx.stopDrone();
+document.exitPointerLock?.();
+document.getElementById('hud').style.display = 'none';
+document.getElementById('endKicker').textContent = win ? 'OPERATION COMPLETE' : 'SIGNAL LOST';
+document.getElementById('endTitle').textContent = title;
+document.getElementById('endTitle').style.color = win ? 'var(--green)' : 'var(--red)';
+document.getElementById('endDesc').textContent = desc;
+document.getElementById('ending').style.display = 'flex';
+}
+function toast(msg) {
+const t = document.getElementById('toast');
+t.textContent = msg; t.style.opacity = '1';
+clearTimeout(t._tid);
+t._tid = setTimeout(() => t.style.opacity = '0', 2400);
+}
+/* ================= COMBAT, INTERACTION & MINI-GAMES ================= */
+canvas.addEventListener('click', () => {
+if (state.active && !state.paused && document.pointerLockElement !== canvas) {
+canvas.requestPointerLock?.();
+}
+});
+window.addEventListener('mousemove', e => {
+if (!state.active || state.paused || document.pointerLockElement !== canvas) return;
+state.yaw -= e.movementX * 0.0022;
+state.pitch = Math.max(-1.35, Math.min(1.35, state.pitch - e.movementY * 0.0022));
+});
+window.addEventListener('mousedown', e => {
+if (e.button === 0 && state.active && !state.paused && document.pointerLockElement === canvas) fireWeapon();
+});
+function selectWeapon(idx) {
+if (!state.weapons[idx].owned) return toast('WEAPON LOCKED — BUY AT GUN STORE');
+state.weaponIdx = idx;
+updateHUD();
+}
+function reloadWeapon() {
+const w = state.weapons[state.weaponIdx];
+const need = w.maxMag - w.mag;
+if (need <= 0 || w.reserve <= 0) return;
+const take = Math.min(need, w.reserve);
+w.mag += take; w.reserve -= take;
+sfx.pickup(); toast('RELOADED'); updateHUD();
+}
+function fireWeapon() {
+if (state.inCar) return;
+const now = performance.now() / 1000;
+const w = state.weapons[state.weaponIdx];
+if (now - state.lastShot < w.rate) return;
+if (w.mag <= 0) return toast('EMPTY! PRESS [R] TO RELOAD');
+state.lastShot = now;
+w.mag--;
+sfx.shoot(state.weaponIdx === 2);
+// Muzzle flash light pulse
+const flash = new THREE.PointLight(0xffb703, 5, 10);
+flash.position.copy(camera.position);
+scene.add(flash);
+setTimeout(() => scene.remove(flash), 45);
+const ray = new THREE.Raycaster();
+ray.setFromCamera(new THREE.Vector2((Math.random() - 0.5) * w.spread, (Math.random() - 0.5) * w.spread), camera);
+const targets = state.enemies.map(e => e.mesh);
+const hits = ray.intersectObjects(targets, true);
+if (hits.length) {
+let obj = hits[0].object;
+while (obj.parent && !state.enemies.find(e => e.mesh === obj)) obj = obj.parent;
+const enemy = state.enemies.find(e => e.mesh === obj);
+if (enemy) {
+enemy.hp -= w.dmg;
+enemy.alerted = true;
+sfx.hit();
+const hm = document.getElementById('hitmarker');
+hm.style.opacity = '1'; setTimeout(() => hm.style.opacity = '0', 110);
+if (enemy.hp <= 0) {
+scene.remove(enemy.mesh);
+state.enemies = state.enemies.filter(e => e !== enemy);
+if (state.mode === 'city') {
+state.cash += 150;
+state.wanted = Math.min(5, state.wanted + 1);
+spawnCityEnemy((Math.random() - 0.5) * 90, (Math.random() - 0.5) * 90, true);
+}
+}
+}
+}
+updateHUD();
+}
+function handleInteract() {
+if (state.mode === 'city') {
+if (state.inCar) {
+state.pos.copy(state.inCar.mesh.position).add(new THREE.Vector3(2.2, 1.7, 0));
+state.inCar = null; state.carSpeed = 0;
+document.getElementById('speedo').style.display = 'none';
+toast('EXITED VEHICLE'); return;
+}
+for (const c of state.cars) {
+if (state.pos.distanceTo(c.mesh.position) < 4.2) {
+state.inCar = c;
+document.getElementById('speedo').style.display = 'block';
+toast('DRIVING SPORTS CAR — [E] TO EXIT'); return;
+}
+}
+}
+for (const item of state.interactables) {
+if (state.pos.distanceTo(item.pos) < 3.2) {
+if (item.type === 'intel' && !item.done) {
+item.done = true; item.mesh.visible = false;
+state.intel++; sfx.pickup();
+toast(INTEL DOWNLOADED (${state.intel} / 3));
+if (state.intel === 3) {
+const colors = ['RED', 'BLUE', 'YELLOW'];
+state.wireColor = colors[Math.floor(Math.random() * 3)];
+toast(ALL INTEL DECODED! DEFUSE WIRE IS ${state.wireColor});
+}
+updateHUD();
+} else if (item.type === 'bomb' && !item.done) {
+if (state.intel < 3) return toast('NEED ALL 3 INTEL TERMINALS FIRST!');
+openBombPanel();
+} else if (item.type === 'exit') {
+if (!state.bombDefused) return toast('DEFUSE THE REACTOR WARHEAD FIRST!');
+endGame(true, 'ESCAPED ALIVE', 'You survived the horrors of Blacktide 09 and prevented a catastrophic offshore meltdown.');
+} else if (item.type === 'shop') {
+openGunStore();
+}
+}
+}
+}
+function openBombPanel() {
+state.paused = true; document.exitPointerLock?.();
+document.getElementById('wireHint').textContent = Decoded Telemetry: Cut the ${state.wireColor} stabilization wire!;
+const row = document.getElementById('wireRow'); row.innerHTML = '';
+[{ name: 'RED', hex: '#ef4444' }, { name: 'BLUE', hex: '#38bdf8' }, { name: 'YELLOW', hex: '#facc15' }].forEach(w => {
+const btn = document.createElement('button');
+btn.className = 'wire'; btn.style.setProperty('--wire', w.hex);
+btn.innerHTML = <span>CUT ${w.name}</span>;
+btn.onclick = () => {
+document.getElementById('bombPanel').style.display = 'none';
+state.paused = false;
+if (w.name === state.wireColor) {
+state.bombDefused = true; sfx.pickup();
+toast('WARHEAD DEFUSED! RUN TO THE EXTRACTION POD!');
+canvas.requestPointerLock?.();
+} else {
+endGame(false, 'DETONATION', 'You cut the wrong wire. Blacktide 09 vanished beneath the ocean.');
+}
+};
+row.appendChild(btn);
+});
+document.getElementById('bombPanel').style.display = 'flex';
+}
+function openGunStore() {
+state.paused = true; document.exitPointerLock?.();
+document.getElementById('shopCash').textContent = $${state.cash};
+const grid = document.getElementById('shopGrid'); grid.innerHTML = '';
+const items = [
+{ name: 'TACTICAL SMG', price: 350, desc: 'Rapid fire 9mm submachine gun.', buy: () => { state.weapons[1].owned = true; selectWeapon(1); } },
+{ name: 'COMBAT SHOTGUN', price: 600, desc: 'Devastating close-range spread.', buy: () => { state.weapons[2].owned = true; selectWeapon(2); } },
+{ name: 'KEVLAR ARMOR', price: 200, desc: 'Restores +50 ballistic armor.', buy: () => { state.armor = Math.min(100, state.armor + 50); } },
+{ name: 'MEDKIT', price: 150, desc: 'Restores +50 health immediately.', buy: () => { state.hp = Math.min(100, state.hp + 50); } },
+{ name: 'AMMO CRATE', price: 120, desc: 'Refills reserve ammo for all guns.', buy: () => { state.weapons.forEach(w => w.reserve += w.maxMag * 2); } }
+];
+items.forEach(it => {
+const div = document.createElement('div'); div.className = 'shop-item';
+div.innerHTML = `${it.name}$${it
+.price}${it.desc}; const b = document.createElement('button'); b.className = 'gold'; b.textContent = 'PURCHASE'; b.onclick = () => { if (state.cash < it.price) return toast('INSUFFICIENT FUNDS'); state.cash -= it.price; it.buy(); sfx.pickup(); document.getElementById('shopCash').textContent = $${state.cash}; updateHUD(); toast(PURCHASED ${it.name}`);
+};
+div.appendChild(b); grid.appendChild(div);
+});
+document.getElementById('gunStore').style.display = 'flex';
+}
+/* ================= SIMULATION LOOP ================= */
+function collides(x, z, r = 0.45) {
+for (const b of state.colliders) {
+if (x + r > b.minX && x - r < b.maxX && z + r > b.minZ && z - r < b.maxZ) return true;
+}
+return false;
+}
+function hurtPlayer(amt) {
+if (state.armor > 0) {
+const abs = Math.min(state.armor, amt * 0.6);
+state.armor = Math.round(state.armor - abs);
+amt -= abs;
+}
+state.hp = Math.max(0, Math.round(state.hp - amt));
+const dmg = document.getElementById('damage');
+dmg.style.opacity = '1'; setTimeout(() => dmg.style.opacity = '0', 180);
+updateHUD();
+if (state.hp <= 0) {
+endGame(false, state.mode === 'horror' ? 'CONSUMED BY THE DARK' : 'WASTED',
+state.mode === 'horror' ? 'The shadow stalkers dragged you into the flooded lower decks.' : 'Your syndicate run ended on the neon asphalt.');
+}
+}
+function updateHUD() {
+document.getElementById('health').textContent = state.hp;
+document.getElementById('armor').textContent = state.armor;
+const w = state.weapons[state.weaponIdx];
+document.getElementById('ammo').textContent = ${w.mag} / ${w.reserve};
+document.getElementById('weaponName').textContent = state.inCar ? 'INTERCEPTOR GT' : w.name;
+document.getElementById('cashDisplay').textContent = $${state.cash};
+document.getElementById('parts').textContent = state.mode === 'horror' ? ${state.intel} / 3 : ${state.wanted}★;
+const stars = document.querySelectorAll('#wantedStars span');
+stars.forEach((s, i) => s.classList.toggle('active', i < state.wanted));
+}
+function drawRadar() {
+const ctx = radarCtx;
+ctx.clearRect(0, 0, 158, 158);
+ctx.strokeStyle = 'rgba(148,163,184,0.22)';
+ctx.beginPath(); ctx.arc(79, 79, 52, 0, Math.PI * 2); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(79, 0); ctx.lineTo(79, 158); ctx.moveTo(0, 79); ctx.lineTo(158, 79); ctx.stroke();
+const scale = state.mode === 'horror' ? 3.2 : 1.35;
+const plot = (wx, wz, color, size = 3.5) => {
+const dx = wx - state.pos.x, dz = wz - state.pos.z;
+const rx = (dx * Math.cos(-state.yaw) - dz * Math.sin(-state.yaw)) * scale;
+const rz = (dx * Math.sin(-state.yaw) + dz * Math.cos(-state.yaw)) * scale;
+if (rx * rx + rz * rz < 72 * 72) {
+ctx.fillStyle = color;
+ctx.beginPath(); ctx.arc(79 + rx, 79 + rz, size, 0, Math.PI * 2); ctx.fill();
+}
+};
+state.interactables.forEach(it => { if (!it.done) plot(it.pos.x, it.pos.z, '#38bdf8', 4); });
+state.pickups.forEach(p => plot(p.pos.x, p.pos.z, '#4ade80', 3.5));
+state.cars.forEach(c => plot(c.mesh.position.x, c.mesh.position.z, '#facc15', 3.5));
+state.enemies.forEach(e => plot(e.mesh.position.x, e.mesh.position.z, '#ef4444', 4));
+ctx.fillStyle = '#ffffff';
+ctx.beginPath(); ctx.arc(79, 79, 4, 0, Math.PI * 2); ctx.fill();
+}
+let prevTime = performance.now();
 function animate(now) {
 requestAnimationFrame(animate);
-const dt = Math.min((now - lastTime) / 1000, 0.05);
-lastTime = now;
-if (!mode || paused || gameOver ||
-('bombPanel').style.display === 'flex' || ('gunStore').style.display === 'flex') {
+const dt = Math.min(0.05, (now - prevTime) / 1000);
+prevTime = now;
+if (!state.active || state.paused) {
 renderer.render(scene, camera);
 return;
 }
-// Weapon recoil & auto-fire
-player.cooldown = Math.max(0, player.cooldown - dt);
-gunGroup.position.z += (0 - gunGroup.position.z) * 14 * dt;
-gunGroup.rotation.x += (0 - gunGroup.rotation.x) * 14 * dt;
-if (mouseDown && player.weapons[player.weaponIdx].auto) fireWeapon();
-// Bullet tracers fade
-for (let i = tracers.length - 1; i >= 0; i--) {
-tracers[i].life -= dt;
-if (tracers[i].life <= 0) {
-scene.remove(tracers[i].line);
-tracers.splice(i, 1);
+// Timer & Flickering Horror Alarm Lights
+if (state.mode === 'horror') {
+state.timer -= dt;
+if (state.timer <= 0) return endGame(false, 'REACTOR MELTDOWN', 'Time ran out. Blacktide 09 detonated.');
+const m = String(Math.floor(state.timer / 60)).padStart(2, '0');
+const s = String(Math.floor(state.timer % 60)).padStart(2, '0');
+document.getElementById('timer').textContent = ${m}:${s};
+state.lights.forEach(l => {
+const flicker = Math.sin(now * 0.015 + l.phase) > 0.35 ? l.base : 0.15;
+l.light.intensity = flicker + (Math.random() > 0.94 ? 2.5 : 0);
+});
 }
-}
-// 3D Particle updates
-for (let i = particles.length - 1; i >= 0; i--) {
-const p = particles[i];
-p.vel.y -= 18 * dt;
-p.mesh.position.addScaledVector(p.vel, dt);
-p.life -= dt;
-if (p.life <= 0) {
-scene.remove(p.mesh);
-particles.splice(i, 1);
-}
-}
-// Player Movement vs Car Physics
-if (player.inCar) {
-const car = player.inCar;
-const accel = (keys['KeyW'] ? 1 : 0) - (keys['KeyS'] ? 1 : 0);
-const steer = (keys['KeyA'] ? 1 : 0) - (keys['KeyD'] ? 1 : 0);
-const boost = keys['ShiftLeft'] ? 1.45 : 1.0;
-const brake = keys['Space'] ? 0.88 : 1.0;
-car.speed += accel * car.accelPower * boost * dt;
-car.speed *= Math.pow(0.28, dt) * brake;
-if (Math.abs(car.speed) > 0.5) {
-const turnRate = keys['Space'] ? 3.1 : 2.3;
-car.mesh.rotation.y += steer * turnRate * Math.sign(car.speed) * dt;
-}
-const forward = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
-const nextPos = car.mesh.position.clone().addScaledVector(forward, car.speed * dt);
-let blocked = Math.abs(nextPos.x) > 155 || Math.abs(nextPos.z) > 155;
-for (const c of colliders) {
-if (nextPos.x + 1.4 > c.minX && nextPos.x - 1.4 < c.maxX && nextPos.z + 1.4 > c.minZ && nextPos.z - 1.4 < c.maxZ) {
-blocked = true;
-break;
-}
-}
-if (!blocked) {
-car.mesh.position.copy(nextPos);
+// Movement (On foot or driving)
+const fwd = (keys['KeyW'] || keys['ArrowUp'] ? 1 : 0) - (keys['KeyS'] || keys['ArrowDown'] ? 1 : 0);
+const str = (keys['KeyD'] || keys['ArrowRight'] ? 1 : 0) - (keys['KeyA'] || keys['ArrowLeft'] ? 1 : 0);
+if (state.inCar) {
+state.carSpeed += fwd * 26 * dt;
+state.carSpeed *= 0.96;
+if (Math.abs(state.carSpeed) > 0.4) state.inCar.yaw -= str * 2.2 * dt * Math.sign(state.carSpeed);
+const nx = state.inCar.mesh.position.x - Math.sin(state.inCar.yaw) * state.carSpeed * dt;
+const nz = state.inCar.mesh.position.z - Math.cos(state.inCar.yaw) * state.carSpeed * dt;
+if (!collides(nx, nz, 1.3)) {
+state.inCar.mesh.position.set(nx, 0, nz);
 } else {
-car.speed *= -0.35;
+state.carSpeed *= -0.35;
 }
-if (car.mesh.userData.wheels) {
-car.mesh.userData.wheels.forEach(w => w.rotation.x += car.speed * dt * 2.5);
-}
-// Smash street hydrants & run over enemies
-for (const pr of props) {
-if (!pr.broken && car.mesh.position.distanceTo(pr.mesh.position) < 2.2) {
-pr.broken = true;
-pr.mesh.rotation.z = Math.PI / 2;
-pr.mesh.position.y = 0.2;
-spawnParticles(pr.mesh.position, 0x38bdf8, 12);
-sfx.playBeep(300, 0.08);
-}
-}
-if (Math.abs(car.speed) > 9) {
-for (let i = enemies.length - 1; i >= 0; i--) {
-const e = enemies[i];
-if (car.mesh.position.distanceTo(e.mesh.position) < 2.6) {
-const reward = e.isBounty ? 1000 : e.isCop ? 150 : 300;
-spawnCashDrop(e.mesh.position.x, e.mesh.position.z, reward);
-spawnParticles(e.mesh.position, 0xef4444, 12);
-scene.remove(e.mesh);
-enemies.splice(i, 1);
-addWantedLevel(1);
-toast(ROADKILL — +$${reward} DROPPED);
-}
-}
-}
-\(('speedo').style.display = 'block';\)('speedo').textContent = ${Math.round(Math.abs(car.speed) * 3.2)} MPH;
-const camOffset = forward.clone().multiplyScalar(-7.4).add(new THREE.Vector3(0, 3.2, 0));
-camera.position.lerp(car.mesh.position.clone().add(camOffset), 10 * dt);
-camera.lookAt(car.mesh.position.clone().add(new THREE.Vector3(0, 1.35, 0)));
-player.pos.copy(car.mesh.position);
+state.inCar.mesh.rotation.y = state.inCar.yaw + Math.PI;
+state.pos.set(state.inCar.mesh.position.x, 2.3, state.inCar.mesh.position.z);
+camera.position.set(
+state.pos.x + Math.sin(state.inCar.yaw) * 6.5,
+3.8,
+state.pos.z + Math.cos(state.inCar.yaw) * 6.5
+);
+camera.lookAt(state.inCar.mesh.position.x, 1.2, state.inCar.mesh.position.z);
+document.getElementById('speedo').textContent = ${Math.round(Math.abs(state.carSpeed) * 4.2)} MPH;
 } else {
-camera.rotation.y = yaw;
-camera.rotation.x = pitch;
-const speed = keys['ShiftLeft'] ? 10.8 : 6.4;
-const fwd = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
-const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
-const move = new THREE.Vector3();
-if (keys['KeyW']) move.add(fwd);
-if (keys['KeyS']) move.sub(fwd);
-if (keys['KeyD']) move.add(right);
-if (keys['KeyA']) move.sub(right);
-if (move.lengthSq() > 0) move.normalize().multiplyScalar(speed * dt);
-const nextX = player.pos.x + move.x;
-const nextZ = player.pos.z + move.z;
-const limit = mode === 'blacktide' ? 38.5 : 156;
-let hitX = Math.abs(nextX) > limit;
-let hitZ = Math.abs(nextZ) > limit;
-for (const c of colliders) {
-if (nextX + 0.45 > c.minX && nextX - 0.45 < c.maxX && player.pos.z + 0.45 > c.minZ && player.pos.z - 0.45 < c.maxZ) hitX = true;
-if (player.pos.x + 0.45 > c.minX && player.pos.x - 0.45 < c.maxX && nextZ + 0.45 > c.minZ && nextZ - 0.45 < c.maxZ) hitZ = true;
-}
-if (!hitX) player.pos.x = nextX;
-if (!hitZ) player.pos.z = nextZ;
-player.velY -= 18 * dt;
-player.pos.y += player.velY * dt;
-if (player.pos.y <= 1.7) {
-player.pos.y = 1.7;
-player.velY = 0;
-player.grounded = true;
-}
-camera.position.copy(player.pos);
-}
-// Interactables & Car Hijack Detection
-activePrompt = null;
-let nearestDist = Infinity;
-for (const item of interactables) {
-const d = player.pos.distanceTo(item.pos);
-if (d < item.radius && d < nearestDist && !item.collected) {
-nearestDist = d;
-activePrompt = item;
-}
-}
-if (mode === 'city') {
-for (const car of cars) {
-if (car !== player.inCar && car.aiActive) {
-const dir = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
-const aiSpeed = (car.isPolice && player.wanted > 0) ? 16 : 11;
-if (car.isPolice && player.wanted > 0) {
-const targetAngle = Math.atan2(player.pos.x - car.mesh.position.x, player.pos.z - car.mesh.position.z);
-car.mesh.rotation.y = targetAngle;
-}
-car.mesh.position.addScaledVector(dir, aiSpeed * dt);
-if (Math.abs(car.mesh.position.x) > 142 || Math.abs(car.mesh.position.z) > 142) {
-car.mesh.rotation.y += Math.PI;
-car.mesh.position.clampScalar(-140, 140);
-}
-}
-if (!player.inCar) {
-const d = player.pos.distanceTo(car.mesh.position);
-if (d < 4.4 && d < nearestDist) {
-nearestDist = d;
-activePrompt = {
-label: [ E ] DRIVE ${car.name},
-action() {
-player.inCar = car;
-car.aiActive = false;
-gunGroup.visible = false;
-if (car.isPolice) addWantedLevel(1);
-updateHUD();
-}
-};
-}
-}
+const speed = state.mode === 'horror' ? 5.2 : 7.8;
+const sin = Math.sin(state.yaw), cos = Math.cos(state.yaw);
+const vx = (-sin * fwd + cos * str) * speed;
+const vz = (-cos * fwd - sin * str) * speed;
+if (!collides(state.pos.x + vx * dt, state.pos.z)) state.pos.x += vx * dt;
+if (!collides(state.pos.x, state.pos.z + vz * dt)) state.pos.z += vz * dt;
+const bob = (fwd || str) ? Math.sin(now * 0.014) * 0.06 : 0;
+camera.position.set(state.pos.x, state.pos.y + bob, state.pos.z);
+camera.rotation.order = 'YXZ';
+camera.rotation.y = state.yaw;
+camera.rotation.x = state.pitch;
 }
 // Cash Pickups
-for (let i = pickups.length - 1; i >= 0; i--) {
-const p = pickups[i];
-p.mesh.rotation.y += 2.6 * dt;
-if (player.pos.distanceTo(p.mesh.position) < 2.8) {
-player.cash += p.amount;
-sfx.playCash();
-toast(+$${p.amount} COLLECTED);
-scene.remove(p.mesh);
-pickups.splice(i, 1);
-updateHUD();
+state.pickups = state.pickups.filter(p => {
+p.mesh.rotation.y += 2.5 * dt;
+if (state.pos.distanceTo(p.pos) < 2.2) {
+state.cash += p.value; sfx.pickup();
+scene.remove(p.mesh); updateHUD();
+toast(+$${p.value} SYNDICATE CASH);
+return false;
 }
-}
-// Wanted Star Cooldown
-if (player.wanted > 0) {
-player.wantedDecay -= dt;
-if (player.wantedDecay <= 0) {
-player.wanted--;
-player.wantedDecay = 18;
-updateHUD();
-}
-}
-}
-// Prompt UI
-const promptEl = $('prompt');
-if (player.inCar) {
-promptEl.textContent = '[ E ] EXIT VEHICLE';
-promptEl.style.opacity = 1;
-} else if (activePrompt) {
-promptEl.textContent = activePrompt.label;
-promptEl.style.opacity = 1;
+return true;
+});
+// Enemy AI + Horror Jump-Scare Lunges
+state.scareCooldown = Math.max(0, state.scareCooldown - dt);
+let nearestHorror = 99;
+state.enemies.forEach(e => {
+const dist = e.mesh.position.distanceTo(state.pos);
+if (e.isHorror) nearestHorror = Math.min(nearestHorror, dist);
+const detectRange = e.isHorror ? (state.flashlightOn ? 15 : 8.5) : 28;
+if (dist < detectRange || e.alerted) {
+e.mesh.lookAt(state.pos.x, 0, state.pos.z);
+if (dist > 1.55) {
+const dir = new THREE.Vector3().subVectors(state.pos, e.mesh.position).setY(0).normalize();
+const nx = e.mesh.position.x + dir.x * e.speed * dt;
+const nz = e.mesh.position.z + dir.z * e.speed * dt;
+if (!collides(nx, e.mesh.position.z, 0.4)) e.mesh.position.x = nx;
+if (!collides(e.mesh.position.x, nz, 0.4)) e.mesh.position.z = nz;
 } else {
-promptEl.style.opacity = 0;
-}
-// Enemy AI Updates
-for (const e of enemies) {
-const toPlayer = player.pos.clone().sub(e.mesh.position);
-toPlayer.y = 0;
-const dist = toPlayer.length();
-if (e === stalker) {
-if (e.stun > 0) {
-e.stun -= dt;
-} else if (dist > 1.35) {
-toPlayer.normalize();
-e.mesh.position.addScaledVector(toPlayer, e.speed * dt);
-e.mesh.lookAt(player.pos.x, e.mesh.position.y, player.pos.z);
-} else {
-applyPlayerDamage(40 * dt);
-}
-} else if ((e.isGangster || (e.isCop && player.wanted > 0)) && dist < 46) {
-e.mesh.lookAt(player.pos.x, e.mesh.position.y, player.pos.z);
-if (dist > 11) {
-toPlayer.normalize();
-e.mesh.position.addScaledVector(toPlayer, (e.isCop ? 4.8 : 3.6) * dt);
-}
-e.shootTimer -= dt;
-if (e.shootTimer <= 0) {
-e.shootTimer = e.isCop ? 1.2 : 1.7;
-if (!player.inCar && Math.random() < 0.45) {
-spawnTracer(e.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)), player.pos, 0xef4444);
-applyPlayerDamage(e.isCop ? 11 : 8);
+e.attackCd -= dt;
+if (e.attackCd <= 0) {
+e.attackCd = 1.05;
+hurtPlayer(e.isHorror ? 24 : 10);
+if (e.isHorror && state.scareCooldown <= 0) {
+state.scareCooldown = 4.5;
+sfx.scare();
+const sf = document.getElementById('scareFlash');
+sf.style.opacity = '1'; setTimeout(() => sf.style.opacity = '0', 180);
 }
 }
 }
 }
-// Timers & Death Check
-if (mode === 'blacktide' && !bombDisarmed) {
-rigTimer -= dt;
-tickAccum += dt;
-if (tickAccum >= 1) {
-tickAccum = 0;
-sfx.playBeep(rigTimer < 30 ? 950 : 620, 0.04);
-}
-updateHUD();
-if (rigTimer <= 0) {
-endGame('TIME EXPIRED', 'PLATFORM DESTROYED', 'The countdown hit 00:00 before the device could be disarmed.');
+});
+// Proximity Heartbeat in Horror Mode
+if (state.mode === 'horror' && nearestHorror < 10) {
+state.heartbeatTimer -= dt;
+if (state.heartbeatTimer <= 0) {
+state.heartbeatTimer = Math.max(0.28, nearestHorror * 0.09);
+sfx.playTone(55, 'sine', 0.14, 0.25, 30);
 }
 }
-if (player.hp <= 0) {
-endGame('KILLED IN ACTION', 'OPERATIVE DOWN', mode === 'blacktide' ? 'The creature overwhelmed you on the rig.' : 'You were gunned down on the streets.');
+// Interaction Prompt
+const prompt = document.getElementById('prompt');
+let promptText = '';
+if (state.mode === 'city' && !state.inCar) {
+for (const c of state.cars) if (state.pos.distanceTo(c.mesh.position) < 4.2) promptText = '[ E ] DRIVE SPORTS CAR';
 }
+for (const it of state.interactables) {
+if (!it.done && state.pos.distanceTo(it.pos) < 3.2) promptText = it.label;
+}
+prompt.textContent = promptText;
+prompt.style.opacity = promptText ? '1' : '0';
 drawRadar();
 renderer.render(scene, camera);
 }
 requestAnimationFrame(animate);
-
-
